@@ -1,0 +1,1 @@
+An Add-On Mod for Balatro that provides the ability to view more jokers at once in the collection, as well as an Auto-Reroll feature that allows the player to search for multiple cards at a time in the shop.
