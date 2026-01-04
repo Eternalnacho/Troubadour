@@ -1,0 +1,5 @@
+.vscode/
+.lovelyignore
+
+# Mac
+.DS_Store

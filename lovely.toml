@@ -1,0 +1,56 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1
+
+# Allowing the '0' key to work in text input properly
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "at"
+payload = '''if args.key == '0' and G.CONTROLLER.text_input_hook.config.ref_table and G.CONTROLLER.text_input_hook.config.ref_table.ref_value == "setup_seed" then args.key = 'o' end'''
+match_indent = true
+overwrite = false
+
+# Setting collection screen back_func for reroll_menu
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''local t = create_UIBox_generic_options({ back_func = G.STAGE == G.STAGES.RUN and 'options' or 'exit_overlay_menu', contents = {'''
+position = "at"
+payload = '''
+local t = create_UIBox_generic_options({ back_func = TRO.coll_from_button and 'exit_search_collection' or G.STAGE == G.STAGES.RUN and 'options' or 'exit_overlay_menu', contents = {
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+UIBox_button({button = 'your_collection_blinds', label = {localize('b_blinds')}, count = G.DISCOVER_TALLIES.blinds, minw = 5, minh = 2.0, id = 'your_collection_blinds', focus_args = {snap_to = true}}),UIBox_button({button = 'your_collection_other_gameobjects', label = {localize('k_other')}, minw = 5, id = 'your_collection_other_gameobjects', focus_args = {snap_to = true}}),
+    }},
+'''
+position = "after"
+payload = '''
+    (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UI.auto_reroll_UI()
+'''
+match_indent = false
+
+# Getting page number info from card collection page
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/ui.lua"]'
+pattern = '''if not e or not e.cycle_config then return end'''
+position = "after"
+payload = '''if TRO.UI.get_page_num then TRO.UI.curr_page = e.cycle_config.current_option end'''
+match_indent = true
+
+# Starting the cycle on the right freaking page number
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/ui.lua"]'
+pattern = '''create_option_cycle({options = options, w = 4.5, cycle_shoulders = true, opt_callback = 'SMODS_card_collection_page', current_option = 1, colour = G.ACTIVE_MOD_UI and (G.ACTIVE_MOD_UI.ui_config or {}).collection_option_cycle_colour or G.C.RED, no_pips = true, focus_args = {snap_to = true, nav = 'wide'}})'''
+position = "at"
+payload = '''create_option_cycle({options = options, w = 4.5, cycle_shoulders = true, opt_callback = 'SMODS_card_collection_page', current_option = args.TRO_curr_option or 1, colour = G.ACTIVE_MOD_UI and (G.ACTIVE_MOD_UI.ui_config or {}).collection_option_cycle_colour or G.C.RED, no_pips = true, focus_args = {snap_to = true, nav = 'wide'}})'''
+match_indent = true
