@@ -62,42 +62,6 @@ function TRO.UI.rerender(def, set, silent)
   TRO.utils.cleanup_dead_elements(G, "MOVEABLES")
 end
 
-function TRO.utils.cleanup_dead_elements(ref_table, ref_key)
-	local new_values = {}
-	local target = ref_table[ref_key]
-	if not target then
-		return
-	end
-	for _, v in pairs(target) do
-		if not v.REMOVED and not v.removed then
-			new_values[#new_values + 1] = v
-		end
-	end
-	ref_table[ref_key] = new_values
-	return new_values
-end
-
--- and I'm stealing *this* from Too Many Jokers
-local oldcuib = create_UIBox_generic_options
-create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
-    if arg1 and arg1.back_func == "your_collection" or arg1.back_func == 'your_collection_consumables'
-        and arg1.contents and arg1.contents[1] and arg1.contents[1].n == 4 and TRO.adding_key then
-      local new_target = TRO.adding_key and next(TRO.collection_targets) and TRO.collection_targets[#TRO.collection_targets]
-      if new_target then
-        table.insert(arg1.contents, {
-          n = G.UIT.R,
-          config = { align = "cm", minh = 0.5 },
-          nodes = {
-              { n = G.UIT.C, config = { align = "cm", padding = 0.15, r = 0.2, minw = 5, colour = darken(copy_table(G.C.GREY), 0.5), emboss = 0.05 },
-                nodes = { { n = G.UIT.T, config = { text = "Added key: " .. new_target, colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
-          }
-        })
-        TRO.adding_key = nil
-      end
-    end
-    return oldcuib(arg1, ...)
-end
-
 -- This one is for the auto-reroller
 function TRO.UI.create_UIBox_your_collection_jokers()
   local w = tro_config.gallery_width * 10 % 10 < 5 and math.floor(tro_config.gallery_width) or math.ceil(tro_config.gallery_width)
@@ -121,10 +85,37 @@ function TRO.UI.get_type_collection_UIBox_func(set)
   return func
 end
 
-TRO.UI.get_page_num = true
-local smodsccb = SMODS.card_collection_UIBox
-SMODS.card_collection_UIBox = function(_pool, rows, args)
-  args.no_materialize = TRO.adding_key and true or args.no_materialize
-  if TRO.UI.rerendering then args.TRO_curr_option = TRO.UI.curr_page end
-  return smodsccb(_pool, rows, args)
+function TRO.UI.rerender_collection(set)
+  G.E_MANAGER:add_event(Event({
+    func = function()
+      TRO.UI.get_page_num = false
+      TRO.UI.rerendering = true
+      TRO.UI.rerender(TRO.UI.get_type_collection_UIBox_func(set), set, true)
+      return true
+    end,
+  }))
+
+  G.E_MANAGER:add_event(Event({
+    func = function()
+      G.FUNCS.SMODS_card_collection_page{ cycle_config = { current_option = TRO.UI.curr_page } }
+      TRO.UI.get_page_num = true
+      TRO.UI.rerendering = false
+      return true
+    end,
+  }))
+end
+
+function TRO.utils.cleanup_dead_elements(ref_table, ref_key)
+	local new_values = {}
+	local target = ref_table[ref_key]
+	if not target then
+		return
+	end
+	for _, v in pairs(target) do
+		if not v.REMOVED and not v.removed then
+			new_values[#new_values + 1] = v
+		end
+	end
+	ref_table[ref_key] = new_values
+	return new_values
 end

@@ -25,10 +25,9 @@ function TRO.FUNCS.prompt_target(target)
   if G.STATE == G.STATES.SHOP and tro_config.enable_auto_reroll then
     local reroll_button = G.shop:get_UIE_by_ID("next_round_button").parent.children[2]
     if target == reroll_button then
-      if next(TRO.collection_targets) then
+      if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
         TRO.FUNCS.find_targets(TRO.collection_targets)
       else
-        -- TRO.UI.auto_reroll_UIBox()
         G.FUNCS.TRO_your_collection()
       end
     end
@@ -136,27 +135,9 @@ function Card:click()
       and not TRO.utils.contains(TRO.collection_targets, self.config.center_key) and G.STATE == G.STATES.SHOP then
     table.insert(TRO.collection_targets, self.config.center_key)
     TRO.adding_key = true
-    local set = self.config.center.set
+    local set = self.config.center.set  
     if TRO.UI.get_type_collection_UIBox_func(set) and G.SETTINGS.paused then
-      G.E_MANAGER:add_event(Event({
-        blocking = false,
-        blockable = false,
-        no_delete = true,
-        func = function()
-          TRO.UI.get_page_num = false
-          TRO.UI.rerendering = true
-          TRO.UI.rerender(TRO.UI.get_type_collection_UIBox_func(set), set, true)
-          return true
-        end,
-      }))
-      G.E_MANAGER:add_event(Event({
-        func = function()
-          G.FUNCS.SMODS_card_collection_page{ cycle_config = { current_option = TRO.UI.curr_page } }
-          TRO.UI.get_page_num = true
-          TRO.UI.rerendering = false
-          return true
-        end,
-      }))
+      TRO.UI.rerender_collection(set)
     end
   end
   return cc(self)

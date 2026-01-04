@@ -12,6 +12,9 @@ assert(SMODS.load_file("src/functions/utils.lua"))()
 assert(SMODS.load_file("src/functions/inputmanager.lua"))()
 assert(SMODS.load_file("src/functions/reroll_simulator.lua"))()
 
+-- Load hooks
+assert(SMODS.load_file("src/hooks/collection_hooks.lua"))()
+
 -- Load config page
 assert(SMODS.load_file("src/settings.lua"))()
 
