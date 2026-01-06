@@ -1,5 +1,6 @@
 -- AUTO-REROLL FUNCTION FOR REROLL BUTTON
 TRO.collection_targets = {}
+TRO.UI.targets = {added_target = ''}
 
 -- thank you Overstock and god bless you
 local function can_reroll_into(card_key)
@@ -25,10 +26,9 @@ function TRO.FUNCS.prompt_target(target)
   if G.STATE == G.STATES.SHOP and tro_config.enable_auto_reroll then
     local reroll_button = G.shop:get_UIE_by_ID("next_round_button").parent.children[2]
     if target == reroll_button then
-      if next(TRO.collection_targets) then
+      if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
         TRO.FUNCS.find_targets(TRO.collection_targets)
       else
-        -- TRO.UI.auto_reroll_UIBox()
         G.FUNCS.TRO_your_collection()
       end
     end
@@ -105,7 +105,14 @@ end
 function TRO.FUNCS.clear_targets(from_button)
   if next(TRO.collection_targets) and (from_button == true or (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))) then
     TRO.collection_targets = {}
-    if G.STATE == G.STATES.SHOP and not G.SETTINGS.paused then
+    if TRO.in_collection then
+      local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
+      if menu_object then
+        menu_object.config.object:remove()
+        menu_object.config.object = UIBox({ definition = TRO.UI.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        G.OVERLAY_MENU:recalculate()
+      end
+    elseif G.STATE == G.STATES.SHOP and not G.SETTINGS.paused then
       update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname = "Reroll targets cleared"})
       G.E_MANAGER:add_event(Event({ trigger = 'after', delay = G.SETTINGS.GAMESPEED * 3,
         func = function()
@@ -114,7 +121,6 @@ function TRO.FUNCS.clear_targets(from_button)
         end
       }))
     end
-    print("Clearing reroll search targets")
   end
 end
 
@@ -126,6 +132,7 @@ function TRO.FUNCS.check_keys(targets)
   end
 end
 
+-- Reroller controls
 tro_input_manager:add_listener({ 'right_click', 'right_stick' }, TRO.FUNCS.prompt_target)
 tro_input_manager:add_listener({ 'double_click' }, TRO.FUNCS.clear_targets)
 
@@ -135,28 +142,12 @@ function Card:click()
   if self.area and self.area.config.collection and tro_config.enable_auto_reroll and can_reroll_into(self.config.center_key)
       and not TRO.utils.contains(TRO.collection_targets, self.config.center_key) and G.STATE == G.STATES.SHOP then
     table.insert(TRO.collection_targets, self.config.center_key)
+    TRO.UI.targets.added_target = self.config.center_key
     TRO.adding_key = true
     local set = self.config.center.set
-    if TRO.UI.get_type_collection_UIBox_func(set) and G.SETTINGS.paused then
-      G.E_MANAGER:add_event(Event({
-        blocking = false,
-        blockable = false,
-        no_delete = true,
-        func = function()
-          TRO.UI.get_page_num = false
-          TRO.UI.rerendering = true
-          TRO.UI.rerender(TRO.UI.get_type_collection_UIBox_func(set), set, true)
-          return true
-        end,
-      }))
-      G.E_MANAGER:add_event(Event({
-        func = function()
-          G.FUNCS.SMODS_card_collection_page{ cycle_config = { current_option = TRO.UI.curr_page } }
-          TRO.UI.get_page_num = true
-          TRO.UI.rerendering = false
-          return true
-        end,
-      }))
+    if TRO.UI.get_type_collection_UIBox_func(set) and TRO.in_collection and not TRO.coll_from_button then
+      TRO.coll_from_button = true
+      TRO.UI.rerender_collection(set)
     end
   end
   return cc(self)
@@ -164,7 +155,7 @@ end
 
 function G.FUNCS.TRO_your_collection(e)
   TRO.coll_from_button = true
-  G.FUNCS.your_collection(e)
+  G.FUNCS.your_collection()
 end
 
 function G.FUNCS.exit_search_collection()
@@ -177,14 +168,13 @@ end
 function G.FUNCS.TRO_clear_targets(e)
   if next(TRO.collection_targets) then
     TRO.FUNCS.clear_targets(true)
-    G.E_MANAGER:add_event(Event({
-      blocking = false,
-      blockable = false,
-      no_delete = true,
-      func = function()
-        TRO.UI.rerender(create_UIBox_your_collection, nil, true)
-        return true
-      end,
-    }))
   end
+end
+
+function G.FUNCS.TRO_view_options(e)
+  G.SETTINGS.paused = true
+  TRO.config_from_coll = true
+  TRO.in_collection = false
+  G.FUNCS.overlay_menu{ definition = TRO.UI.config_from_coll() }
+  G.OVERLAY_MENU:recalculate()
 end

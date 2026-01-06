@@ -10,7 +10,8 @@ function TRO.UI.UIE_config_args(args)
     maxw = args.maxw,
     h = args.h,
     w = args.w,
-    r = args.r
+    r = args.r,
+    id = args.id,
   }
 end
 
@@ -39,6 +40,7 @@ function TRO.UI.create_text_node(args)
       ref_value = args.ref_value,
       scale = args.scale or 1,
       colour = args.colour or G.C.WHITE,
+      shadow = args.shadow,
       vert = args.vert
     }
   }
@@ -57,14 +59,14 @@ function TRO.UI.create_num_input_node(args)
     callback = function()
       tro_config[args.ref_value] = string.gsub(tro_config[args.ref_value], "O", "0")
       tro_config[args.ref_value] = tonumber(tro_config[args.ref_value]) or tonumber(args.default)
-      print(tro_config[args.ref_value])
+      TRO.UI.update_TRO_config()
     end
   })
 end
 
 function SMODS.current_mod.config_tab()
   local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-  local reroll_limit_price = TRO.utils.summ(tro_config.reroll_limit + reroll_cost - 1) - TRO.utils.summ(reroll_cost - 1)
+  local reroll_limit_price = math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1)
   local reroll_limit_text = TRO.UI.create_num_input_node({ref_value = "reroll_limit", default = 30})
   return {n = G.UIT.ROOT, config = {
     r = 0.1,                    -- roundness of the corners
@@ -89,7 +91,14 @@ function SMODS.current_mod.config_tab()
               }
             }
           }}),
-          TRO.UI.create_row({minh = 0.65, nodes = { create_toggle({align = 'cr', label = 'Enable Auto Reroll?', ref_table = tro_config, ref_value = 'enable_auto_reroll'}) }}),
+          TRO.UI.create_row({minh = 0.65, nodes = { create_toggle({
+              align = 'cr',
+              label = 'Enable Auto Reroll?',
+              callback = TRO.UI.update_TRO_config,
+              ref_table = tro_config,
+              ref_value = 'enable_auto_reroll'
+            })
+          }}),
           TRO.UI.create_row({minh = 0.65, nodes = {
             TRO.UI.create_text_node({text = "Reroll Limit: ",
             scale = 0.4}), reroll_limit_text,
@@ -99,4 +108,12 @@ function SMODS.current_mod.config_tab()
       }),
     }
   }
+end
+
+function TRO.UI.update_TRO_config()
+  if TRO.coll_from_button then
+    TRO.UI.rerender(TRO.UI.config_from_coll, true)
+  elseif SMODS.LAST_SELECTED_MOD_TAB == "config" then
+    TRO.UI.rerender(create_UIBox_mods, true)
+  end
 end

@@ -2,7 +2,12 @@ tro_config = SMODS.current_mod.config
 TRO = {}
 TRO.FUNCS, TRO.UI = {}, {}
 
+-- math functions
 to_number = to_number or function(x) return x end
+
+function math.summ(n)
+  return n * (n + 1) / 2
+end
 
 -- Load atlases
 assert(SMODS.load_file("atlases.lua"))()
@@ -11,6 +16,9 @@ assert(SMODS.load_file("atlases.lua"))()
 assert(SMODS.load_file("src/functions/utils.lua"))()
 assert(SMODS.load_file("src/functions/inputmanager.lua"))()
 assert(SMODS.load_file("src/functions/reroll_simulator.lua"))()
+
+-- Load hooks
+assert(SMODS.load_file("src/hooks/collection_hooks.lua"))()
 
 -- Load config page
 assert(SMODS.load_file("src/settings.lua"))()
