@@ -1,6 +1,7 @@
 -- AUTO-REROLL FUNCTION FOR REROLL BUTTON
 TRO.collection_targets = {}
 TRO.UI.targets = {added_target = ''}
+TRO.RNG_states = {prev = nil, latest = nil}
 
 -- thank you Overstock and god bless you
 local function can_reroll_into(card_key)
@@ -8,17 +9,18 @@ local function can_reroll_into(card_key)
   if not center then return false end
   if G.GAME.banned_keys and G.GAME.banned_keys[card_key] then return false end
   if center.no_appear_in_shop then return false end
+
   if center.yes_pool_flag and (not G.GAME.pool_flags or not G.GAME.pool_flags[center.yes_pool_flag]) then return false end
   if center.no_pool_flag and (G.GAME.pool_flags and G.GAME.pool_flags[center.no_pool_flag]) then return false end
 
-  -- This looks like cryptid bs
-  if G.GAME.cry_banished_keys and G.GAME.cry_banished_keys[card_key] then return false end
-  if (({
-    Enhanced = true, Edition = true, Back = true,
-    Spectral = G.GAME.spectral_rate <= 0 and not (G.GAME.selected_back.effect.center.key == "b_cry_equilibrium"),
-    Code = G.GAME.code_rate and (G.GAME.code_rate <= 0) and not (G.GAME.selected_back.effect.center.key == "b_cry_equilibrium"),
-    Voucher = not (G.GAME.selected_back.effect.center.key == "b_cry_equilibrium"),
-  })[center.set]) then return false end
+  if center.set == 'Edition' and not center.in_shop then return false end
+
+  if ({
+    Enhanced = true,
+    Back = true,
+    Spectral = G.GAME.spectral_rate <= 0,
+    Voucher = true
+  })[center.set] then return false end
   return true
 end
 
@@ -60,9 +62,14 @@ function TRO.FUNCS.auto_reroll(targets)
   for _, v in pairs(G.shop_jokers.cards) do table.insert(TRO.REROLL.key_queue, v.config.center_key) end
 
   -- Simulate rerolls until either the keys are found or the limit is reached
+  TRO.in_reroll_sim = true
   while not TRO.FUNCS.check_keys(targets) and TRO.REROLL.spent <= to_number(G.GAME.dollars) and TRO.REROLL.rerolls < tro_config.reroll_limit do
+    TRO.REROLL.edition_flags = {}
     TRO.REROLL.simulate_reroll()
+    TRO.RNG_states.prev = TRO.RNG_states.latest
+    TRO.RNG_states.latest = copy_table(G.GAME.pseudorandom)
   end
+  TRO.in_reroll_sim = nil
 
   -- Now roll out the simulated rerolls
   G.E_MANAGER:add_event(Event({
@@ -75,31 +82,23 @@ function TRO.FUNCS.auto_reroll(targets)
         G.E_MANAGER:add_event(Event({ func = function() G.FUNCS.reroll_shop() return true end }))
       end
 
-      G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.5,
-        func = function()
-          play_sound('holo1')
-          play_sound('timpani')
-          return true
-        end
-      }))
       -- Display results for posterity, and for better tracking
-      if not TRO.FUNCS.check_keys(targets) then print("Reached reroll limit, joker not found") end
+      if not TRO.FUNCS.check_keys(targets) then print("Reached reroll limit, joker not found")
+      else
+        G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.5,
+          func = function()
+            play_sound('holo1')
+            play_sound('timpani')
+            return true
+          end
+        }))
+      end
       print("Total rerolls: " .. TRO.REROLL.rerolls)
       -- Reset values to defaults for next time
       TRO.FUNCS.reset_rerolls()
       return true
     end
     }))
-end
-
-function TRO.FUNCS.reset_rerolls()
-  TRO.REROLL.rerolls = 0
-  TRO.REROLL.spent = 0
-  TRO.REROLL.key_queue = {}
-  TRO.REROLL.tag_cache = {}
-  TRO.reroll_cost = nil
-  TRO.reroll_cost_inc = nil
-  TRO.free_rerolls = nil
 end
 
 function TRO.FUNCS.clear_targets(from_button)
@@ -126,7 +125,10 @@ end
 
 function TRO.FUNCS.check_keys(targets)
   for _, key in pairs(targets) do
+    print(TRO.REROLL.edition_flags[key])
     if TRO.utils.contains(TRO.REROLL.key_queue, key) then
+      return true
+    elseif TRO.REROLL.edition_flags[''..key] then
       return true
     end
   end
@@ -146,8 +148,8 @@ function Card:click()
     TRO.adding_key = true
     local set = self.config.center.set
     if TRO.UI.get_type_collection_UIBox_func(set) and TRO.in_collection and not TRO.coll_from_button then
-      TRO.coll_from_button = true
       TRO.UI.rerender_collection(set)
+      TRO.coll_from_button = true
     end
   end
   return cc(self)
@@ -160,8 +162,8 @@ end
 
 function G.FUNCS.exit_search_collection()
   if G.SETTINGS.paused then
-    G.FUNCS.exit_overlay_menu()
     TRO.coll_from_button = nil
+    G.FUNCS.exit_overlay_menu()
   end
 end
 
@@ -171,10 +173,50 @@ function G.FUNCS.TRO_clear_targets(e)
   end
 end
 
-function G.FUNCS.TRO_view_options(e)
-  G.SETTINGS.paused = true
-  TRO.config_from_coll = true
-  TRO.in_collection = false
-  G.FUNCS.overlay_menu{ definition = TRO.UI.config_from_coll() }
-  G.OVERLAY_MENU:recalculate()
+
+
+local function roll_event()
+  if (to_big(G.GAME.dollars) - to_big(G.GAME.current_round.reroll_cost)) <= to_big(OVERSTOCK.money_cutoff) then
+    G.GAME.overstock_rerolling = false
+    G.CONTROLLER.locks.shop_reroll = false
+    return true
+  end
+  local b = {config = {}}
+  G.FUNCS.can_reroll(b)
+  if not b.config.button then
+    G.GAME.overstock_rerolling = false
+    G.CONTROLLER.locks.shop_reroll = false
+    return true
+  end
+  for _, card in ipairs(G.shop_jokers.cards) do
+    if TRO.utils.contains(TRO.collection_targets, card.config.center_key) or TRO.utils.contains(TRO.collection_targets, 'e_'..card.edition.type) then
+      G.E_MANAGER:add_event(Event({
+        trigger = 'after',
+        delay = 0.5,
+        func = function()
+          play_sound('holo1')
+          play_sound('timpani')
+          card:juice_up(1, 0.5)
+          return true
+        end
+      }))
+      G.GAME.overstock_rerolling = false
+      G.CONTROLLER.locks.shop_reroll = false
+      return true
+    end
+  end
+  G.FUNCS.reroll_shop()
+  G.E_MANAGER:add_event(Event { func = roll_event, blocking = false, blockable = true })
+  return true
+end
+
+function TRO.FUNCS.reset_rerolls()
+  TRO.REROLL.rerolls = 0
+  TRO.REROLL.spent = 0
+  TRO.REROLL.key_queue = {}
+  TRO.REROLL.edition_flags = {}
+  TRO.REROLL.tag_cache = {}
+  TRO.reroll_cost = nil
+  TRO.reroll_cost_inc = nil
+  TRO.free_rerolls = nil
 end

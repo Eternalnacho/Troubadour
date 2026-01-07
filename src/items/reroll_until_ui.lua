@@ -59,25 +59,10 @@ end
 
 function TRO.UI.added_key_UI()
   local target_textnode = TRO.UI.create_text_node({ align = 'cm', ref_table = TRO.UI.targets, ref_value = 'added_target', scale = 0.3 })
-
   local nodes = TRO.UI.create_row({ align = "cm", padding = 0.15, r = 0.2, minh = 0.8, minw = 4, colour = darken(copy_table(G.C.GREY), 0.5), emboss = 0.05,
     nodes = { TRO.UI.create_text_node({ text = "Search target added: ", align = "cm", colour = G.C.WHITE, shadow = true, scale = 0.3 }), target_textnode } })
-
   local added_key_UI = TRO.UI.create_column({ align = "cm", minw = 4.5, nodes = {nodes} })
   return added_key_UI
-end
-
--- This one is for the auto-reroller
-function TRO.UI.create_UIBox_your_collection_jokers()
-  local w = tro_config.gallery_width * 10 % 10 < 5 and math.floor(tro_config.gallery_width) or math.ceil(tro_config.gallery_width)
-  local h = tro_config.gallery_height * 10 % 10 < 5 and math.floor(tro_config.gallery_height) or math.ceil(tro_config.gallery_height)
-  local area = {}; for _ = 1, h do area[#area+1] = w end
-  return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Joker, area, {
-      no_materialize = true,
-      modify_card = function(card, center) card.sticker = get_joker_win_sticker(center) end,
-      h_mod = 0.95 * (3 / h),
-      card_scale = 1 - (h / 100),
-  })
 end
 
 function TRO.UI.get_type_collection_UIBox_func(set)
@@ -101,9 +86,38 @@ function TRO.UI.rerender_collection(set)
   }))
 end
 
+function G.FUNCS.TRO_view_options(e)
+  G.SETTINGS.paused = true
+  TRO.config_from_coll = true
+  TRO.in_collection = false
+  G.FUNCS.overlay_menu{ definition = TRO.UI.config_from_coll() }
+  G.OVERLAY_MENU:recalculate()
+end
+
 function TRO.UI.config_from_coll()
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
     back_func = 'your_collection',
     contents = SMODS.Mods["Troubadour"].config_tab().nodes})
+end
+
+-- This one is for the auto-reroller
+function TRO.UI.create_UIBox_your_collection_jokers()
+  local w = tro_config.gallery_width * 10 % 10 < 5 and math.floor(tro_config.gallery_width) or math.ceil(tro_config.gallery_width)
+  local h = tro_config.gallery_height * 10 % 10 < 5 and math.floor(tro_config.gallery_height) or math.ceil(tro_config.gallery_height)
+  local area = {}; for _ = 1, h do area[#area+1] = w end
+  return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Joker, area, {
+      no_materialize = true,
+      modify_card = function(card, center) card.sticker = get_joker_win_sticker(center) end,
+      h_mod = 0.95 * (3 / h),
+      card_scale = 1 - (h / 100),
+  })
+end
+
+
+function TRO.UI.reset_ui_states()
+  TRO.in_collection = false
+  TRO.config_from_coll = nil
+  TRO.UI.targets.added_target = ''
+  TRO.UI.get_page_num = true
 end
