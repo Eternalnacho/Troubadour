@@ -150,6 +150,13 @@ function Card:click()
     if TRO.UI.get_type_collection_UIBox_func(set) and TRO.in_collection and not TRO.coll_from_button then
       TRO.UI.rerender_collection(set)
       TRO.coll_from_button = true
+    elseif TRO.in_collection then
+      local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
+      if menu_object then
+        menu_object.config.object:remove()
+        menu_object.config.object = UIBox({ definition = TRO.UI.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        G.OVERLAY_MENU:recalculate()
+      end
     end
   end
   return cc(self)
