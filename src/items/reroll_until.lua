@@ -173,43 +173,6 @@ function G.FUNCS.TRO_clear_targets(e)
   end
 end
 
-
-
-local function roll_event()
-  if (to_big(G.GAME.dollars) - to_big(G.GAME.current_round.reroll_cost)) <= to_big(OVERSTOCK.money_cutoff) then
-    G.GAME.overstock_rerolling = false
-    G.CONTROLLER.locks.shop_reroll = false
-    return true
-  end
-  local b = {config = {}}
-  G.FUNCS.can_reroll(b)
-  if not b.config.button then
-    G.GAME.overstock_rerolling = false
-    G.CONTROLLER.locks.shop_reroll = false
-    return true
-  end
-  for _, card in ipairs(G.shop_jokers.cards) do
-    if TRO.utils.contains(TRO.collection_targets, card.config.center_key) or TRO.utils.contains(TRO.collection_targets, 'e_'..card.edition.type) then
-      G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        delay = 0.5,
-        func = function()
-          play_sound('holo1')
-          play_sound('timpani')
-          card:juice_up(1, 0.5)
-          return true
-        end
-      }))
-      G.GAME.overstock_rerolling = false
-      G.CONTROLLER.locks.shop_reroll = false
-      return true
-    end
-  end
-  G.FUNCS.reroll_shop()
-  G.E_MANAGER:add_event(Event { func = roll_event, blocking = false, blockable = true })
-  return true
-end
-
 function TRO.FUNCS.reset_rerolls()
   TRO.REROLL.rerolls = 0
   TRO.REROLL.spent = 0
