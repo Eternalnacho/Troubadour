@@ -11,7 +11,7 @@ SMODS.create_card = function(t)
 end
 
 local create_card_ref = create_card
-create_card = function(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
+create_card = function(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append, ...)
   if TRO.in_reroll_sim and not TRO.REROLL.from_scc then
     TRO.REROLL.tag_args = {
       set = _type,
@@ -21,6 +21,6 @@ create_card = function(_type, area, legendary, _rarity, skip_materialize, soulab
       key_append = key_append
     }
   end
-  local ret = create_card_ref(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
+  local ret = create_card_ref(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append, ...)
   return ret
 end

@@ -93,7 +93,7 @@ function TRO.FUNCS.clear_targets(from_button)
       local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
       if menu_object then
         menu_object.config.object:remove()
-        menu_object.config.object = UIBox({ definition = TRO.UI.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        menu_object.config.object = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
         G.OVERLAY_MENU:recalculate()
       end
     elseif G.STATE == G.STATES.SHOP and not G.SETTINGS.paused then
@@ -138,30 +138,12 @@ function Card:click()
       local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
       if menu_object then
         menu_object.config.object:remove()
-        menu_object.config.object = UIBox({ definition = TRO.UI.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        menu_object.config.object = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
         G.OVERLAY_MENU:recalculate()
       end
     end
   end
   return cc(self)
-end
-
-function G.FUNCS.TRO_your_collection(e)
-  TRO.coll_from_button = true
-  G.FUNCS.your_collection()
-end
-
-function G.FUNCS.exit_search_collection()
-  if G.SETTINGS.paused then
-    TRO.coll_from_button = nil
-    G.FUNCS.exit_overlay_menu()
-  end
-end
-
-function G.FUNCS.TRO_clear_targets(e)
-  if next(TRO.collection_targets) then
-    TRO.FUNCS.clear_targets(true)
-  end
 end
 
 function TRO.FUNCS.reset_rerolls()

@@ -1,6 +1,6 @@
 tro_config = SMODS.current_mod.config
 TRO = {}
-TRO.FUNCS, TRO.UI = {}, {}
+TRO.FUNCS = {}
 
 -- Get directory loader
 local load_dir = assert(SMODS.load_file("src/loader.lua"))()
