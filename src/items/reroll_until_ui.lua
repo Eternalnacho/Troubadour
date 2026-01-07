@@ -21,6 +21,7 @@ function TRO.UI.auto_reroll_UI()
           TRO.UI.create_column({ align = "cm", padding = 0.15, r = 0.2, minw = 5, colour = darken(copy_table(G.C.GREY), 0.5), emboss = 0.05,
             nodes = {
               UIBox_button({button = 'TRO_view_options', label = {"Reroll Options"}, colour = G.C.FILTER, minw = 3, minh = 0.7, id = 'TRO_view_options_button'}),
+              TRO.UI.create_row({ nodes = { TRO.UI.create_text_node({ text = "\t Start auto-reroll with\nShift+Right-Click on reroll button", scale = 0.28 }) } }),
             }}),
         }}),
     }})
