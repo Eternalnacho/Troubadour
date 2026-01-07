@@ -2,28 +2,20 @@ tro_config = SMODS.current_mod.config
 TRO = {}
 TRO.FUNCS, TRO.UI = {}, {}
 
--- math functions
-to_number = to_number or function(x) return x end
+-- Get directory loader
+local load_dir = assert(SMODS.load_file("src/loader.lua"))()
 
-function math.summ(n)
-  return n * (n + 1) / 2
-end
+-- Load backend functions
+load_dir("src/functions")
+
+-- Load config page
+assert(SMODS.load_file("src/config_page.lua"))()
+
+-- Load hooks
+load_dir("src/hooks")
+
+-- Load auto-reroll and wider collection screen
+load_dir("src/items")
 
 -- Load atlases
 assert(SMODS.load_file("atlases.lua"))()
-
--- Load backend functions
-assert(SMODS.load_file("src/functions/utils.lua"))()
-assert(SMODS.load_file("src/functions/inputmanager.lua"))()
-assert(SMODS.load_file("src/functions/reroll_simulator.lua"))()
-
--- Load hooks
-assert(SMODS.load_file("src/hooks/collection_hooks.lua"))()
-
--- Load config page
-assert(SMODS.load_file("src/settings.lua"))()
-
--- Load auto-reroll and wider collection screen
-assert(SMODS.load_file("src/reroll_until.lua"))()
-assert(SMODS.load_file("src/reroll_until_ui.lua"))()
-assert(SMODS.load_file("src/wider_collection.lua"))()

@@ -16,6 +16,6 @@ end
 
 local old_FUNCS_exit_overlay_menu = G.FUNCS.exit_overlay_menu
 function G.FUNCS.exit_overlay_menu(...)
-    TRO.in_collection = false
+    TRO.UI.reset_ui_states()
     return old_FUNCS_exit_overlay_menu(...)
 end
