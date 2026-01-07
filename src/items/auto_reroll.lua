@@ -29,26 +29,11 @@ function TRO.FUNCS.prompt_target(target)
     local reroll_button = G.shop:get_UIE_by_ID("next_round_button").parent.children[2]
     if target == reroll_button then
       if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-        TRO.FUNCS.find_targets(TRO.collection_targets)
+        TRO.FUNCS.auto_reroll(TRO.collection_targets)
       else
         G.FUNCS.TRO_your_collection()
       end
     end
-  end
-end
-
-function TRO.FUNCS.find_targets(targets)
-  local modded_tags_found
-  for _, v in ipairs(G.GAME.tags) do
-    if v.config.type == 'store_joker_create' and not (v.name == 'Rare Tag' or v.name == 'Uncommon Tag') then
-      modded_tags_found = true
-      break
-    end
-  end
-  if modded_tags_found then
-    print("Auto-reroll can't be used until modded joker-creating tags are used")
-  elseif #targets > 0 then
-    TRO.FUNCS.auto_reroll(targets)
   end
 end
 
@@ -108,7 +93,7 @@ function TRO.FUNCS.clear_targets(from_button)
       local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
       if menu_object then
         menu_object.config.object:remove()
-        menu_object.config.object = UIBox({ definition = TRO.UI.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        menu_object.config.object = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
         G.OVERLAY_MENU:recalculate()
       end
     elseif G.STATE == G.STATES.SHOP and not G.SETTINGS.paused then
@@ -125,7 +110,6 @@ end
 
 function TRO.FUNCS.check_keys(targets)
   for _, key in pairs(targets) do
-    print(TRO.REROLL.edition_flags[key])
     if TRO.utils.contains(TRO.REROLL.key_queue, key) then
       return true
     elseif TRO.REROLL.edition_flags[''..key] then
@@ -150,64 +134,16 @@ function Card:click()
     if TRO.UI.get_type_collection_UIBox_func(set) and TRO.in_collection and not TRO.coll_from_button then
       TRO.UI.rerender_collection(set)
       TRO.coll_from_button = true
+    elseif TRO.in_collection then
+      local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
+      if menu_object then
+        menu_object.config.object:remove()
+        menu_object.config.object = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        G.OVERLAY_MENU:recalculate()
+      end
     end
   end
   return cc(self)
-end
-
-function G.FUNCS.TRO_your_collection(e)
-  TRO.coll_from_button = true
-  G.FUNCS.your_collection()
-end
-
-function G.FUNCS.exit_search_collection()
-  if G.SETTINGS.paused then
-    TRO.coll_from_button = nil
-    G.FUNCS.exit_overlay_menu()
-  end
-end
-
-function G.FUNCS.TRO_clear_targets(e)
-  if next(TRO.collection_targets) then
-    TRO.FUNCS.clear_targets(true)
-  end
-end
-
-
-
-local function roll_event()
-  if (to_big(G.GAME.dollars) - to_big(G.GAME.current_round.reroll_cost)) <= to_big(OVERSTOCK.money_cutoff) then
-    G.GAME.overstock_rerolling = false
-    G.CONTROLLER.locks.shop_reroll = false
-    return true
-  end
-  local b = {config = {}}
-  G.FUNCS.can_reroll(b)
-  if not b.config.button then
-    G.GAME.overstock_rerolling = false
-    G.CONTROLLER.locks.shop_reroll = false
-    return true
-  end
-  for _, card in ipairs(G.shop_jokers.cards) do
-    if TRO.utils.contains(TRO.collection_targets, card.config.center_key) or TRO.utils.contains(TRO.collection_targets, 'e_'..card.edition.type) then
-      G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        delay = 0.5,
-        func = function()
-          play_sound('holo1')
-          play_sound('timpani')
-          card:juice_up(1, 0.5)
-          return true
-        end
-      }))
-      G.GAME.overstock_rerolling = false
-      G.CONTROLLER.locks.shop_reroll = false
-      return true
-    end
-  end
-  G.FUNCS.reroll_shop()
-  G.E_MANAGER:add_event(Event { func = roll_event, blocking = false, blockable = true })
-  return true
 end
 
 function TRO.FUNCS.reset_rerolls()

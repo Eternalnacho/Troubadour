@@ -33,7 +33,7 @@ UIBox_button({button = 'your_collection_blinds', label = {localize('b_blinds')},
 '''
 position = "after"
 payload = '''
-    (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UI.auto_reroll_UI()
+    (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UIDEF.auto_reroll_UI()
 '''
 match_indent = false
 
@@ -61,7 +61,7 @@ payload = '''
   {n=G.UIT.C, config={align = "cm"}, nodes={ {n=G.UIT.R, config={align = "cm"}, nodes={
     create_option_cycle({options = options, w = 4.5, cycle_shoulders = true, opt_callback = 'SMODS_card_collection_page', current_option = args.TRO_curr_option or 1, colour = G.ACTIVE_MOD_UI and (G.ACTIVE_MOD_UI.ui_config or {}).collection_option_cycle_colour or G.C.RED, no_pips = true, focus_args = {snap_to = true, nav = 'wide'}})
   }} }},
-  TRO.coll_from_button and TRO.UI.added_key_UI()
-  }} or TRO.coll_from_button and {n=G.UIT.R, config={align = "cm"}, nodes={ TRO.UI.added_key_UI() }}
+  TRO.coll_from_button and TRO.UIDEF.added_key_UI()
+  }} or TRO.coll_from_button and {n=G.UIT.R, config={align = "cm"}, nodes={ TRO.UIDEF.added_key_UI() }}
 '''
 match_indent = true

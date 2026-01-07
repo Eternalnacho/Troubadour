@@ -1,3 +1,4 @@
+-- UTILITY FUNCTIONS
 TRO.utils = {}
 
 -- List functions

@@ -1,3 +1,5 @@
+-- HOOKING COLLECTION FUNCTIONS
+
 TRO.UI.get_page_num = true
 local card_collection_uibox = SMODS.card_collection_UIBox
 SMODS.card_collection_UIBox = function(_pool, rows, args)

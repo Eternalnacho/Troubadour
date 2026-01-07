@@ -37,6 +37,7 @@ end
 function TRO.REROLL.get_next_shop_key()
   -- Checking tags for store modifiers
   TRO.REROLL.key_queue = TRO.REROLL.key_queue or {}
+  TRO.REROLL.tag_args = TRO.REROLL.tag_args or {}
   local k_shop_tag, k_tag_type = TRO.REROLL.get_next_shop_tag('create')
   local e_shop_tag, e_tag_type = TRO.REROLL.get_next_shop_tag('modify')
   local args = TRO.REROLL.check_rates()
@@ -82,20 +83,30 @@ function TRO.REROLL.get_next_shop_tag(_type)
 end
 
 function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
+  local flags = SMODS.calculate_context({prevent_tag_trigger = tag, other_context = {type = tag_type, area = G.shop_jokers}})
+  if flags and flags.prevent_trigger or TRO.utils.contains(TRO.REROLL.tag_cache, tag) then return end
   if tag_type == 'store_joker_create' then
+    -- There are only two vanilla store_joker_create tags
     if tag.name == 'Rare Tag' then
       args.key_append = 'rta'
       args.rarity = 1
+      args.set = 'Joker'
     elseif tag.name == 'Uncommon Tag' then
       args.key_append = 'uta'
       args.rarity = 0.9
+      args.set = 'Joker'
+    -- Modded store_joker_create tags
+    else
+      local card = tag:apply_to_run({type = 'store_joker_create', area = G.shop_jokers})
+      for k, v in pairs(TRO.REROLL.tag_args) do
+        args[k] = v
+      end
+      if card then card:remove() end
     end
-    args.set = 'Joker'
   else
     local tag_center = G.P_TAGS[tag.key]
     if tag_center and tag_center.config.edition and args.set == 'Joker' then
       TRO.REROLL.edition_flags['e_'..tag_center.config.edition] = true
-      print('e_'..tag_center.config.edition)
     end
   end
 end
