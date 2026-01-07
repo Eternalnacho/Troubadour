@@ -1,3 +1,4 @@
+-- INPUT MANAGER / MONITOR
 tro_input_manager = {
   double_click_window = 0.3,
   last_clicked = {

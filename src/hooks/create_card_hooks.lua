@@ -1,4 +1,5 @@
 -- HOOKING CARD CREATION FUNCTIONS FOR REROLL SIM
+
 local s_create_card_ref = SMODS.create_card
 SMODS.create_card = function(t)
   if TRO.in_reroll_sim then

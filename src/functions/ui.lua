@@ -1,3 +1,4 @@
+-- UI FUNCTIONS
 TRO.UI = {}
 
 function TRO.UI.get_type_collection_UIBox_func(set)
