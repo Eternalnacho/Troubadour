@@ -29,26 +29,11 @@ function TRO.FUNCS.prompt_target(target)
     local reroll_button = G.shop:get_UIE_by_ID("next_round_button").parent.children[2]
     if target == reroll_button then
       if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-        TRO.FUNCS.find_targets(TRO.collection_targets)
+        TRO.FUNCS.auto_reroll(TRO.collection_targets)
       else
         G.FUNCS.TRO_your_collection()
       end
     end
-  end
-end
-
-function TRO.FUNCS.find_targets(targets)
-  local modded_tags_found
-  for _, v in ipairs(G.GAME.tags) do
-    if v.config.type == 'store_joker_create' and not (v.name == 'Rare Tag' or v.name == 'Uncommon Tag') then
-      modded_tags_found = true
-      break
-    end
-  end
-  if modded_tags_found then
-    print("Auto-reroll can't be used until modded joker-creating tags are used")
-  elseif #targets > 0 then
-    TRO.FUNCS.auto_reroll(targets)
   end
 end
 
@@ -125,7 +110,6 @@ end
 
 function TRO.FUNCS.check_keys(targets)
   for _, key in pairs(targets) do
-    print(TRO.REROLL.edition_flags[key])
     if TRO.utils.contains(TRO.REROLL.key_queue, key) then
       return true
     elseif TRO.REROLL.edition_flags[''..key] then
