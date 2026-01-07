@@ -86,6 +86,7 @@ function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
   local flags = SMODS.calculate_context({prevent_tag_trigger = tag, other_context = {type = tag_type, area = G.shop_jokers}})
   if flags and flags.prevent_trigger or TRO.utils.contains(TRO.REROLL.tag_cache, tag) then return end
   if tag_type == 'store_joker_create' then
+    -- There are only two vanilla store_joker_create tags
     if tag.name == 'Rare Tag' then
       args.key_append = 'rta'
       args.rarity = 1
@@ -94,6 +95,7 @@ function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
       args.key_append = 'uta'
       args.rarity = 0.9
       args.set = 'Joker'
+    -- Modded store_joker_create tags
     else
       local card = tag:apply_to_run({type = 'store_joker_create', area = G.shop_jokers})
       for k, v in pairs(TRO.REROLL.tag_args) do
