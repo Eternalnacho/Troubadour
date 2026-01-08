@@ -99,6 +99,13 @@ function SMODS.current_mod.config_tab()
               ref_value = 'enable_auto_reroll'
             })
           }}),
+          TRO.UI.create_row({minh = 0.65, nodes = { create_toggle({
+            align = 'cr',
+            label = 'Skip Reroll Animations?',
+            ref_table = tro_config,
+            ref_value = 'skip_reroll_anims'
+          })
+        }}),
           TRO.UI.create_row({minh = 0.65, nodes = {
             TRO.UI.create_text_node({text = "Reroll Limit: ",
             scale = 0.4}), reroll_limit_text,

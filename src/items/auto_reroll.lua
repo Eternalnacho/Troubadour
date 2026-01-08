@@ -1,7 +1,7 @@
 -- AUTO-REROLL FUNCTION FOR REROLL BUTTON
 TRO.collection_targets = {}
-TRO.UI.targets = {added_target = ''}
-TRO.RNG_states = {prev = nil, latest = nil}
+TRO.UI.targets = { added_target = '' }
+TRO.RNG_states = { prev = nil, latest = nil }
 
 -- thank you Overstock and god bless you
 local function can_reroll_into(card_key)
@@ -37,55 +37,6 @@ function TRO.FUNCS.prompt_target(target)
   end
 end
 
-function TRO.FUNCS.auto_reroll(targets)
-  TRO.REROLL.rerolls = 0
-  TRO.REROLL.key_queue = {}
-  -- Save the RNG state for later, so we can default the game state to this
-  local RNG_state = copy_table(G.GAME.pseudorandom)
-  local used_jokers = copy_table(G.GAME.used_jokers)
-  -- Start the reroll sim w/ shop_jokers as the first iteration
-  for _, v in pairs(G.shop_jokers.cards) do table.insert(TRO.REROLL.key_queue, v.config.center_key) end
-
-  -- Simulate rerolls until either the keys are found or the limit is reached
-  TRO.in_reroll_sim = true
-  while not TRO.FUNCS.check_keys(targets) and TRO.REROLL.spent <= to_number(G.GAME.dollars) and TRO.REROLL.rerolls < tro_config.reroll_limit do
-    TRO.REROLL.edition_flags = {}
-    TRO.REROLL.simulate_reroll()
-    TRO.RNG_states.prev = TRO.RNG_states.latest
-    TRO.RNG_states.latest = copy_table(G.GAME.pseudorandom)
-  end
-  TRO.in_reroll_sim = nil
-
-  -- Now roll out the simulated rerolls
-  G.E_MANAGER:add_event(Event({
-    func = function()
-      -- Reset the RNG state to snapshot, undoing the simulations
-      G.GAME.used_jokers = used_jokers
-      G.GAME.pseudorandom = RNG_state
-      -- Reroll the shop until target is hit
-      for _ = 1, TRO.REROLL.rerolls do
-        G.E_MANAGER:add_event(Event({ func = function() G.FUNCS.reroll_shop() return true end }))
-      end
-
-      -- Display results for posterity, and for better tracking
-      if not TRO.FUNCS.check_keys(targets) then print("Reached reroll limit, joker not found")
-      else
-        G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.5,
-          func = function()
-            play_sound('holo1')
-            play_sound('timpani')
-            return true
-          end
-        }))
-      end
-      print("Total rerolls: " .. TRO.REROLL.rerolls)
-      -- Reset values to defaults for next time
-      TRO.FUNCS.reset_rerolls()
-      return true
-    end
-    }))
-end
-
 function TRO.FUNCS.clear_targets(from_button)
   if next(TRO.collection_targets) and (from_button == true or (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))) then
     TRO.collection_targets = {}
@@ -108,6 +59,58 @@ function TRO.FUNCS.clear_targets(from_button)
   end
 end
 
+function TRO.FUNCS.auto_reroll(targets)
+  -- Save the RNG state for later, so we can default the game state to this
+  local RNG_state = copy_table(G.GAME.pseudorandom)
+  local used_jokers = copy_table(G.GAME.used_jokers)
+  -- Start the reroll sim w/ shop_jokers as the first iteration
+  for _, v in pairs(G.shop_jokers.cards) do table.insert(TRO.REROLL.key_queue, v.config.center_key) end
+
+  -- Simulate rerolls until either the keys are found or the limit is reached
+  TRO.in_reroll_sim = true
+  while not TRO.FUNCS.check_keys(targets) and TRO.REROLL.spent <= to_number(G.GAME.dollars) and TRO.REROLL.rerolls < tro_config.reroll_limit do
+    TRO.REROLL.edition_flags = {}
+    TRO.REROLL.simulate_reroll()
+    if tro_config.skip_reroll_anims then
+      TRO.RNG_states.prev = TRO.RNG_states.latest
+      TRO.RNG_states.latest = copy_table(G.GAME.pseudorandom)
+    end
+  end
+  TRO.in_reroll_sim = nil
+
+  -- Now roll out the simulated rerolls
+  if tro_config.skip_reroll_anims and TRO.RNG_states.prev then
+    -- Do all the calculations with none of the actual rerolls.
+    TRO.REROLL.skip_to_last()
+    -- Set the RNG state to one reroll from results, so we can reroll once into the correct spot
+    G.GAME.used_jokers = used_jokers
+    G.GAME.pseudorandom = TRO.RNG_states.prev
+    -- Reroll
+    G.E_MANAGER:add_event(Event({ func = function() G.FUNCS.reroll_shop() return true end }))
+    -- Display results
+    TRO.FUNCS.display_results(targets)
+    -- Reset values to defaults for next time
+    TRO.FUNCS.reset_rerolls()
+  else
+    G.E_MANAGER:add_event(Event({
+      func = function()
+        -- Reset the RNG state to snapshot, undoing the simulations
+        G.GAME.used_jokers = used_jokers
+        G.GAME.pseudorandom = RNG_state
+        -- Reroll the shop until target is hit
+        for _ = 1, TRO.REROLL.rerolls do
+          G.E_MANAGER:add_event(Event({ func = function() G.FUNCS.reroll_shop() return true end }))
+        end
+        -- Display results
+        TRO.FUNCS.display_results(targets)
+        -- Reset values to defaults for next time
+        TRO.FUNCS.reset_rerolls()
+        return true
+      end
+    }))
+  end
+end
+
 function TRO.FUNCS.check_keys(targets)
   for _, key in pairs(targets) do
     if TRO.utils.contains(TRO.REROLL.key_queue, key) then
@@ -116,6 +119,34 @@ function TRO.FUNCS.check_keys(targets)
       return true
     end
   end
+end
+
+function TRO.FUNCS.display_results(targets)
+  -- Display results for posterity, and for better tracking
+  if not TRO.FUNCS.check_keys(targets) then print("Reached reroll limit, joker not found")
+  else
+    G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.5,
+      func = function()
+        play_sound('holo1')
+        play_sound('timpani')
+        return true
+      end
+    }))
+  end
+  print("Total rerolls: " .. TRO.REROLL.rerolls)
+end
+
+function TRO.FUNCS.reset_rerolls()
+  TRO.RNG_states = { prev = nil, latest = nil }
+  TRO.REROLL.rerolls = 0
+  TRO.REROLL.spent = 0
+  TRO.REROLL.key_queue = {}
+  TRO.REROLL.edition_flags = {}
+  TRO.REROLL.tag_cache = {}
+  TRO.REROLL.tag_queue = {}
+  TRO.reroll_cost = nil
+  TRO.reroll_cost_inc = nil
+  TRO.free_rerolls = nil
 end
 
 -- Reroller controls
@@ -144,15 +175,4 @@ function Card:click()
     end
   end
   return cc(self)
-end
-
-function TRO.FUNCS.reset_rerolls()
-  TRO.REROLL.rerolls = 0
-  TRO.REROLL.spent = 0
-  TRO.REROLL.key_queue = {}
-  TRO.REROLL.edition_flags = {}
-  TRO.REROLL.tag_cache = {}
-  TRO.reroll_cost = nil
-  TRO.reroll_cost_inc = nil
-  TRO.free_rerolls = nil
 end

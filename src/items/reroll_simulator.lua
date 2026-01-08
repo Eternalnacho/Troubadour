@@ -1,10 +1,13 @@
 -- SHOP REROLL SIMULATION FUNCTIONS
-TRO.REROLL = {}
-TRO.REROLL.tag_cache = {}
-TRO.REROLL.edition_flags = {}
-TRO.REROLL.rerolls = 0
-TRO.REROLL.spent = 0
-TRO.in_reroll_sim = nil
+TRO.REROLL = {
+  key_queue = {},
+  tag_cache = {},
+  tag_queue = {},
+  tag_args = {},
+  edition_flags = {},
+  rerolls = 0,
+  spent = 0,
+}
 
 function TRO.REROLL.simulate_reroll()
   TRO.reroll_cost = TRO.reroll_cost or G.GAME.current_round.reroll_cost
@@ -20,6 +23,7 @@ function TRO.REROLL.simulate_reroll()
     if G.GAME.used_jokers[TRO.REROLL.key_queue[i]] then G.GAME.used_jokers[TRO.REROLL.key_queue[i]] = nil end
     table.remove(TRO.REROLL.key_queue, i)
   end
+  TRO.REROLL.tag_queue = {}
   -- Get next set of shop jokers
   for _ = 1, G.GAME.shop.joker_max do
     TRO.REROLL.get_next_shop_key()
@@ -36,8 +40,6 @@ end
 
 function TRO.REROLL.get_next_shop_key()
   -- Checking tags for store modifiers
-  TRO.REROLL.key_queue = TRO.REROLL.key_queue or {}
-  TRO.REROLL.tag_args = TRO.REROLL.tag_args or {}
   local k_shop_tag, k_tag_type = TRO.REROLL.get_next_shop_tag('create')
   local e_shop_tag, e_tag_type = TRO.REROLL.get_next_shop_tag('modify')
   local args = TRO.REROLL.check_rates()
@@ -45,10 +47,12 @@ function TRO.REROLL.get_next_shop_key()
   if k_shop_tag then
     TRO.REROLL.calculate_shop_tag(k_shop_tag, k_tag_type, args)
     table.insert(TRO.REROLL.tag_cache, k_shop_tag)
+    table.insert(TRO.REROLL.tag_queue, k_shop_tag)
   end
   if e_shop_tag then
     TRO.REROLL.calculate_shop_tag(e_shop_tag, e_tag_type, args)
     table.insert(TRO.REROLL.tag_cache, e_shop_tag)
+    table.insert(TRO.REROLL.tag_queue, k_shop_tag)
   end
   -- if there's a forced key we know what joker will appear
   if args.key then
@@ -143,12 +147,51 @@ function TRO.REROLL.check_rates()
       local args = {set = v.type, area = G.shop_jokers, key_append = 'sho'}
       local flags
       -- CHECK IF CALCULATING CONTEXTS CREATE_SHOP_CARD AND MODIFY_SHOP_CARD WILL SUCK
-      if tro_config.include_joker_calcs then
-        flags = SMODS.calculate_context({create_shop_card = true, set = v.type})
-        args = SMODS.merge_defaults(flags and flags.shop_create_flags or {}, args) or args
-      end
+      flags = SMODS.calculate_context({create_shop_card = true, set = v.type})
+      args = SMODS.merge_defaults(flags and flags.shop_create_flags or {}, args) or args
       return args
     end
     check_rate = check_rate + v.val
   end
+end
+
+function Tag:TRO_remove_tag()
+  G.E_MANAGER:add_event(Event({
+    func = (function()
+      self.HUD_tag.states.visible = false
+      return true
+    end)
+  }))
+  G.E_MANAGER:add_event(Event({
+    trigger = 'after',
+    delay = 0.1,
+    func = (function()
+      self:remove()
+      return true
+    end)
+  }))
+end
+
+function TRO.REROLL.skip_to_last()
+  for _, v in pairs(TRO.REROLL.tag_cache) do
+    if not TRO.utils.contains(TRO.REROLL.tag_queue, v) then v:TRO_remove_tag() end
+  end
+
+  if TRO.REROLL.rerolls > 0 then
+    inc_career_stat('c_shop_dollars_spent', TRO.REROLL.spent - TRO.reroll_cost)
+    inc_career_stat('c_shop_rerolls', TRO.REROLL.rerolls - 1)
+    ease_dollars(-(TRO.REROLL.spent - TRO.reroll_cost))
+  end
+
+  TRO.skip_anims = true
+  if next(G.jokers.cards) then
+    for i = 1, TRO.REROLL.rerolls - 1 do
+      SMODS.calculate_context({reroll_shop = true, cost = G.GAME.current_round.reroll_cost + (i-1)})
+    end
+  end
+  TRO.skip_anims = nil
+
+  G.GAME.current_round.reroll_cost = G.GAME.current_round.reroll_cost + TRO.REROLL.rerolls - 1
+  G.GAME.current_round.reroll_cost_increase = G.GAME.current_round.reroll_cost_increase + TRO.reroll_cost_inc - 1
+  G.GAME.round_scores.times_rerolled.amt = G.GAME.round_scores.times_rerolled.amt + TRO.REROLL.rerolls - 1
 end
