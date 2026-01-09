@@ -36,6 +36,38 @@ function TRO.UI.reset_ui_states()
   TRO.UI.get_page_num = true
 end
 
+-- Stole these from Handy
+function TRO.UI.rerender(def, silent, set)
+  local result = set and { definition = def(SMODS.ConsumableTypes[set]) } or { definition = def() }
+  if silent then
+    G.ROOM.jiggle = G.ROOM.jiggle - 1
+    result.config = {
+      offset = {
+        x = 0,
+        y = 0,
+      },
+    }
+  end
+  G.FUNCS.overlay_menu(result)
+  G.OVERLAY_MENU:recalculate()
+  TRO.UI.cleanup_dead_elements(G, "MOVEABLES")
+end
+
+function TRO.UI.cleanup_dead_elements(ref_table, ref_key)
+	local new_values = {}
+	local target = ref_table[ref_key]
+	if not target then
+		return
+	end
+	for _, v in pairs(target) do
+		if not v.REMOVED and not v.removed then
+			new_values[#new_values + 1] = v
+		end
+	end
+	ref_table[ref_key] = new_values
+	return new_values
+end
+
 -- BUTTON FUNCTIONS
 function G.FUNCS.TRO_your_collection(e)
   TRO.coll_from_button = true
