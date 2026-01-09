@@ -1,0 +1,19 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1
+
+# Cryptid changes the collection page code because of course it does
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+          blinds,
+      	  other
+    }},
+'''
+position = "after"
+payload = '''
+    (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UIDEF.auto_reroll_UI()
+'''
+match_indent = false
