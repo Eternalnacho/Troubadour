@@ -1,6 +1,63 @@
--- UI DEFINITIONS FOR AUTO-REROLL
+-- UI DEFINITIONS
 TRO.UIDEF = {}
 
+-- DO I SERIOUSLY HAVE TO HOOK *UIE FUNCTIONS* ?!
+local uieSV = UIElement.set_values
+function UIElement:set_values(...)
+  uieSV(self, ...)
+  if self.config.TRO_dark_tooltip then
+    self.states.collide.can = true
+  end
+end
+local uiehover = UIElement.hover
+function UIElement:hover()
+  if self.config and self.config.TRO_dark_tooltip then
+    self.config.h_popup = TRO.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
+    self.config.h_popup_config = { align = "tm", offset = { x = 0, y = -0.1 }, parent = self }
+  end
+  uiehover(self)
+end
+
+function TRO.UIDEF.dark_tooltip(tooltip)
+  local nodes = {}
+  local colour = mix_colours(G.C.UI.BACKGROUND_INACTIVE, {0, 0.1, 0.2, 1}, 0.8)
+  local backdrop_colour = mix_colours({0.5, 0.5, 0.5, 1}, colour, 0.5)
+  local outline_colour = mix_colours(colour, G.C.WHITE, 0.7)
+  local version_col = copy_table(G.C.WHITE); version_col[4] = 0.7
+
+  local tooltip_text = {}
+  if tooltip then
+    localize{type = 'descriptions', set = 'Other', key = tooltip, nodes = tooltip_text, text_colour = version_col}
+  end
+  for _, v in ipairs(tooltip_text) do
+    table.insert(nodes, { n = G.UIT.R, config = {align = 'cm'}, nodes = v })
+  end
+
+  return {
+    n = G.UIT.ROOT,
+    config = {
+      r = 0.2,
+      padding = 0.1,
+      emboss = 0.1,
+      outline = 1,
+      outline_colour = outline_colour,
+      colour = backdrop_colour
+    },
+    nodes =
+    {{
+      n = G.UIT.C,
+      config = { align = "bm", padding = 0.05, colour = G.C.CLEAR },
+      nodes =
+      {{
+        n = G.UIT.R,
+        config = { align = "cm", r = 0.2, padding = 0.05, emboss = 0.05, colour = colour },
+        nodes = {{ n = G.UIT.C, config = { align = "cm", r = 0.2, padding = 0.05 }, nodes = nodes }}
+      }}
+    }}
+  }
+end
+
+-- UI DEFINITIONS FOR AUTO-REROLLER
 function TRO.UIDEF.auto_reroll_UI()
   local display_menu = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm"}})
   return TRO.UI.create_column({ align = "cm", padding = 0.15, minw = 5,
