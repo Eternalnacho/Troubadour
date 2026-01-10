@@ -1,7 +1,7 @@
 [manifest]
 version = "1.0.0"
 dump_lua = true
-priority = 1
+priority = 0
 
 # Allowing the '0' key to work in text input properly
 [[patches]]
