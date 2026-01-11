@@ -13,30 +13,6 @@ payload = '''if args.key == '0' and G.CONTROLLER.text_input_hook.config.ref_tabl
 match_indent = true
 overwrite = false
 
-# Setting collection screen back_func for reroll_menu
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = '''local t = create_UIBox_generic_options({ back_func = G.STAGE == G.STAGES.RUN and 'options' or 'exit_overlay_menu', contents = {'''
-position = "at"
-payload = '''
-local t = create_UIBox_generic_options({ back_func = TRO.coll_from_button and 'exit_search_collection' or G.STAGE == G.STAGES.RUN and 'options' or 'exit_overlay_menu', contents = {
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = '''
-UIBox_button({button = 'your_collection_blinds', label = {localize('b_blinds')}, count = G.DISCOVER_TALLIES.blinds, minw = 5, minh = 2.0, id = 'your_collection_blinds', focus_args = {snap_to = true}}),UIBox_button({button = 'your_collection_other_gameobjects', label = {localize('k_other')}, minw = 5, id = 'your_collection_other_gameobjects', focus_args = {snap_to = true}}),
-    }},
-'''
-position = "after"
-payload = '''
-    (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UIDEF.auto_reroll_UI()
-'''
-match_indent = false
-
 # Getting page number info from card collection page
 [[patches]]
 [patches.pattern]
