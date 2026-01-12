@@ -87,6 +87,7 @@ function TRO.REROLL.get_next_shop_tag(_type)
 end
 
 function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
+  TRO.from_tag = true
   local flags = SMODS.calculate_context({prevent_tag_trigger = tag, other_context = {type = tag_type, area = G.shop_jokers}})
   if flags and flags.prevent_trigger or TRO.utils.contains(TRO.REROLL.tag_cache, tag) then return end
   if tag_type == 'store_joker_create' then
@@ -113,6 +114,7 @@ function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
       TRO.REROLL.edition_flags['e_'..tag_center.config.edition] = true
     end
   end
+  TRO.from_tag = nil
 end
 
 function TRO.REROLL.get_card_type_rates()
