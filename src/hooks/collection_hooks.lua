@@ -11,6 +11,7 @@ function G.FUNCS.your_collection(...)
     TRO.in_collection = true
     TRO.UI.targets.added_target = ''
     TRO.config_from_coll = nil
+    TRO.UI.widen_consumable_screens()
     return old_FUNCS_your_collection(...)
 end
 

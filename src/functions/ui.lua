@@ -1,5 +1,13 @@
 -- UI FUNCTIONS
 TRO.UI = {}
+TRO.UI.mod_colours = {
+  buttons = mix_colours(G.C.GREEN, G.C.GREY, 0.8),
+  active = mix_colours(G.C.FILTER, G.C.RED, 0.5),
+  inactive = darken(copy_table(G.C.GREY), 0.5),
+  colour = mix_colours(G.C.UI.BACKGROUND_INACTIVE, {0, 0.1, 0.2, 1}, 0.8),
+}
+TRO.UI.mod_colours.bg_colour = mix_colours({0.5, 0.5, 0.5, 1}, TRO.UI.mod_colours.colour, 0.5)
+TRO.UI.mod_colours.outline_colour = mix_colours(TRO.UI.mod_colours.colour, G.C.WHITE, 0.7)
 
 function TRO.UI.get_type_collection_UIBox_func(set)
   local func
@@ -26,7 +34,7 @@ function TRO.UI.config_from_coll()
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
     back_func = 'your_collection',
-    contents = SMODS.Mods["Troubadour"].config_tab().nodes})
+    contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
 end
 
 function TRO.UI.reset_ui_states()
@@ -126,7 +134,7 @@ function TRO.UI.create_num_input_node(args)
   return create_text_input({
     colour = args.colour,
     hooked_colour = args.hooked_colour,
-    w = 3, h = 1,
+    w = 2, h = 1,
     prompt_text = "",
     ref_table = tro_config,
     ref_value = args.ref_value,
@@ -138,6 +146,69 @@ function TRO.UI.create_num_input_node(args)
       TRO.UI.update_TRO_config()
     end
   })
+end
+
+-- I am VERY BLATANTLY ripping these straight from Cartomancer
+function TRO.UI.create_UIBox_generic_options_custom(args)
+  args = args or {}
+  local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
+  return {
+    n=G.UIT.ROOT,
+    config = {align = "cm", minw = G.ROOM.T.w * 0.6, padding = 0.0, r = 0.1, colour = args.bg_colour or translucent_grey},
+    nodes = { TRO.UI.create_column({ padding = 0.0, minw = args.minw or 5, minh = args.minh or 3, nodes = args.contents }) }
+  }
+end
+
+function TRO.UI.create_column_tabs(args)
+  args = args or {}
+  args.colour = args.colour or G.C.CLEAR
+  args.tab_alignment = args.tab_alignment or 'cl'
+  args.opt_callback = args.opt_callback or nil
+  args.scale = args.scale or 1
+  args.tab_w = args.tab_w or 0
+  args.tab_h = args.tab_h or 0
+  args.text_scale = (args.text_scale or 0.5)
+
+  local tab_buttons = {}
+
+  for k, v in ipairs(args.tabs) do
+    if v.chosen then args.current = {k = k, v = v} end
+    local id = 'tab_but_'..(v.label or '')
+    tab_buttons[#tab_buttons+1] = { n = G.UIT.R, config = { align = "tm" }, nodes={
+      UIBox_button({
+        id = id, ref_table = v, button = 'TRO_settings_change_tab', label = {v.label}, colour = darken(TRO.UI.mod_colours.buttons, 0.2),
+        minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale,
+        chosen = v.chosen and 'vert', func = v.func, focus_args = {type = 'none'}
+      })
+    }}
+  end
+
+  -- Tabs + Contents
+  return {
+    n = G.UIT.R,
+    config = { padding = 0.0, align = "cl", colour = args.colour },
+    nodes = {
+      -- Tabs
+      TRO.UI.create_column({ align = "cl", padding = 0.15, colour = G.C.CLEAR, nodes = tab_buttons }),
+      -- Tab contents
+      {
+        n = G.UIT.C, config = { align = args.tab_alignment, padding = args.padding or 0.1, no_fill = true, minh = args.tab_h, minw = args.tab_w },
+        nodes = {
+          {
+            n = G.UIT.O,
+            config = {
+              id = 'TRO_settings_tab_contents',
+              old_chosen = tab_buttons[1].nodes[1].nodes[1],
+              object = UIBox{
+                definition = args.current.v.tab_definition_function(args.current.v.tab_definition_function_args),
+                config = { offset = { x = 0, y = 0 } }
+              }
+            }
+          }
+        }
+      },
+    }
+  }
 end
 
 -- BUTTON FUNCTIONS
@@ -165,4 +236,24 @@ function G.FUNCS.TRO_view_options(e)
   TRO.in_collection = false
   G.FUNCS.overlay_menu{ definition = TRO.UI.config_from_coll() }
   G.OVERLAY_MENU:recalculate()
+end
+
+G.FUNCS.TRO_settings_change_tab = function(e)
+  if not e then return end
+  local tab_contents = e.UIBox:get_UIE_by_ID('TRO_settings_tab_contents')
+  if not tab_contents then return end
+  -- Same tab, don't rebuild it.
+  if tab_contents.config.oid == e.config.id then return end
+  if tab_contents.config.old_chosen then tab_contents.config.old_chosen.config.chosen = nil end
+
+  tab_contents.config.old_chosen = e
+  e.config.chosen = 'vert'
+
+  tab_contents.config.oid = e.config.id
+  tab_contents.config.object:remove()
+  tab_contents.config.object = UIBox{
+      definition = e.config.ref_table.tab_definition_function(e.config.ref_table.tab_definition_function_args),
+      config = {offset = {x=0,y=0}, parent = tab_contents, type = 'cm'}
+    }
+  tab_contents.UIBox:recalculate()
 end
