@@ -2,12 +2,12 @@
 
 local s_create_card_ref = SMODS.create_card
 SMODS.create_card = function(t)
-  if TRO.in_reroll_sim then
+  if TRO.in_reroll_sim and TRO.from_tag then
     TRO.REROLL.tag_args = copy_table(t)
     TRO.REROLL.from_scc = true
   end
   local ret = s_create_card_ref(t)
-  TRO.REROLL.from_scc = nil
+  TRO.REROLL.from_scc, TRO.from_tag = nil, nil
   return ret
 end
 

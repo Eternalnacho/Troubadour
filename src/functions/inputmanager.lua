@@ -93,3 +93,15 @@ G.CONTROLLER.capture_focused_input = function(self, button, input_type, dt)
   end
   return capture_focused_input_ref(self, button, input_type, dt)
 end
+
+-- NUM INPUT FUNCTIONS
+G.FUNCS.TRO_num_input = function(e)
+  e.from_num_input = true
+  G.FUNCS.text_input(e)
+end
+
+local text_input_ref = G.FUNCS.text_input
+G.FUNCS.text_input = function(e, ...)
+  TRO.nums_only = e.from_num_input and true
+  text_input_ref(e, ...)
+end

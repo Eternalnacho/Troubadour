@@ -5,11 +5,11 @@
 	"description": "A Quality of Life mod for easier collection and shop navigation.",
 	"prefix": "tro",
 	"main_file": "main.lua",
-	"priority": 1,
+	"priority": 123456789,
 	"badge_colour": "669c80",
 	"badge_text_colour": "FFFFFF",
   "display_name": "Troubadour",
-	"version": "0.0.5",
+	"version": "0.1.0",
 	"dependencies": [
 			"Steamodded (>=1.0.0~BETA-1221a)",
       "Lovely (>=0.7)"

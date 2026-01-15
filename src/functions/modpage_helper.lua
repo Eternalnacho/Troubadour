@@ -10,7 +10,7 @@ local modpage_helper = {
     local w = tro_config.mod_page_width * 10 % 10 < 5 and math.floor(tro_config.mod_page_width) or math.ceil(tro_config.mod_page_width)
     local h = tro_config.mod_page_height * 10 % 10 < 5 and math.floor(tro_config.mod_page_height) or math.ceil(tro_config.mod_page_height)
 
-    page = page or SMODS.LAST_VIEWED_MODS_PAGE or 1
+    page = page or 1
     SMODS.LAST_VIEWED_MODS_PAGE = page
 
     local modsColPerRow = w
