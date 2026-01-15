@@ -81,6 +81,8 @@ function TRO.UI.UIE_config_args(args)
   return {
     align = args.align or "bm",
     padding = args.padding or 0.05,
+    outline = args.outline,
+    outline_colour = args.outline_colour,
     colour = args.colour or G.C.CLEAR,
     emboss = args.emboss,
     minh = args.minh,
@@ -131,7 +133,7 @@ function TRO.UI.create_text_node(args)
 end
 
 function TRO.UI.create_num_input_node(args)
-  return create_text_input({
+  return create_num_input({
     colour = args.colour,
     hooked_colour = args.hooked_colour,
     w = 2, h = 1,
@@ -141,11 +143,22 @@ function TRO.UI.create_num_input_node(args)
     extended_corpus = true,
     keyboard_offset = 1,
     callback = function()
-      tro_config[args.ref_value] = string.gsub(tro_config[args.ref_value], "O", "0")
-      tro_config[args.ref_value] = tonumber(tro_config[args.ref_value]) or tonumber(args.default)
-      TRO.UI.update_TRO_config()
+      local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
+      TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
     end
   })
+end
+
+-- This is functionally the same as a normal text input but with a different text input func
+function create_num_input(args)
+  args = args or {}
+  args.prompt_text = args.prompt_text or localize('k_enter_text')
+  args.current_prompt_text = ''
+  args.id = args.id or "num_input"
+
+  local ret = create_text_input(args)
+  ret.nodes[1].nodes[1].nodes[1].config.func = 'TRO_num_input'
+  return ret
 end
 
 -- I am VERY BLATANTLY ripping these straight from Cartomancer
@@ -154,7 +167,7 @@ function TRO.UI.create_UIBox_generic_options_custom(args)
   local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
   return {
     n=G.UIT.ROOT,
-    config = {align = "cm", minw = G.ROOM.T.w * 0.6, padding = 0.0, r = 0.1, colour = args.bg_colour or translucent_grey},
+    config = {align = "cm", minw = args.minw or G.ROOM.T.w * 0.6, padding = args.padding or 0.0, r = 0.1, colour = args.bg_colour or translucent_grey},
     nodes = { TRO.UI.create_column({ padding = 0.0, minw = args.minw or 5, minh = args.minh or 3, nodes = args.contents }) }
   }
 end

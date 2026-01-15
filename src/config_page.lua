@@ -31,18 +31,26 @@ function SMODS.current_mod.config_tab()
       tab_definition_function = function (...)
         return {
           n = G.UIT.ROOT,
-          config = { r = 0.1, align = "cm", colour = troC.colour, emboss = 0.05 },
+          config = { r = 0.1, align = "cm", colour = G.C.CLEAR },
           nodes = {
             TRO.UI.create_column({ nodes = {
-              TRO.UI.create_row({ align = "cm", minh = math.max(1, #config_contents.pages), nodes = {
-                TRO.UI.create_column{ r = 0.1, align = "cm", colour = G.C.GREY, emboss = 0.05, nodes = {
-                  create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
-                    ref_table = tro_config, ref_value = page.ref_value_w or ('gallery_width'..page.label:lower()), min = page.minw, max = page.maxw }),
-                  create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
-                    ref_table = tro_config, ref_value = page.ref_value_h or ('gallery_height'..page.label:lower()), min = page.minh, max = page.maxh }),
-                }}
-              }}),
-            }}),
+            TRO.UI.create_row({ align = "cm", minh = math.max(1, #config_contents.pages), nodes = {
+
+              TRO.UI.create_column({
+                align = "cm", padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3),
+                colour = troC.colour, outline = 1, outline_colour = troC.outline_colour, emboss = 0.05,
+                nodes = {
+                  TRO.UI.create_row({ align = "cm", nodes = {
+                    TRO.UI.create_column{ r = 0.1, align = "cm", colour = G.C.GREY, emboss = 0.05, nodes = {
+                      create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
+                        ref_table = tro_config, ref_value = page.ref_value_w or ('gallery_width'..page.label:lower()), min = page.minw, max = page.maxw }),
+                      create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
+                        ref_table = tro_config, ref_value = page.ref_value_h or ('gallery_height'..page.label:lower()), min = page.minh, max = page.maxh }),
+                    }}
+                  }}),
+                }}),
+
+            }}), }}),
           }
         }
       end
@@ -50,9 +58,11 @@ function SMODS.current_mod.config_tab()
   end)
 
   return TRO.UI.create_UIBox_generic_options_custom({
+    minw = 0.0, padding = 0.2,
     bg_colour = G.C.BLACK,
     contents = {
-      TRO.UI.create_row({ padding = 0.1, nodes = {TRO.UI.create_text_node({align = "tm", text = "Widen Collections", scale = 0.8})} }),
+      TRO.UI.create_row({ padding = 0.1, r = 0.1, outline = 1, outline_colour = troC.outline_colour,
+        nodes = {TRO.UI.create_text_node({align = "tm", text = "Widen Collections", scale = 0.7})} }),
       {
         n = G.UIT.R,
         config = { padding = 0, align = "tl", colour = G.C.CLEAR },
@@ -77,17 +87,19 @@ function SMODS.current_mod.extra_tabs()
 			tab_definition_function = function()
 				return {
           n = G.UIT.ROOT,
-          config = { r = 0.1, minw = 7, align = "cm", colour = G.C.BLACK, emboss = 0.05 },
+          config = { r = 0.1, padding = 0.15, minw = 7, align = "cm", colour = G.C.BLACK, emboss = 0.05 },
           nodes =
           {
             {
               n = G.UIT.C,
-              config = { align = "bm", padding = 0.05, colour = G.C.CLEAR },
+              config = { align = "bm", padding = 0.2, colour = G.C.CLEAR },
               nodes =
               {
+                TRO.UI.create_row({ padding = 0.1, r = 0.1, outline = 1, outline_colour = troC.outline_colour,
+                  nodes = {TRO.UI.create_text_node({align = "tm", text = "Condense Mods Page", scale = 0.7})} }),
                 TRO.UI.create_row({ nodes = {
                   TRO.UI.create_column{
-                    align = "cm",
+                    align = "cm", r = 0.2, padding = 0.1, colour = troC.colour,
                     nodes = {
                       TRO.UI.create_row({ minh = 0.65, align = 'cr',
                         TRO_dark_tooltip = 'TRO_icons_only',
@@ -110,22 +122,22 @@ function SMODS.current_mod.extra_tabs()
                           ref_value = 'invert_tile_controls'
                         })
                       }}),
-                    }
-                  }
-                }}),
-                TRO.UI.create_row({nodes = {
-                  TRO.UI.create_column{align = "cm", r = 0.1, colour = G.C.GREY, emboss = 0.05,
-                    nodes = {
-                      create_slider({label = 'Mod List Height', label_scale = 0.45, w = 4, h = 0.3,
-                        colour = tro_config.mod_icons_only and troC.active or darken(copy_table(G.C.GREY), 0.5),
-                        ref_table = tro_config, ref_value = 'mod_page_height',
-                        min = 4, max = 6
-                      }),
-                      create_slider({label = 'Mod List Width', label_scale = 0.45, w = 4, h = 0.3,
-                        colour = tro_config.mod_icons_only and troC.active or darken(copy_table(G.C.GREY), 0.5),
-                        ref_table = tro_config, ref_value = 'mod_page_width',
-                        min = 7, max = 13
-                      }),
+                      TRO.UI.create_row({nodes = {
+                        TRO.UI.create_column{align = "cm", r = 0.1, colour = G.C.GREY, emboss = 0.05,
+                          nodes = {
+                            create_slider({label = 'Mod List Height', label_scale = 0.45, w = 4, h = 0.3,
+                              colour = tro_config.mod_icons_only and troC.active or darken(copy_table(G.C.GREY), 0.5),
+                              ref_table = tro_config, ref_value = 'mod_page_height',
+                              min = 4, max = 6
+                            }),
+                            create_slider({label = 'Mod List Width', label_scale = 0.45, w = 4, h = 0.3,
+                              colour = tro_config.mod_icons_only and troC.active or darken(copy_table(G.C.GREY), 0.5),
+                              ref_table = tro_config, ref_value = 'mod_page_width',
+                              min = 7, max = 13
+                            }),
+                          }
+                        }
+                      }}),
                     }
                   }
                 }}),
@@ -139,7 +151,7 @@ function SMODS.current_mod.extra_tabs()
 			label = 'Reroller',
 			tab_definition_function = function()
         local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-        local reroll_limit_price = math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1)
+        TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
         local reroll_limit_text = TRO.UI.create_num_input_node({
           colour = tro_config.enable_auto_reroll and troC.active or troC.inactive,
           hooked_colour = tro_config.enable_auto_reroll and darken(troC.active, 0.3) or troC.inactive,
@@ -147,43 +159,50 @@ function SMODS.current_mod.extra_tabs()
         })
 				return {
           n = G.UIT.ROOT,
-          config = { r = 0.1, minw = 7, align = "cm", colour = G.C.BLACK, emboss = 0.05 },
+          config = { r = 0.1, padding = 0.15, minw = 7, align = "cm", colour = G.C.BLACK, emboss = 0.05 },
           nodes =
           {
             {
               n = G.UIT.C,
-              config = { align = "bm", padding = 0.05, colour = G.C.CLEAR },
+              config = { align = "bm", padding = 0.2, colour = G.C.CLEAR },
               nodes =
               {
-                TRO.UI.create_row({nodes = {
-                  TRO.UI.create_column{
-                    r = 0.1,
-                    align = "cr",
-                    nodes = {
-                      TRO.UI.create_row({minh = 0.65, align = 'cr', nodes = { create_toggle({
-                        align = 'cr',
-                        active_colour = troC.buttons,
-                        label = 'Enable Auto Reroll?',
-                        callback = TRO.UI.update_TRO_config,
-                        ref_table = tro_config,
-                        ref_value = 'enable_auto_reroll'
-                      })
+                TRO.UI.create_row({ padding = 0.05, r = 0.1, outline = 1, outline_colour = troC.outline_colour,
+                  nodes = {TRO.UI.create_text_node({align = "tm", text = "Reroll Settings", scale = 0.7})} }),
+                TRO.UI.create_row({ align = "cm", nodes = {
+                  TRO.UI.create_column({r = 0.2, colour = troC.colour, emboss = 0.05, nodes = {
+                    TRO.UI.create_row({ nodes = {
+                      TRO.UI.create_column{
+                        align = "cr",
+                        nodes = {
+                          TRO.UI.create_row({ align = 'cr', nodes = { create_toggle({
+                            align = 'cr',
+                            w = 0, h = 0,
+                            active_colour = troC.buttons,
+                            label = 'Enable Auto Reroll?',
+                            callback = TRO.UI.update_TRO_config,
+                            ref_table = tro_config,
+                            ref_value = 'enable_auto_reroll'
+                          })
+                        }}),
+                        TRO.UI.create_row({ align = 'cr', nodes = { create_toggle({
+                          align = 'cr',
+                          w = 0,
+                          label = 'Skip Reroll Animations?',
+                          active_colour = tro_config.enable_auto_reroll and troC.buttons or troC.inactive,
+                          ref_table = tro_config,
+                          ref_value = 'skip_reroll_anims'
+                        })
+                        }}),
+                        }
+                      }
                     }}),
-                    TRO.UI.create_row({minh = 0.65, align = 'cr', nodes = { create_toggle({
-                      align = 'cr',
-                      label = 'Skip Reroll Animations?',
-                      active_colour = tro_config.enable_auto_reroll and troC.buttons or troC.inactive,
-                      ref_table = tro_config,
-                      ref_value = 'skip_reroll_anims'
-                    })
+                    TRO.UI.create_row({ align = "cm", nodes = {
+                      TRO.UI.create_text_node({text = "Reroll Limit: ",
+                      scale = 0.4}), reroll_limit_text,
+                      TRO.UI.create_text_node({ref_table = TRO.REROLL, ref_value = 'reroll_limit_price', scale = 0.4})
                     }}),
-                    }
-                  }
-                }}),
-                TRO.UI.create_row({minh = 0.65, align = "cr", nodes = {
-                  TRO.UI.create_text_node({text = "Reroll Limit: ",
-                  scale = 0.4}), reroll_limit_text,
-                  TRO.UI.create_text_node({text = "$"..reroll_limit_price, scale = 0.4})
+                  }})
                 }}),
               }
             }
@@ -198,6 +217,15 @@ function TRO.UI.update_TRO_config()
   if TRO.coll_from_button then
     TRO.UI.rerender(TRO.UI.config_from_coll, true)
   else
+    G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
     TRO.UI.rerender(create_UIBox_mods, true)
   end
+end
+
+SMODS.current_mod.save_mod_config = function(tro)
+  if type(tro_config.reroll_limit) ~= "number" then
+    tro_config.reroll_limit = tonumber(tro_config.reroll_limit)
+    TRO.UI.update_TRO_config()
+  end
+  SMODS.save_mod_config(tro)
 end

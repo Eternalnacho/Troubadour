@@ -7,6 +7,7 @@ TRO.REROLL = {
   edition_flags = {},
   rerolls = 0,
   spent = 0,
+  reroll_limit_price = 0,
 }
 
 function TRO.REROLL.simulate_reroll()

@@ -13,6 +13,20 @@ payload = '''if args.key == '0' and G.CONTROLLER.text_input_hook.config.ref_tabl
 match_indent = true
 overwrite = false
 
+# Adding a nums_only mode to text input
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''local text = hook_config.text'''
+position = "before"
+payload = '''
+
+if TRO.nums_only then corpus = '1234567890' end
+
+'''
+match_indent = true
+overwrite = false
+
 # Getting page number info from card collection page
 [[patches]]
 [patches.pattern]
