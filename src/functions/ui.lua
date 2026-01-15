@@ -33,7 +33,7 @@ end
 function TRO.UI.config_from_coll()
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
-    back_func = 'your_collection',
+    back_func = 'TRO_exit_coll_config',
     contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
 end
 
@@ -225,6 +225,11 @@ end
 -- BUTTON FUNCTIONS
 function G.FUNCS.TRO_your_collection(e)
   TRO.coll_from_button = true
+  G.FUNCS.your_collection()
+end
+
+function G.FUNCS.TRO_exit_coll_config(e)
+  SMODS.save_mod_config(TRO)
   G.FUNCS.your_collection()
 end
 

@@ -9,14 +9,14 @@ return {
       },
       TRO_modControls_tooltip = {
         text = {
-          '{br:2}ERROR - CONTACT STEAK',
+          '{C:inactive,br:2}-------------',
           '{s:0.7}Left-Click: {C:attention,s:0.7}View{s:0.7} Mod',
           '{s:0.7}Right-Click: {C:green,s:0.7}Enable{s:0.7}/{C:attention,s:0.7}Disable{s:0.7} Mod'
         }
       },
       TRO_modControls_tooltip_i = {
         text = {
-          "{br:2}ERROR - CONTACT STEAK",
+          "{C:inactive,br:2}-------------",
           '{s:0.7}Left-Click: {C:green,s:0.7}Enable{s:0.7}/{C:attention,s:0.7}Disable{s:0.7} Mod',
           '{s:0.7}Right-Click: {C:attention,s:0.7}View{s:0.7} Mod'
         }
