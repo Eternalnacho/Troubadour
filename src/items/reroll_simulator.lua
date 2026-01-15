@@ -7,11 +7,18 @@ TRO.REROLL = {
   edition_flags = {},
   rerolls = 0,
   spent = 0,
-  reroll_limit_price = 0,
+  spend_limit_flag = nil,
+  reroll_limit_flag = nil,
+  reroll_limit_price = tro_config.reroll_limit,
+  reroll_spend_limit = tro_config.reroll_spend_limit,
 }
 
 function TRO.REROLL.simulate_reroll()
   TRO.reroll_cost = TRO.reroll_cost or G.GAME.current_round.reroll_cost
+  if (TRO.REROLL.spent + TRO.reroll_cost) > (to_number(G.GAME.dollars) - tro_config.reroll_spend_limit) then
+    TRO.REROLL.spend_limit_flag = true
+    return
+  end
   -- Tracking total money spent
   TRO.REROLL.spent = TRO.REROLL.spent + TRO.reroll_cost
   -- Accounting for free rerolls in spending calculations
@@ -31,6 +38,7 @@ function TRO.REROLL.simulate_reroll()
   end
   -- Increment reroll count
   TRO.REROLL.rerolls = TRO.REROLL.rerolls + 1
+  if TRO.REROLL.rerolls >= tro_config.reroll_limit then TRO.REROLL.reroll_limit_flag = true end
 end
 
 function TRO.REROLL.calculate_reroll_cost(skip_increase)

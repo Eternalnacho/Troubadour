@@ -152,11 +152,6 @@ function SMODS.current_mod.extra_tabs()
 			tab_definition_function = function()
         local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
         TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
-        local reroll_limit_text = TRO.UI.create_num_input_node({
-          colour = tro_config.enable_auto_reroll and troC.active or troC.inactive,
-          hooked_colour = tro_config.enable_auto_reroll and darken(troC.active, 0.3) or troC.inactive,
-          ref_value = "reroll_limit", default = 30
-        })
 				return {
           n = G.UIT.ROOT,
           config = { r = 0.1, padding = 0.15, minw = 7, align = "cm", colour = G.C.BLACK, emboss = 0.05 },
@@ -197,10 +192,33 @@ function SMODS.current_mod.extra_tabs()
                         }
                       }
                     }}),
-                    TRO.UI.create_row({ align = "cm", nodes = {
-                      TRO.UI.create_text_node({text = "Reroll Limit: ",
-                      scale = 0.4}), reroll_limit_text,
-                      TRO.UI.create_text_node({ref_table = TRO.REROLL, ref_value = 'reroll_limit_price', scale = 0.4})
+                    TRO.UI.create_row({nodes = {
+                      TRO.UI.create_column{align = "cm", r = 0.15, colour = G.C.GREY, emboss = 0.05,
+                        nodes = {
+                          TRO.UI.create_row({ align = "cm", padding = 0.05, nodes = {
+                            TRO.UI.create_text_node({text = "Reroll Limit: ", scale = 0.4}),
+                            TRO.UI.create_num_input_node({ id = "TRO_set_reroll_limit",
+                              colour = tro_config.enable_auto_reroll and troC.active or troC.inactive,
+                              hooked_colour = tro_config.enable_auto_reroll and darken(troC.active, 0.3) or troC.inactive,
+                              ref_value = "reroll_limit", default = 30,
+                              callback = function()
+                                local r_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
+                                TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + r_cost - 1) - math.summ(r_cost - 1))
+                              end
+                            }),
+                            TRO.UI.create_text_node({ref_table = TRO.REROLL, ref_value = 'reroll_limit_price', scale = 0.4})
+                          }}),
+                          TRO.UI.create_row({ align = "cm", padding = 0.05 }),
+                          TRO.UI.create_row({ align = "cm", padding = 0.05, nodes = {
+                            TRO.UI.create_text_node({text = "Savings Threshold: $", scale = 0.4}),
+                            TRO.UI.create_num_input_node({ id = "TRO_set_spend_limit",
+                              colour = tro_config.enable_auto_reroll and troC.active or troC.inactive,
+                              hooked_colour = tro_config.enable_auto_reroll and darken(troC.active, 0.3) or troC.inactive,
+                              ref_value = "reroll_spend_limit", default = 25
+                            }),
+                          }}),
+                        }
+                      }
                     }}),
                   }})
                 }}),
@@ -225,7 +243,9 @@ end
 SMODS.current_mod.save_mod_config = function(tro)
   if type(tro_config.reroll_limit) ~= "number" then
     tro_config.reroll_limit = tonumber(tro_config.reroll_limit)
-    TRO.UI.update_TRO_config()
+  end
+  if type(tro_config.reroll_spend_limit) ~= "number" then
+    tro_config.reroll_spend_limit = tonumber(tro_config.reroll_spend_limit)
   end
   SMODS.save_mod_config(tro)
 end

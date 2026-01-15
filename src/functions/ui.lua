@@ -134,6 +134,7 @@ end
 
 function TRO.UI.create_num_input_node(args)
   return create_num_input({
+    id = args.id,
     colour = args.colour,
     hooked_colour = args.hooked_colour,
     w = 2, h = 1,
@@ -142,10 +143,7 @@ function TRO.UI.create_num_input_node(args)
     ref_value = args.ref_value,
     extended_corpus = true,
     keyboard_offset = 1,
-    callback = function()
-      local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-      TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
-    end
+    callback = args.callback
   })
 end
 

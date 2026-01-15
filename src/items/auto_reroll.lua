@@ -29,7 +29,7 @@ function TRO.FUNCS.prompt_target(target)
     local reroll_button = G.shop:get_UIE_by_ID("next_round_button").parent.children[2]
     if target == reroll_button then
       if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-        if type(tro_config["reroll_limit"]) ~= 'number' then tro_config.reroll_limit = 30 end
+        if type(tro_config.reroll_limit) ~= 'number' then tro_config.reroll_limit = tonumber(tro_config.reroll_limit) or 30 end
         TRO.FUNCS.auto_reroll(TRO.collection_targets)
       else
         G.FUNCS.TRO_your_collection()
@@ -69,9 +69,10 @@ function TRO.FUNCS.auto_reroll(targets)
 
   -- Simulate rerolls until either the keys are found or the limit is reached
   TRO.in_reroll_sim = true
-  while not TRO.FUNCS.check_keys(targets) and TRO.REROLL.spent <= to_number(G.GAME.dollars) and TRO.REROLL.rerolls < tro_config.reroll_limit do
+  while not TRO.FUNCS.check_keys(targets) and not TRO.REROLL.spend_limit_flag and not TRO.REROLL.reroll_limit_flag do
     TRO.REROLL.edition_flags = {}
     TRO.REROLL.simulate_reroll()
+    print(TRO.REROLL.spent)
     if tro_config.skip_reroll_anims then
       TRO.RNG_states.prev = TRO.RNG_states.latest
       TRO.RNG_states.latest = copy_table(G.GAME.pseudorandom)
@@ -148,6 +149,8 @@ function TRO.FUNCS.reset_rerolls()
   TRO.reroll_cost = nil
   TRO.reroll_cost_inc = nil
   TRO.free_rerolls = nil
+  TRO.REROLL.spend_limit_flag = nil
+  TRO.REROLL.reroll_limit_flag = nil
 end
 
 -- Reroller controls

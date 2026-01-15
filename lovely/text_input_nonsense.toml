@@ -1,0 +1,29 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+
+# Allowing the '0' key to work in text input properly
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "at"
+payload = '''if args.key == '0' and G.CONTROLLER.text_input_hook.config.ref_table and G.CONTROLLER.text_input_hook.config.ref_table.ref_value == "setup_seed" then args.key = 'o' end'''
+match_indent = true
+overwrite = false
+
+# Adding a nums_only mode to text input
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''local text = hook_config.text'''
+position = "before"
+payload = '''
+
+if TRO.nums_only then corpus = '1234567890' end
+
+'''
+match_indent = true
+overwrite = false
