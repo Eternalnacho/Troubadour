@@ -1,7 +1,7 @@
 -- SMALLER MODLIST
 TRO.ICONS = {}
 local m = assert(SMODS.load_file("src/functions/modpage_helper.lua"))()
-local Tile = assert(SMODS.load_file("src/classes/tile.lua"))()
+local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
 
 local statModList_ref = SMODS.GUI.staticModListContent
 SMODS.GUI.staticModListContent = function()

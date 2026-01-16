@@ -10,13 +10,9 @@ local load_dir = assert(SMODS.load_file("src/loader.lua"))()
 
 -- Load backend functions
 load_dir("src/functions")
-load_dir("src/ui_definitions")
 
 -- Load config page
 assert(SMODS.load_file("src/config_page.lua"))()
-
--- Load hooks
-load_dir("src/hooks")
 
 -- Load auto-reroll and wider collection screen
 load_dir("src/items")
