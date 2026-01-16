@@ -32,13 +32,13 @@ end
 
 function TRO.UIDEF.get_display_list()
   local display_list = Col { colour = G.C.GREY, nodes = { Row { nodes = { Col { colour = G.C.GREY, padding = 0.05, r = 0.2, nodes = {} } }} }}
-  local default = Row { padding = 0.05, r = 0.2, minw = 3, nodes = { Text{padding = 0.05, text = '', colour = G.C.WHITE, scale = 0.4} } }
+  local default = Row { padding = 0.05, r = 0.2, minw = 3, nodes = { Text { padding = 0.05, text = '', colour = G.C.WHITE, scale = 0.4 } } }
   for i = 1, #TRO.collection_targets do
     local target = G.P_CENTERS[TRO.collection_targets[i]].name or G.P_CENTERS[TRO.collection_targets[i]].original_key
     target = string.gsub(target, '^%w', function(l) return l:upper() end)
     target = string.gsub(target, '_%w', function(l) return l:upper() end)
     table.insert(display_list.nodes[1].nodes[1].nodes, Row { padding = 0.05, r = 0.2, minw = 3,
-      nodes = { Text{ padding = 0.05, text = target, colour = G.C.WHITE, scale = 0.4 } } })
+      nodes = { Text { padding = 0.05, text = target, colour = G.C.WHITE, scale = 0.4 } } })
   end
   if not next(display_list.nodes[1].nodes[1].nodes) then table.insert(display_list.nodes[1].nodes[1].nodes, default) end
   return display_list
