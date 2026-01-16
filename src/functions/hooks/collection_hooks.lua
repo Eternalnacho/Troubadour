@@ -20,7 +20,9 @@ create_UIBox_your_collection = function()
   local ret = uibox_your_collection()
   -- Changing the back button function if collection was called from the button
   local back_button = ret.nodes[1].nodes[1].nodes[2]
-  back_button.config.button = TRO.coll_from_button and 'exit_search_collection' or back_button.config.button
+  if back_button and back_button.config then
+    back_button.config.button = TRO.coll_from_button and 'exit_search_collection' or back_button.config.button
+  end
   -- Adding the Auto-reroll UI
   table.insert(ret.nodes[1].nodes[1].nodes[1].nodes, (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UIDEF.auto_reroll_menu_UI())
   return ret
