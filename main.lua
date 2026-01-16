@@ -3,6 +3,7 @@ TRO = {
   FUNCS = {},
   UIDEF = {},
   UI = {},
+  ICONS = {},
 }
 
 -- Get directory loader
