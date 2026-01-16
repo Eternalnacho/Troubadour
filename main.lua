@@ -1,12 +1,16 @@
 tro_config = SMODS.current_mod.config
-TRO = {}
-TRO.FUNCS = {}
+TRO = {
+  FUNCS = {},
+  UIDEF = {},
+  UI = {},
+}
 
 -- Get directory loader
 local load_dir = assert(SMODS.load_file("src/loader.lua"))()
 
 -- Load backend functions
 load_dir("src/functions")
+load_dir("src/ui_definitions")
 
 -- Load config page
 assert(SMODS.load_file("src/config_page.lua"))()
