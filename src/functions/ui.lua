@@ -35,19 +35,27 @@ function TRO.UI.UIE_config_args(args)
   }
 end
 
-function TRO.UI.create_column(args, nodes)
+function TRO.UI.create_column(args)
   return {
     n = G.UIT.C,
     config = TRO.UI.UIE_config_args(args),
-    nodes = nodes or args.nodes or {}
+    nodes = args.nodes or {}
   }
 end
 
-function TRO.UI.create_row(args, nodes)
+function TRO.UI.create_row(args)
   return {
     n = G.UIT.R,
     config = TRO.UI.UIE_config_args(args),
-    nodes = nodes or args.nodes or {}
+    nodes = args.nodes or {}
+  }
+end
+
+function TRO.UI.create_root_node(args)
+  return {
+    n = G.UIT.ROOT,
+    config = TRO.UI.UIE_config_args(args),
+    nodes = args.nodes or {}
   }
 end
 
