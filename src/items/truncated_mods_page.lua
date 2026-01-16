@@ -139,8 +139,8 @@ function TRO.ICONS.buildModtag(mod)
   tag_sprite.float = true
   tag_sprite.states.hover.can = true
   tag_sprite.states.click.can = true
-  tag_sprite.states.drag.can = false
   tag_sprite.states.collide.can = true
+  tag_sprite.states.drag.can = false
   tag_sprite.TRO_mods_sprite = true
 
   tag_sprite.hover = function(_self)
@@ -196,7 +196,6 @@ function TRO.ICONS.createModBoxTile(modInfo)
     ref_value = 'should_enable',
     object = TRO.ICONS.buildModtag(modInfo),
     object_args = {w = units, h = units, colour = G.C.BLUE},
-    hover = true,
     TRO_mods_tile = true,
     no_outline = true,
     button_func = 'TRO_check_tile_ctrls',

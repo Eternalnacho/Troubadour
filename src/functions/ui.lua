@@ -31,6 +31,7 @@ function TRO.UI.UIE_config_args(args)
     TRO_dark_tooltip = args.TRO_dark_tooltip,
     h_popup = args.h_popup,
     h_popup_config = args.h_popup_config,
+    focus_args = args.focus_args,
   }
 end
 

@@ -34,12 +34,12 @@ function Tile:init(args)
   self.callback = args.callback
 
   self.detailed_tooltip = args.tooltip
+  self.TRO_dark_tooltip = args.TRO_dark_tooltip
   self.object = args.object
   self.object_args = args.object_args
   self.focus_args = args.focus_args
 
   self.no_outline = args.no_outline
-  self.hover = args.hover
   self.TRO_mods_tile = args.TRO_mods_tile
 
   self.click_timeout = 0.3
@@ -47,8 +47,6 @@ end
 
 function Tile:render()
   local enabled = self.ref_table[self.ref_value]
-  if self.condition == false then enabled = false end
-
   return {
     n = G.UIT.C,
     config = {
@@ -62,8 +60,8 @@ function Tile:render()
       ref_table = self.ref_table,
       ref_value = self.ref_value,
       callback = self.callback,
+      TRO_dark_tooltip = self.TRO_dark_tooltip,
       detailed_tooltip = self.detailed_tooltip,
-      hover = self.hover,
       TRO_mods_tile = self.TRO_mods_tile,
       focus_args = self.focus_args
     },
