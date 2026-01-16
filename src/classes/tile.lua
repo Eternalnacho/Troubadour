@@ -36,6 +36,7 @@ function Tile:init(args)
   self.detailed_tooltip = args.tooltip
   self.object = args.object
   self.object_args = args.object_args
+  self.focus_args = args.focus_args
 
   self.no_outline = args.no_outline
   self.hover = args.hover
@@ -64,6 +65,7 @@ function Tile:render()
       detailed_tooltip = self.detailed_tooltip,
       hover = self.hover,
       TRO_mods_tile = self.TRO_mods_tile,
+      focus_args = self.focus_args
     },
     nodes = {
       {
@@ -83,7 +85,8 @@ function Tile:render()
               w = self.object_args.w,
               h = self.object_args.h,
               colour = self.object_args.colour,
-              focus_with_object = true
+              focus_with_object = true,
+              focus_args = self.focus_args and {funnel_to = true},
             }
           },
         }

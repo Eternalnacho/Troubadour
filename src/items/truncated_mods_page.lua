@@ -251,6 +251,7 @@ function TRO.ICONS.createModBoxTile(modInfo)
     TRO_mods_tile = true,
     no_outline = true,
     button_func = 'TRO_check_tile_ctrls',
+    focus_args = {funnel_from = true},
     callback = function(_set_toggle)
       if not modInfo.should_enable then
         NFS.write(modInfo.path .. '.lovelyignore', '')
@@ -292,7 +293,7 @@ function G.FUNCS.TRO_open_mod(e)
   G.FUNCS["openModUI_" .. e.config.ref_table.id](e)
 end
 
-tro_input_manager:add_listener({ 'right_click', 'right_stick' }, function(target)
+tro_input_manager:add_listener({ 'right_click', 'right_stick', 'x' }, function(target)
   if tro_config.invert_tile_controls then
     if target and target.TRO_mods_sprite then
       G.FUNCS.TRO_open_mod(target.parent.parent.parent)

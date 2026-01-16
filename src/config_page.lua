@@ -113,7 +113,7 @@ function SMODS.current_mod.extra_tabs()
                         })
                       }}),
                       TRO.UI.create_row({ minh = 0.65, align = 'cr',
-                        TRO_dark_tooltip = 'TRO_ctrls_extra',
+                        TRO_dark_tooltip = 'TRO_ctrls_extra' .. (tro_config.invert_tile_controls and '_i' or ''),
                         nodes = { create_toggle({
                           align = 'cr',
                           active_colour = troC.buttons,
