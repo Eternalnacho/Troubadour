@@ -2,8 +2,8 @@
 
 -- Jokers
 create_UIBox_your_collection_jokers = function()
-  local w = tro_config.gallery_width_j * 10 % 10 < 5 and math.floor(tro_config.gallery_width_j) or math.ceil(tro_config.gallery_width_j)
-  local h = tro_config.gallery_height_j * 10 % 10 < 5 and math.floor(tro_config.gallery_height_j) or math.ceil(tro_config.gallery_height_j)
+  local w = math.round(tro_config.gallery_width_j)
+  local h = math.round(tro_config.gallery_height_j)
   local area = {}; for _ = 1, h do area[#area+1] = w end
   return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Joker, area, {
       no_materialize = true,
@@ -15,8 +15,8 @@ end
 
 -- Vouchers
 create_UIBox_your_collection_vouchers = function()
-  local w = tro_config.gallery_width_v * 10 % 10 < 5 and math.floor(tro_config.gallery_width_v) * 2 or math.ceil(tro_config.gallery_width_v) * 2
-  local h = tro_config.gallery_height_v * 10 % 10 < 5 and math.floor(tro_config.gallery_height_v) or math.ceil(tro_config.gallery_height_v)
+  local w = math.round(tro_config.gallery_width_v) * 2
+  local h = math.round(tro_config.gallery_height_v)
   local area = {}; for _ = 1, h do area[#area+1] = w end
   return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Voucher, area, {
     area_type = 'voucher',
@@ -33,14 +33,15 @@ end
 TRO.UI.widen_consumable_screens = function()
   for _, con in pairs(SMODS.ConsumableTypes) do
     local amt = #TRO.utils.filter(G.P_CENTER_POOLS[con.key], function(v) return not v.no_collection end)
-    local con_w = tro_config.gallery_width_c * 10 % 10 < 5 and math.floor(tro_config.gallery_width_c) or math.ceil(tro_config.gallery_width_c)
-    local con_h = tro_config.gallery_height_c * 10 % 10 < 5 and math.floor(tro_config.gallery_height_c) or math.ceil(tro_config.gallery_height_c)
+    local con_w = math.round(tro_config.gallery_width_c)
+    local con_h = math.round(tro_config.gallery_height_c)
     -- evening out the rows
     con_h = math.min(con_h, math.ceil(amt/con_w))
-    con_w = math.min(con_w, math.ceil(amt/con_h))
+    local st_rows = (con_h % 2) == 1 and math.round(con_h / 2) or 0
+    con_w = math.min(con_w, math.ceil((amt + st_rows) / con_h))
+    -- create the area table the same way as collection_rows
     local con_area = {}; for i = 1, con_h do
-      con_area[#con_area+1] = (con.collection_rows[1] ~= con.collection_rows[2] and i % 2 == 1) and math.max(con.collection_rows[1], con_w - 1)
-        or math.max(con.collection_rows[1], con_w)
+      con_area[#con_area+1] = (con.collection_rows[1] ~= con.collection_rows[2] and i % 2 == 1) and con_w - 1 or con_w
     end
     con.collection_rows = con_area
   end
@@ -48,8 +49,8 @@ end
 
 -- Enhancements
 create_UIBox_your_collection_enhancements = function()
-  local w = tro_config.gallery_width_e * 10 % 10 < 5 and math.floor(tro_config.gallery_width_e) or math.ceil(tro_config.gallery_width_e)
-  local h = tro_config.gallery_height_e * 10 % 10 < 5 and math.floor(tro_config.gallery_height_e) or math.ceil(tro_config.gallery_height_e)
+  local w = math.round(tro_config.gallery_width_e)
+  local h = math.round(tro_config.gallery_height_e)
   local area = {}; for _ = 1, h do area[#area+1] = w end
   return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Enhanced, area, {
       no_materialize = true,
@@ -62,8 +63,8 @@ end
 
 -- Enhancements
 create_UIBox_your_collection_boosters = function()
-  local w = tro_config.gallery_width_b * 10 % 10 < 5 and math.floor(tro_config.gallery_width_b) or math.ceil(tro_config.gallery_width_b)
-  local h = tro_config.gallery_height_b * 10 % 10 < 5 and math.floor(tro_config.gallery_height_b) or math.ceil(tro_config.gallery_height_b)
+  local w = math.round(tro_config.gallery_width_b)
+  local h = math.round(tro_config.gallery_height_b)
   local area = {}; for _ = 1, h do area[#area+1] = w end
   return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Booster, area, {
       h_mod = 1.3 * (1 - (h - 2) / 50),
