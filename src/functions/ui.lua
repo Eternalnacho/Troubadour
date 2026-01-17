@@ -9,77 +9,10 @@ TRO.UI.mod_colours = {
 TRO.UI.mod_colours.bg_colour = mix_colours({0.5, 0.5, 0.5, 1}, TRO.UI.mod_colours.colour, 0.5)
 TRO.UI.mod_colours.outline_colour = mix_colours(TRO.UI.mod_colours.colour, G.C.WHITE, 0.7)
 
-function TRO.UI.get_type_collection_UIBox_func(set)
-  local func
-  if SMODS.ConsumableTypes[set] then
-    func = SMODS.ConsumableTypes[set].create_UIBox_your_collection
-  elseif set == 'Joker' then
-    func = create_UIBox_your_collection_jokers
-  end
-  return func
-end
-
-function TRO.UI.rerender_collection(set)
-  G.E_MANAGER:add_event(Event({
-    func = function()
-      TRO.UI.get_page_num, TRO.UI.rerendering = false, true
-      TRO.UI.rerender(TRO.UI.get_type_collection_UIBox_func(set), true, set)
-      TRO.UI.get_page_num, TRO.UI.rerendering = true, false
-      return true
-    end,
-  }))
-end
-
-function TRO.UI.config_from_coll()
-  return create_UIBox_generic_options({
-    colour = G.C.BLACK,
-    back_func = 'your_collection',
-    contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
-end
-
-function TRO.UI.reset_ui_states()
-  TRO.in_collection = false
-  TRO.config_from_coll = nil
-  TRO.UI.targets.added_target = ''
-  TRO.UI.get_page_num = true
-end
-
--- Stole these from Handy
-function TRO.UI.rerender(def, silent, set)
-  local result = set and { definition = def(SMODS.ConsumableTypes[set]) } or { definition = def() }
-  if silent then
-    G.ROOM.jiggle = G.ROOM.jiggle - 1
-    result.config = {
-      offset = {
-        x = 0,
-        y = 0,
-      },
-    }
-  end
-  G.FUNCS.overlay_menu(result)
-  G.OVERLAY_MENU:recalculate()
-  TRO.UI.cleanup_dead_elements(G, "MOVEABLES")
-end
-
-function TRO.UI.cleanup_dead_elements(ref_table, ref_key)
-	local new_values = {}
-	local target = ref_table[ref_key]
-	if not target then
-		return
-	end
-	for _, v in pairs(target) do
-		if not v.REMOVED and not v.removed then
-			new_values[#new_values + 1] = v
-		end
-	end
-	ref_table[ref_key] = new_values
-	return new_values
-end
-
 -- UIElement args
 function TRO.UI.UIE_config_args(args)
   return {
-    align = args.align or "bm",
+    align = args.align or "cm",
     padding = args.padding or 0.05,
     outline = args.outline,
     outline_colour = args.outline_colour,
@@ -98,6 +31,7 @@ function TRO.UI.UIE_config_args(args)
     TRO_dark_tooltip = args.TRO_dark_tooltip,
     h_popup = args.h_popup,
     h_popup_config = args.h_popup_config,
+    focus_args = args.focus_args,
   }
 end
 
@@ -112,6 +46,14 @@ end
 function TRO.UI.create_row(args)
   return {
     n = G.UIT.R,
+    config = TRO.UI.UIE_config_args(args),
+    nodes = args.nodes or {}
+  }
+end
+
+function TRO.UI.create_root_node(args)
+  return {
+    n = G.UIT.ROOT,
     config = TRO.UI.UIE_config_args(args),
     nodes = args.nodes or {}
   }
@@ -164,9 +106,18 @@ function TRO.UI.create_UIBox_generic_options_custom(args)
   args = args or {}
   local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
   return {
-    n=G.UIT.ROOT,
-    config = {align = "cm", minw = args.minw or G.ROOM.T.w * 0.6, padding = args.padding or 0.0, r = 0.1, colour = args.bg_colour or translucent_grey},
-    nodes = { TRO.UI.create_column({ padding = 0.0, minw = args.minw or 5, minh = args.minh or 3, nodes = args.contents }) }
+    n = G.UIT.ROOT,
+    config = {
+      align = "cm",
+      minw = args.minw or G.ROOM.T.w * 0.6,
+      emboss = args.emboss,
+      padding = args.padding or 0.0,
+      outline = args.outline,
+      outline_colour = args.outline and args.outline_colour,
+      r = 0.1,
+      colour = args.bg_colour or translucent_grey
+    },
+    nodes = { TRO.UI.create_column({ padding = 0.0, minh = args.minh or 3, nodes = args.contents }) }
   }
 end
 
@@ -222,9 +173,46 @@ function TRO.UI.create_column_tabs(args)
   }
 end
 
+-- Stole these from Handy
+function TRO.UI.rerender(def, silent, set)
+  local result = set and { definition = def(SMODS.ConsumableTypes[set]) } or { definition = def() }
+  if silent then
+    G.ROOM.jiggle = G.ROOM.jiggle - 1
+    result.config = {
+      offset = {
+        x = 0,
+        y = 0,
+      },
+    }
+  end
+  G.FUNCS.overlay_menu(result)
+  G.OVERLAY_MENU:recalculate()
+  TRO.UI.cleanup_dead_elements(G, "MOVEABLES")
+end
+
+function TRO.UI.cleanup_dead_elements(ref_table, ref_key)
+	local new_values = {}
+	local target = ref_table[ref_key]
+	if not target then
+		return
+	end
+	for _, v in pairs(target) do
+		if not v.REMOVED and not v.removed then
+			new_values[#new_values + 1] = v
+		end
+	end
+	ref_table[ref_key] = new_values
+	return new_values
+end
+
 -- BUTTON FUNCTIONS
 function G.FUNCS.TRO_your_collection(e)
   TRO.coll_from_button = true
+  G.FUNCS.your_collection()
+end
+
+function G.FUNCS.TRO_exit_coll_config(e)
+  SMODS.save_mod_config(TRO)
   G.FUNCS.your_collection()
 end
 
@@ -267,4 +255,39 @@ G.FUNCS.TRO_settings_change_tab = function(e)
       config = {offset = {x=0,y=0}, parent = tab_contents, type = 'cm'}
     }
   tab_contents.UIBox:recalculate()
+end
+
+function TRO.FUNCS.get_type_collection_UIBox_func(set)
+  local func
+  if SMODS.ConsumableTypes[set] then
+    func = SMODS.ConsumableTypes[set].create_UIBox_your_collection
+  elseif set == 'Joker' then
+    func = create_UIBox_your_collection_jokers
+  end
+  return func
+end
+
+function TRO.UI.rerender_collection(set)
+  G.E_MANAGER:add_event(Event({
+    func = function()
+      TRO.UI.get_page_num, TRO.UI.rerendering = false, true
+      TRO.UI.rerender(TRO.FUNCS.get_type_collection_UIBox_func(set), true, set)
+      TRO.UI.get_page_num, TRO.UI.rerendering = true, false
+      return true
+    end,
+  }))
+end
+
+function TRO.UI.config_from_coll()
+  return create_UIBox_generic_options({
+    colour = G.C.BLACK,
+    back_func = 'TRO_exit_coll_config',
+    contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
+end
+
+function TRO.UI.reset_ui_states()
+  TRO.in_collection = false
+  TRO.config_from_coll = nil
+  TRO.UI.targets.added_target = ''
+  TRO.UI.get_page_num = true
 end

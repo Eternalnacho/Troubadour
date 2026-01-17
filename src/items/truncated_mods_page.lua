@@ -1,7 +1,8 @@
 -- SMALLER MODLIST
-TRO.ICONS = {}
 local m = assert(SMODS.load_file("src/functions/modpage_helper.lua"))()
-local Tile = assert(SMODS.load_file("src/classes/tile.lua"))()
+local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
+local Row, Col = TRO.UI.create_row, TRO.UI.create_column
+local Text, TextCol = TRO.UI.create_text_node, m.createTextColNode
 
 local statModList_ref = SMODS.GUI.staticModListContent
 SMODS.GUI.staticModListContent = function()
@@ -24,83 +25,50 @@ end
 function TRO.UIDEF.statModList()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
-  return {
-    n = G.UIT.R,
-    config = {
-      minh = 1.5 * dminh + 1,
-      r = 0.1,
-      minw = 1.5 * dminw + 1,
-      align = "cm",
-      padding = 0.05,
-      colour = G.C.BLACK
-    },
-    nodes = {
-      -- row container
-      {
-        n = G.UIT.C,
-        config = { align = "cm", padding = 0.05 },
-        nodes = {
-          -- column container
-          {
-            n = G.UIT.C,
-            config = { align = "cm", minw = 5, padding = 0.05, r = 0.1, colour = G.C.CLEAR },
-            nodes = {
-              -- title row
-              {
-                n = G.UIT.R,
-                config = {
-                  padding = 0.05,
-                  align = "cm"
-                },
-                nodes = {
-                  UIBox_button({
-                    label = { localize('b_mod_list') },
-                    shadow = true,
-                    scale = scale * 0.85,
-                    colour = G.C.BOOSTER,
-                    button = "openModsDirectory",
-                    minh = scale,
-                    minw = 9
-                  }),
-                }
-              },
-
-              -- add some empty rows for spacing
-              { n = G.UIT.R, config = { align = "cm", padding = 0.05 }, nodes = {} },
-              { n = G.UIT.R, config = { align = "cm", padding = 0.05 }, nodes = {} },
-              { n = G.UIT.R, config = { align = "cm", padding = 0.05 }, nodes = {} },
-              { n = G.UIT.R, config = { align = "cm", padding = 0.05 }, nodes = {} },
-              -- dynamic content rendered in this row container
-              -- list of 4 x 4 mods on the current page
-              {
-                n = G.UIT.R,
-                config = { padding = 0.05, align = "cm",
-                  minh = dminh + 1,
-                  minw = dminw + 1,
-                },
-                nodes = {
-                  { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
-                }
-              },
-
-              -- another empty row for spacing
-              { n = G.UIT.R, config = { align = "cm", padding = 0.8 }, nodes = {} },
-              -- page selector
-              -- does not appear when list of mods is empty
-              showingList and SMODS.GUI.createOptionSelector({
-                label = "",
-                scale = 0.8,
-                options = pageOptions,
-                opt_callback = 'update_mod_list',
-                no_pips = true,
-                current_option = ( currentPage )
-              })
-            }
-          },
-        }
-      },
-    }
-  }
+  return Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
+    -- row container
+    Col { padding = 0.05, nodes = {
+      -- column container
+      Col { minw = 5, padding = 0.05, r = 0.1, colour = G.C.CLEAR, nodes = {
+        -- title row
+        Row { padding = 0.05, nodes = {
+          UIBox_button({
+            label = { localize('b_mod_list') },
+            shadow = true,
+            scale = scale * 0.85,
+            colour = G.C.BOOSTER,
+            button = "openModsDirectory",
+            minh = scale,
+            minw = 9
+          }),
+        }},
+        -- add some empty rows for spacing
+        Row { padding = 0.05 },
+        Row { padding = 0.05 },
+        Row { padding = 0.05 },
+        Row { padding = 0.05 },
+        -- dynamic content rendered in this row container
+        -- list of 4 x 4 mods on the current page
+        Row { padding = 0.05, minh = dminh + 1, minw = dminw + 1,
+          nodes = {
+            { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
+          }
+        },
+        -- another empty row for spacing
+        Row { padding = 0.8 },
+        -- page selector
+        -- does not appear when list of mods is empty
+        showingList and SMODS.GUI.createOptionSelector({
+          label = "",
+          scale = 0.8,
+          options = pageOptions,
+          opt_callback = 'update_mod_list',
+          no_pips = true,
+          current_option = ( currentPage )
+        })
+      }}
+    }}
+  }}
 end
 
 function TRO.UIDEF.dynaModList(page)
@@ -110,16 +78,9 @@ function TRO.UIDEF.dynaModList(page)
   local modNodes = {}
   -- If no mods are loaded, show a default message
   if showingList == false then
-    table.insert(modNodes, {
-      n = G.UIT.R,
-      config = { padding = 0, align = "cm" },
-      nodes = { TRO.UI.create_text_node({
-        text = localize('b_no_mods'),
-        shadow = true,
-        scale = scale * 0.5,
-        colour = G.C.UI.TEXT_DARK
-      }) }
-    })
+    table.insert(modNodes, Row { padding = 0, nodes = {
+        Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
+      }})
   else
     local modCount = 0
     local id = 0
@@ -139,11 +100,7 @@ function TRO.UIDEF.dynaModList(page)
             table.insert(current_row, TRO.ICONS.createModBoxTile(modInfo))
             modCount = modCount + 1
             if math.fmod(modCount, modsColPerRow) == 0 then
-              table.insert(modNodes, {
-                n = G.UIT.R,
-                config = { padding = 0, align = "lc" },
-                nodes = current_row
-              })
+              table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })
               current_row = {}
             end
           end
@@ -151,19 +108,11 @@ function TRO.UIDEF.dynaModList(page)
       end
     end
     if #current_row > 0 then
-      table.insert(modNodes, {
-        n = G.UIT.R,
-        config = { padding = 0, align = "lc" },
-        nodes = current_row
-      })
+      table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })
     end
   end
 
-  return {
-    n = G.UIT.C,
-    config = { r = 0.1, align = "cm", padding = 0, minw = 1.4 * modsColPerRow },
-    nodes = modNodes
-  }
+  return Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes }
 end
 
 function TRO.ICONS.getModtagInfo(mod)
@@ -190,8 +139,8 @@ function TRO.ICONS.buildModtag(mod)
   tag_sprite.float = true
   tag_sprite.states.hover.can = true
   tag_sprite.states.click.can = true
-  tag_sprite.states.drag.can = false
   tag_sprite.states.collide.can = true
+  tag_sprite.states.drag.can = false
   tag_sprite.TRO_mods_sprite = true
 
   tag_sprite.hover = function(_self)
@@ -247,10 +196,10 @@ function TRO.ICONS.createModBoxTile(modInfo)
     ref_value = 'should_enable',
     object = TRO.ICONS.buildModtag(modInfo),
     object_args = {w = units, h = units, colour = G.C.BLUE},
-    hover = true,
     TRO_mods_tile = true,
     no_outline = true,
     button_func = 'TRO_check_tile_ctrls',
+    focus_args = {funnel_from = true},
     callback = function(_set_toggle)
       if not modInfo.should_enable then
         NFS.write(modInfo.path .. '.lovelyignore', '')
@@ -265,15 +214,7 @@ function TRO.ICONS.createModBoxTile(modInfo)
     end,
   })
 
-  return {
-    n = G.UIT.C,
-    config = { align = "cm", padding = 0.05 },
-    nodes = {
-      { n = G.UIT.C, config = { padding = 0.0, align = "cm", minw = 1, minh = 1 },
-        nodes = { mod_tile:render() }
-      },
-    }
-  }
+  return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { mod_tile:render() } } } }
 end
 
 function G.FUNCS.TRO_check_tile_ctrls(e)
@@ -292,7 +233,7 @@ function G.FUNCS.TRO_open_mod(e)
   G.FUNCS["openModUI_" .. e.config.ref_table.id](e)
 end
 
-tro_input_manager:add_listener({ 'right_click', 'right_stick' }, function(target)
+tro_input_manager:add_listener({ 'right_click', 'right_stick', 'x' }, function(target)
   if tro_config.invert_tile_controls then
     if target and target.TRO_mods_sprite then
       G.FUNCS.TRO_open_mod(target.parent.parent.parent)
@@ -330,26 +271,13 @@ function TRO.UIDEF.mod_icon_popup(mod, scale)
   -- Controls at bottom of UIBox
   TRO.ICONS.get_controls(label_nodes, {scale = scale * 0.3, colour = version_col})
 
-  return {
-    n = G.UIT.C,
-    config =
-      {
-        align = "cm",
-        r = 0.2,
-        padding = 0.1,
-        emboss = 0.1,
-        outline = 1,
-        outline_colour = mix_colours(col, G.C.WHITE, 0.7),
-        colour = bg_col
-      },
-    nodes =
-    {{
-      n = G.UIT.R, config = { align = "cm", r = 0.2, padding = 0.05, emboss = 0.05, colour = col }, nodes =
-      {
-        { n = G.UIT.C, config = { align = "cm", r = 0.2, padding = 0.05 }, nodes = label_nodes }
-      }
+  return Col { r = 0.2, padding = 0.1, emboss = 0.1, colour = bg_col,
+    outline = 1, outline_colour = mix_colours(col, G.C.WHITE, 0.7),
+    nodes = {
+      Row { r = 0.2, padding = 0.05, emboss = 0.05, colour = col, nodes = {
+        Col { r = 0.2, padding = 0.05, nodes = label_nodes }
+      }}
     }}
-  }
 end
 
 function TRO.ICONS.get_mod_popup_colours(mod)
@@ -371,20 +299,20 @@ end
 function TRO.ICONS.get_modName_node(mod, nodes, args)
   local modname_split = SMODS.smart_line_splitter(mod.name, 18, true)
   for _,v in ipairs(modname_split) do
-    table.insert(nodes, m.createTextColNode(v, args.scale, args.colour))
+    table.insert(nodes, TextCol(v, args.scale, args.colour))
   end
 end
 
 function TRO.ICONS.get_lovely_node(mod, nodes, args)
   if mod.lovely_only then
-    table.insert(nodes, m.createTextColNode(localize('b_lovely_mod'), args.scale, args.colour))
+    table.insert(nodes, TextCol(localize('b_lovely_mod'), args.scale, args.colour))
   end
 end
 
 function TRO.ICONS.get_version_node(mod, nodes, args)
   local sub_node = {}
   if mod.version and mod.version ~= '0.0.0' then
-    table.insert(sub_node, m.createTextColNode(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
+    table.insert(sub_node, TextCol(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
@@ -401,7 +329,7 @@ function TRO.ICONS.get_authorDyna_node(mod, nodes, args)
         marquee = true,
     }
     table.insert(nodes,
-      { n = G.UIT.R, config = { padding = 0, align = "lc", maxw = 4.5, maxh = 1.5, }, nodes =
+      Row { padding = 0, align = "lc", maxw = 4.5, maxh = 1.5, nodes =
           {
             { n = G.UIT.T, config = { text= localize('b_by'), scale = args.scale, colour = args.colour } },
             { n = G.UIT.O, config = {object = authorDynatext} }
@@ -413,7 +341,7 @@ end
 function TRO.ICONS.get_priority_node(mod, nodes, args)
   local sub_node = {}
   if not _RELEASE_MODE and mod.priority then
-    table.insert(nodes, m.createTextColNode(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
+    table.insert(nodes, TextCol(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
@@ -466,7 +394,7 @@ function TRO.ICONS.get_loadState_nodes(mod, nodes, args)
     for _, vv in ipairs(v) do
       table.insert(sub_node, vv)
     end
-    if i < #state_nodes then table.insert(sub_node, TRO.UI.create_text_node({text = ' ', scale = args.scale})) end
+    if i < #state_nodes then table.insert(sub_node, Text{ text = ' ', scale = args.scale }) end
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end

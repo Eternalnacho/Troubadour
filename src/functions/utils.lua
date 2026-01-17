@@ -60,6 +60,10 @@ function math.summ(n)
   return n * (n + 1) / 2
 end
 
+function math.round(n)
+  return n * 10 % 10 < 5 and math.floor(n) or math.ceil(n)
+end
+
 
 -- string functions
 function starts_with(str, start)

@@ -1,6 +1,10 @@
 tro_config = SMODS.current_mod.config
-TRO = {}
-TRO.FUNCS = {}
+TRO = {
+  FUNCS = {},
+  UIDEF = {},
+  UI = {},
+  ICONS = {},
+}
 
 -- Get directory loader
 local load_dir = assert(SMODS.load_file("src/loader.lua"))()
@@ -10,9 +14,6 @@ load_dir("src/functions")
 
 -- Load config page
 assert(SMODS.load_file("src/config_page.lua"))()
-
--- Load hooks
-load_dir("src/hooks")
 
 -- Load auto-reroll and wider collection screen
 load_dir("src/items")

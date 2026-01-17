@@ -9,7 +9,8 @@ tro_input_manager = {
     ['left_click'] = {},
     ['right_click'] = {},
     ['double_click'] = {},
-    ['right_stick'] = {}
+    ['right_stick'] = {},
+    ['x'] = {},
   }
 }
 
@@ -62,6 +63,12 @@ function tro_input_manager:right_stick(target)
   end
 end
 
+function tro_input_manager:controller_x(target)
+  if target then
+    self:fire_event('x', target)
+  end
+end
+
 local controller_is_locked = function()
   return (G.CONTROLLER.locked and (not G.SETTINGS.paused or G.screenwipe))
       or G.CONTROLLER.locks.frame
@@ -87,9 +94,13 @@ end
 
 local capture_focused_input_ref = G.CONTROLLER.capture_focused_input
 G.CONTROLLER.capture_focused_input = function(self, button, input_type, dt)
-  if input_type == 'press' and button == 'rightstick' and self.focused then
+  if input_type == 'press' and self.focused then
     local target = self.focused.target
-    tro_input_manager:right_stick(target)
+    if button == 'rightstick' then
+      tro_input_manager:right_stick(target)
+    elseif button == 'x' then
+      tro_input_manager:controller_x(target)
+    end
   end
   return capture_focused_input_ref(self, button, input_type, dt)
 end

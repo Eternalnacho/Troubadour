@@ -45,7 +45,7 @@ function TRO.FUNCS.clear_targets(from_button)
       local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
       if menu_object then
         menu_object.config.object:remove()
-        menu_object.config.object = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        menu_object.config.object = UIBox({ definition = TRO.UIDEF.reroll_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
         G.OVERLAY_MENU:recalculate()
       end
     elseif G.STATE == G.STATES.SHOP and not G.SETTINGS.paused then
@@ -203,14 +203,14 @@ function Card:click()
     TRO.UI.targets.added_target = self.config.center_key
     TRO.adding_key = true
     local set = self.config.center.set
-    if TRO.UI.get_type_collection_UIBox_func(set) and TRO.in_collection and not TRO.coll_from_button then
+    if TRO.FUNCS.get_type_collection_UIBox_func(set) and TRO.in_collection and not TRO.coll_from_button then
       TRO.UI.rerender_collection(set)
       TRO.coll_from_button = true
     elseif TRO.in_collection then
       local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
       if menu_object then
         menu_object.config.object:remove()
-        menu_object.config.object = UIBox({ definition = TRO.UIDEF.display_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
+        menu_object.config.object = UIBox({ definition = TRO.UIDEF.reroll_targets_list("Current Targets:"), config = {type = "cm", parent = menu_object}})
         G.OVERLAY_MENU:recalculate()
       end
     end
