@@ -19,10 +19,13 @@ local uibox_your_collection = create_UIBox_your_collection
 create_UIBox_your_collection = function()
   local ret = uibox_your_collection()
   -- Changing the back button function if collection was called from the button
-  local back_button = ret.nodes[1].nodes[1].nodes[2]
-  if back_button and back_button.config then
+    -- also thank you to NeatoJokers for showing me this trick
+  local back_button_deepfind = SMODS.deepfind(ret, 'overlay_menu_back_button', true)[1]
+  if back_button_deepfind then
+    local back_button = back_button_deepfind.objtree[#back_button_deepfind.objtree - 2]
     back_button.config.button = TRO.coll_from_button and 'exit_search_collection' or back_button.config.button
   end
+
   -- Adding the Auto-reroll UI
   table.insert(ret.nodes[1].nodes[1].nodes[1].nodes, (TRO.coll_from_button or next(TRO.collection_targets)) and TRO.UIDEF.auto_reroll_menu_UI())
   return ret
