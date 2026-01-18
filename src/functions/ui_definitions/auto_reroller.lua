@@ -55,3 +55,13 @@ function TRO.UIDEF.added_key_UI()
   local added_key_UI = Col { align = "cm", minw = 4.5, nodes = {nodes} }
   return added_key_UI
 end
+
+function TRO.FUNCS.get_type_collection_UIBox_func(set)
+  local func
+  if SMODS.ConsumableTypes[set] then
+    func = SMODS.ConsumableTypes[set].create_UIBox_your_collection
+  elseif set == 'Joker' then
+    func = create_UIBox_your_collection_jokers
+  end
+  return func
+end

@@ -164,6 +164,7 @@ function TRO.ICONS.buildModtag(mod)
       end
     end
   end
+
   tag_sprite.click = function(self)
     if tro_config.invert_tile_controls then
       if (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then G.FUNCS.TRO_open_mod(self.parent.parent.parent)
@@ -173,8 +174,11 @@ function TRO.ICONS.buildModtag(mod)
       else G.FUNCS.TRO_open_mod(self.parent.parent.parent) end
     end
   end
+  
   tag_sprite.stop_hover = function(_self)
-    _self.hovering = false; Node.stop_hover(_self); _self.hover_tilt = 0
+    _self.hovering = false
+    _self.hover_tilt = 0
+    Node.stop_hover(_self)
   end
 
   tag_sprite:juice_up()
@@ -199,7 +203,6 @@ function TRO.ICONS.createModBoxTile(modInfo)
     TRO_mods_tile = true,
     no_outline = true,
     button_func = 'TRO_check_tile_ctrls',
-    focus_args = {funnel_from = true},
     callback = function(_set_toggle)
       if not modInfo.should_enable then
         NFS.write(modInfo.path .. '.lovelyignore', '')
@@ -214,7 +217,9 @@ function TRO.ICONS.createModBoxTile(modInfo)
     end,
   })
 
-  return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { mod_tile:render() } } } }
+  local tile_node = mod_tile:render()
+
+  return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { tile_node } } } }
 end
 
 function G.FUNCS.TRO_check_tile_ctrls(e)
