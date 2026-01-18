@@ -76,6 +76,26 @@ function SMODS.current_mod.config_tab()
   })
 end
 
+G.FUNCS.TRO_settings_change_tab = function(e)
+  if not e then return end
+  local tab_contents = e.UIBox:get_UIE_by_ID('TRO_settings_tab_contents')
+  if not tab_contents then return end
+  -- Same tab, don't rebuild it.
+  if tab_contents.config.oid == e.config.id then return end
+  if tab_contents.config.old_chosen then tab_contents.config.old_chosen.config.chosen = nil end
+
+  tab_contents.config.old_chosen = e
+  e.config.chosen = 'vert'
+
+  tab_contents.config.oid = e.config.id
+  tab_contents.config.object:remove()
+  tab_contents.config.object = UIBox{
+      definition = e.config.ref_table.tab_definition_function(e.config.ref_table.tab_definition_function_args),
+      config = {offset = {x=0,y=0}, parent = tab_contents, type = 'cm'}
+    }
+  tab_contents.UIBox:recalculate()
+end
+
 function SMODS.current_mod.extra_tabs()
 	return {
 		{

@@ -140,7 +140,7 @@ function TRO.UI.create_column_tabs(args)
       UIBox_button({
         id = id, ref_table = v, button = 'TRO_settings_change_tab', label = {v.label}, colour = darken(TRO.UI.mod_colours.buttons, 0.2),
         minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale,
-        chosen = v.chosen and 'vert', func = v.func, focus_args = {type = 'none'}
+        chosen = v.chosen and 'vert', func = v.func, focus_args = { snap_to = args.snap_to_nav, nav = 'wide' },
       })
     }}
   end
@@ -151,7 +151,7 @@ function TRO.UI.create_column_tabs(args)
     config = { padding = 0.0, align = "cl", colour = args.colour },
     nodes = {
       -- Tabs
-      TRO.UI.create_column({ align = "cl", padding = 0.15, colour = G.C.CLEAR, nodes = tab_buttons }),
+      TRO.UI.create_column({ align = "cl", padding = 0.15, colour = G.C.CLEAR, focus_args = { button = 'x', type = 'none' }, nodes = tab_buttons }),
       -- Tab contents
       {
         n = G.UIT.C, config = { align = args.tab_alignment, padding = args.padding or 0.1, no_fill = true, minh = args.tab_h, minw = args.tab_w },
@@ -235,36 +235,6 @@ function G.FUNCS.TRO_view_options(e)
   TRO.in_collection = false
   G.FUNCS.overlay_menu{ definition = TRO.UI.config_from_coll() }
   G.OVERLAY_MENU:recalculate()
-end
-
-G.FUNCS.TRO_settings_change_tab = function(e)
-  if not e then return end
-  local tab_contents = e.UIBox:get_UIE_by_ID('TRO_settings_tab_contents')
-  if not tab_contents then return end
-  -- Same tab, don't rebuild it.
-  if tab_contents.config.oid == e.config.id then return end
-  if tab_contents.config.old_chosen then tab_contents.config.old_chosen.config.chosen = nil end
-
-  tab_contents.config.old_chosen = e
-  e.config.chosen = 'vert'
-
-  tab_contents.config.oid = e.config.id
-  tab_contents.config.object:remove()
-  tab_contents.config.object = UIBox{
-      definition = e.config.ref_table.tab_definition_function(e.config.ref_table.tab_definition_function_args),
-      config = {offset = {x=0,y=0}, parent = tab_contents, type = 'cm'}
-    }
-  tab_contents.UIBox:recalculate()
-end
-
-function TRO.FUNCS.get_type_collection_UIBox_func(set)
-  local func
-  if SMODS.ConsumableTypes[set] then
-    func = SMODS.ConsumableTypes[set].create_UIBox_your_collection
-  elseif set == 'Joker' then
-    func = create_UIBox_your_collection_jokers
-  end
-  return func
 end
 
 function TRO.UI.rerender_collection(set)
