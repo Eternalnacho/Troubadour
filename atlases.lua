@@ -23,7 +23,7 @@ for _, mod in pairs(SMODS.Mods) do
       if not error then
         print("File location found: "..full_path)
         local image_data = assert(love.image.newImageData(file_data),
-                ('Failed to initialize image data for Atlas %s'):format(mod.prefix..file_path))
+                ('Failed to initialize image data for Atlas %s'):format(file_path))
         local px, py = image_data:getDimensions()
         local is_animated, frames
         px, py = px / G.SETTINGS.GRAPHICS.texture_scaling, py / G.SETTINGS.GRAPHICS.texture_scaling
