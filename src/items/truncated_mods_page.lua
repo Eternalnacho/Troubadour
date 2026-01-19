@@ -122,7 +122,7 @@ function TRO.ICONS.getModtagInfo(mod)
   if not mod.can_load then
     tag_atlas = "mod_tags"
     if mod.disabled then
-      tag_atlas = 'TRO_' .. mod.prefix .. '_modicon'
+      tag_atlas = 'TRO_' .. (mod.prefix or mod.name) .. '_modicon'
     end
   end
   return tag_atlas, tag_pos
