@@ -28,7 +28,7 @@ function TRO.FUNCS.prompt_target(target)
   if G.STATE == G.STATES.SHOP and tro_config.enable_auto_reroll then
     local reroll_button = G.shop:get_UIE_by_ID("next_round_button").parent.children[2]
     if target == reroll_button then
-      if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+      if next(TRO.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") or G.CONTROLLER.held_buttons.triggerleft) then
         if type(tro_config.reroll_limit) ~= 'number' then tro_config.reroll_limit = tonumber(tro_config.reroll_limit) or 30 end
         TRO.FUNCS.auto_reroll(TRO.collection_targets)
       else

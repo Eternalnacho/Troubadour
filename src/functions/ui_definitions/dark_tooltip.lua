@@ -16,7 +16,10 @@ local uiehover = UIElement.hover
 function UIElement:hover()
   if self.config and self.config.TRO_mods_tile then
     self.hovering = true
-    self.children[1].children[1].config.object:hover()
+    local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
+    if tag_sprite then
+      tag_sprite:hover()
+    end
   end
   if self.config and self.config.TRO_dark_tooltip then
     self.config.h_popup = TRO.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
