@@ -34,7 +34,7 @@ for _, mod in pairs(SMODS.Mods) do
         end
 
         SMODS.Atlas({
-          key = 'TRO_'..(mod.prefix or mod.name)..'_modicon',
+          key = 'TRO_' .. mod.id ..'_modicon',
           path = file_path..'.png',
           px = px,
           py = py,
