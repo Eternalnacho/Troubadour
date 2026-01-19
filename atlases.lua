@@ -5,7 +5,7 @@ SMODS.Atlas({
   py = 46
 })
 
-for _, mod in pairs(SMODS.mod_list) do
+for _, mod in pairs(SMODS.Mods) do
   local icon_names = {"icon", "modicon", "mod_icon"}
   if mod.prefix then
     icon_names[#icon_names+1] = mod.prefix..'_icon'
@@ -38,7 +38,7 @@ for _, mod in pairs(SMODS.mod_list) do
           path = file_path..'.png',
           px = px,
           py = py,
-          raw_key = true,
+          prefix_config = {key = {mod = false}},
           atlas_table = is_animated and "ANIMATION_ATLAS",
           frames = is_animated and frames
         }).mod = mod
