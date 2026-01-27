@@ -23,7 +23,7 @@ local pages = {
   {
     label = "Booster",
     ref_value_w = "gallery_width_b", minw = 4, maxw = 8,
-    ref_value_h = "gallery_height_b", minh = 2, maxh = 3,
+    ref_value_h = "gallery_height_b", minh = 2, maxh = 4,
   },
 }
 
