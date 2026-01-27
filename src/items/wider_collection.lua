@@ -67,8 +67,8 @@ create_UIBox_your_collection_boosters = function()
   local h = math.round(tro_config.gallery_height_b)
   local area = {}; for _ = 1, h do area[#area+1] = w end
   return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Booster, area, {
-      h_mod = 1.3 * (1 - (h - 2) / 50),
+      h_mod = 1.3 * (2 / h),
       w_mod = 1.25 * (1 - (w - 4) / 50),
-      card_scale = 1.27 * (1 - (h - 2) / 50),
+      card_scale = 1.27 - (h / 50),
   })
 end
