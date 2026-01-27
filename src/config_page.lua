@@ -1,7 +1,7 @@
 -- CONFIG TAB UI
 local config_contents = assert(SMODS.load_file("src/settings/collection_pages.lua"))()
 local troC = TRO.UI.mod_colours
-local Row, Col = TRO.UI.create_row, TRO.UI.create_column
+local Root, Row, Col = TRO.UI.create_root_node, TRO.UI.create_row, TRO.UI.create_column
 local Text, Num_Input = TRO.UI.create_text_node, TRO.UI.create_num_input_node
 local TroUIBox = TRO.UI.create_UIBox_generic_options_custom
 
@@ -32,9 +32,7 @@ function SMODS.current_mod.config_tab()
       chosen = is_chosen(page.label..'s'),
       tab_definition_function = function (...)
         return {
-          n = G.UIT.ROOT,
-          config = { r = 0.1, align = "cm", colour = G.C.CLEAR },
-          nodes = {
+          Root { r = 0.1, align = "cm", colour = G.C.CLEAR, nodes = {
             Col { nodes = {
               Row { minh = math.max(1, #config_contents.pages), nodes = {
                 Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3),
@@ -50,7 +48,7 @@ function SMODS.current_mod.config_tab()
                 }}
               }}
             }}
-          }
+          }}
         }
       end
     })
