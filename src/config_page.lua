@@ -31,12 +31,11 @@ function SMODS.current_mod.config_tab()
       label = page.label..'s',
       chosen = is_chosen(page.label..'s'),
       tab_definition_function = function (...)
-        return {
-          Root { r = 0.1, align = "cm", colour = G.C.CLEAR, nodes = {
-            Col { nodes = {
-              Row { minh = math.max(1, #config_contents.pages), nodes = {
-                Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3),
-                      colour = troC.colour, outline = 1, outline_colour = troC.outline_colour, emboss = 0.05, nodes = {
+        return Root { r = 0.1, nodes = {
+          Col { nodes = {
+            Row { minh = math.max(1, #config_contents.pages), nodes = {
+              Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3),
+                    colour = troC.colour, outline = 1, outline_colour = troC.outline_colour, emboss = 0.05, nodes = {
                   Row { nodes = {
                     Col { r = 0.1, colour = G.C.GREY, emboss = 0.05, nodes = {
                       create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
@@ -49,7 +48,6 @@ function SMODS.current_mod.config_tab()
               }}
             }}
           }}
-        }
       end
     })
   end)
