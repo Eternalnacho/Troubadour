@@ -16,7 +16,7 @@ for _, mod in pairs(SMODS.Mods) do
     icon_names[#icon_names+1] = mod.prefix..'mod_icon'
   end
 
-  if mod.disabled then
+  if mod.disabled and not mod.icon_path then
     for _, file_path in pairs(icon_names) do
       local full_path = mod.path .. 'assets/' .. G.SETTINGS.GRAPHICS.texture_scaling .. 'x/' .. file_path .. '.png'
       local file_data, error = NFS.newFileData(full_path)

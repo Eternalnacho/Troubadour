@@ -120,11 +120,11 @@ function TRO.ICONS.getModtagInfo(mod)
   local tag_atlas = mod.prefix and mod.prefix .. '_modicon' or 'modicon'
 
   if not mod.can_load then
-    tag_atlas = "mod_tags"
-    if mod.disabled then
+    if mod.disabled and not mod.icon_path then
       tag_atlas = 'TRO_' .. mod.id .. '_modicon'
     end
   end
+
   return tag_atlas, tag_pos
 end
 
@@ -135,6 +135,7 @@ function TRO.ICONS.buildModtag(mod)
   tag_sprite:define_draw_steps({
     { shader = 'dissolve', shadow_height = 0.05 },
     { shader = 'dissolve' },
+    mod.icon_path and mod.disabled and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1} or nil,
   })
   tag_sprite.float = true
   tag_sprite.states.hover.can = true
