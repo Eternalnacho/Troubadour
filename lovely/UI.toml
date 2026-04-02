@@ -37,11 +37,11 @@ match_indent = true
 ## Localization break part control
 [[patches]]
 [patches.pattern]
-target = 'functions/misc_functions.lua'
+target = '=[SMODS _ "src/utils.lua"]'
 pattern = "elseif part.control.X or part.control.B then"
 position = "before"
 payload = '''
-elseif part.control.br and not (SMODS.Mods["Pokermon"] or {}).can_load then
+elseif part.control.br then
   local height = 0.05
   local gaps = 0.2
   local mid = 0.15
