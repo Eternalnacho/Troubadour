@@ -64,6 +64,13 @@ function math.round(n)
   return n * 10 % 10 < 5 and math.floor(n) or math.ceil(n)
 end
 
+function math.clamp(num, min, max)
+  max = max or math.huge
+  min = min or -math.huge
+  assert(min <= max)
+  return math.min(math.max(num, min), max)
+end
+
 
 -- string functions
 function starts_with(str, start)
@@ -81,6 +88,19 @@ function containsString(str, substring)
 end
 
 -- metafunctions
+
+-- Stealing this one from Emma holy moly that's useful
+function TRO.utils.defer(func, delay)
+  G.E_MANAGER:add_event(Event({
+    trigger = delay and 'after',
+    delay = delay,
+    func = function()
+      func()
+      return true
+    end
+  }))
+end
+
 function TRO.utils.hook_before_function(table, funcname, hook)
   if not table[funcname] then
     table[funcname] = hook

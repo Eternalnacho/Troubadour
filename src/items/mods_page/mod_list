@@ -1,0 +1,115 @@
+local m = assert(SMODS.load_file("src/functions/modpage_helper.lua"))()
+local Row, Col, Text = TRO.UI.create_row, TRO.UI.create_column, TRO.UI.create_text_node
+
+-- SMALLER MODLIST
+
+local statModList_ref = SMODS.GUI.staticModListContent
+SMODS.GUI.staticModListContent = function()
+  if tro_config.mod_icons_only then
+    return TRO.UIDEF.statModList()
+  else
+    return statModList_ref()
+  end
+end
+
+local dynaModList_ref = SMODS.GUI.dynamicModListContent
+SMODS.GUI.dynamicModListContent = function(page, ...)
+  if tro_config.mod_icons_only then
+    return TRO.UIDEF.dynaModList(page)
+  else
+    return dynaModList_ref(page, ...)
+  end
+end
+
+function TRO.UIDEF.statModList()
+  local scale = 0.75
+  local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
+  return Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
+    -- row container
+    Col { padding = 0.05, nodes = {
+      -- column container
+      Col { minw = 5, padding = 0.05, r = 0.1, colour = G.C.CLEAR, nodes = {
+        -- title row
+        Row { padding = 0.05, nodes = {
+          UIBox_button({
+            label = { localize('b_mod_list') },
+            shadow = true,
+            scale = scale * 0.85,
+            colour = G.C.BOOSTER,
+            button = "openModsDirectory",
+            minh = scale,
+            minw = 9
+          }),
+        }},
+        -- add some empty rows for spacing
+        Row { padding = 0.05 },
+        Row { padding = 0.05 },
+        Row { padding = 0.05 },
+        Row { padding = 0.05 },
+        -- dynamic content rendered in this row container
+        -- list of 4 x 4 mods on the current page
+        Row { padding = 0.05, minh = dminh + 1, minw = dminw + 1,
+          nodes = {
+            { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
+          }
+        },
+        -- another empty row for spacing
+        Row { padding = 0.8 },
+        -- page selector
+        -- does not appear when list of mods is empty
+        showingList and SMODS.GUI.createOptionSelector({
+          label = "",
+          scale = 0.8,
+          options = pageOptions,
+          opt_callback = 'update_mod_list',
+          no_pips = true,
+          current_option = ( currentPage )
+        })
+      }}
+    }}
+  }}
+end
+
+function TRO.UIDEF.dynaModList(page)
+  local scale = 0.75
+  local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = m.recalculateModsList(page)
+
+  local modNodes = {}
+  -- If no mods are loaded, show a default message
+  if showingList == false then
+    table.insert(modNodes, Row { padding = 0, nodes = {
+        Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
+      }})
+  else
+    local modCount = 0
+    local id = 0
+    local current_row = {}
+
+    for _, condition in ipairs({
+      function(mod) return not mod.can_load and not mod.disabled end,
+      function(mod) return mod.can_load and mod.config_tab end,
+      function(mod) return mod.can_load and not mod.config_tab end,
+      function(mod) return mod.disabled end,
+    }) do
+      for _, modInfo in ipairs(SMODS.mod_list) do
+        if modCount >= modsRowPerPage * modsColPerRow then break end
+        if condition(modInfo) then
+          id = id + 1
+          if id >= startIndex and id <= endIndex then
+            table.insert(current_row, TRO.ICONS.createModBoxTile(modInfo))
+            modCount = modCount + 1
+            if math.fmod(modCount, modsColPerRow) == 0 then
+              table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })
+              current_row = {}
+            end
+          end
+        end
+      end
+    end
+    if #current_row > 0 then
+      table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })
+    end
+  end
+
+  return Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes }
+end
