@@ -1,8 +1,3 @@
-local m = assert(SMODS.load_file("src/functions/modpage_helper.lua"))()
-local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
-local Row, Col = TRO.UI.create_row, TRO.UI.create_column
-local Text, TextCol = TRO.UI.create_text_node, m.createTextColNode
-
 -- CONTROL SCHEME FUNCTIONS
 
 function G.FUNCS.TRO_open_mod(e)
