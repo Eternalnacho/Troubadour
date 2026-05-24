@@ -3,27 +3,6 @@ TRO.collection_targets = {}
 TRO.UI.targets = { added_target = '' }
 TRO.RNG_states = { prev = nil, latest = nil }
 
--- thank you Overstock and god bless you
-local function can_reroll_into(card_key)
-  local center = G.P_CENTERS[card_key]
-  if not center then return false end
-  if G.GAME.banned_keys and G.GAME.banned_keys[card_key] then return false end
-  if center.no_appear_in_shop then return false end
-
-  if center.yes_pool_flag and (not G.GAME.pool_flags or not G.GAME.pool_flags[center.yes_pool_flag]) then return false end
-  if center.no_pool_flag and (G.GAME.pool_flags and G.GAME.pool_flags[center.no_pool_flag]) then return false end
-
-  if center.set == 'Edition' and not center.in_shop then return false end
-
-  if ({
-    Enhanced = true,
-    Back = true,
-    Spectral = G.GAME.spectral_rate <= 0,
-    Voucher = true
-  })[center.set] then return false end
-  return true
-end
-
 function TRO.FUNCS.auto_reroll(targets)
   -- Start the reroll sim w/ shop_jokers as the first iteration
   for _, v in pairs(G.shop_jokers.cards) do table.insert(TRO.REROLL.key_queue, v.config.center_key) end

@@ -15,7 +15,7 @@ load_dir("src/functions")
 -- Load config page
 assert(SMODS.load_file("src/config_page.lua"))()
 
--- Load auto-reroll and wider collection screen
+-- Load mod features
 load_dir("src/items")
 
 -- Load atlases

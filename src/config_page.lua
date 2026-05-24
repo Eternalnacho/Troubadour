@@ -18,7 +18,7 @@ local function is_chosen(tab)
 end
 
 local function choose_tab(tab)
-    TRO.LAST_OPEN_TAB = tab
+  TRO.LAST_OPEN_TAB = tab
 end
 
 local config_contents = assert(SMODS.load_file("src/settings/collection_pages.lua"))()
@@ -34,20 +34,20 @@ function SMODS.current_mod.config_tab()
         return Root { r = 0.1, nodes = {
           Col { nodes = {
             Row { minh = math.max(1, #config_contents.pages), nodes = {
-              Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3),
-                    colour = troC.colour, outline = 1, outline_colour = troC.outline_colour, emboss = 0.05, nodes = {
-                  Row { nodes = {
-                    Col { r = 0.1, colour = G.C.GREY, emboss = 0.05, nodes = {
-                      create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
-                        ref_table = tro_config, ref_value = page.ref_value_w or ('gallery_width'..page.label:lower()), min = page.minw, max = page.maxw }),
-                      create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
-                        ref_table = tro_config, ref_value = page.ref_value_h or ('gallery_height'..page.label:lower()), min = page.minh, max = page.maxh }),
-                    }}
+              Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3), outline = 1,
+                  colour = troC.colour, outline_colour = troC.outline_colour, emboss = 0.05, nodes = {
+                Row { nodes = {
+                  Col { r = 0.1, colour = G.C.GREY, emboss = 0.05, nodes = {
+                    create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
+                      ref_table = tro_config, ref_value = page.ref_value_w or ('gallery_width'..page.label:lower()), min = page.minw, max = page.maxw }),
+                    create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
+                      ref_table = tro_config, ref_value = page.ref_value_h or ('gallery_height'..page.label:lower()), min = page.minh, max = page.maxh }),
                   }}
                 }}
               }}
             }}
           }}
+        }}
       end
     })
   end)
