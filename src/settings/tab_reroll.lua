@@ -4,7 +4,7 @@ local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
 local Text, Num_Input = Troubadour.UI.create_text_node, Troubadour.UI.create_num_input_node
 local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
-Troubadour.UI.reroll_tab = function()
+Troubadour.UIDEF.reroll_tab = function()
   local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
   Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
   return TroUIBox({

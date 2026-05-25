@@ -3,7 +3,7 @@ local troC = Troubadour.UI.mod_colours
 local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
 local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
-Troubadour.UI.mod_list_tab = function()
+Troubadour.UIDEF.mod_list_tab = function()
   return TroUIBox({
     minw = 7, padding = 0.15, emboss = 0.05, bg_colour = G.C.BLACK,
     contents = {

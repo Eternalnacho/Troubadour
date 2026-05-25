@@ -100,11 +100,11 @@ function SMODS.current_mod.extra_tabs()
 	return {
 		{
 			label = 'Mods List',
-			tab_definition_function = Troubadour.UI.mod_list_tab
+			tab_definition_function = Troubadour.UIDEF.mod_list_tab
 		},
     {
 			label = 'Reroller',
-			tab_definition_function = Troubadour.UI.reroll_tab
+			tab_definition_function = Troubadour.UIDEF.reroll_tab
 		}
 	}
 end
