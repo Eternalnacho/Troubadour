@@ -87,10 +87,29 @@ function containsString(str, substring)
 	return string.find(lowerStr, lowerSubstring, 1, true) ~= nil
 end
 
--- metafunctions
+-- card functions
+function Troubadour.utils.safe_card_from_center(center_key, area)
+	local card = SMODS.create_card({
+		key = "c_base",
+		front = false,
+		area = area,
+		bypass_discovery_center = true,
+		bypass_discovery_ui = true,
+		bypass_lock = true,
+	})
+	local success = pcall(function()
+		card:set_ability(center_key, false, false)
+	end)
+	if success then
+		return card
+	else
+		card:remove()
+		return nil
+	end
+end
 
--- Stealing this one from Emma holy moly that's useful
-function Troubadour.utils.defer(func, delay)
+-- metafunctions
+function Troubadour.defer(func, delay) -- Stealing this one from Emma holy moly that's useful
   G.E_MANAGER:add_event(Event({
     trigger = delay and 'after',
     delay = delay,
@@ -101,7 +120,7 @@ function Troubadour.utils.defer(func, delay)
   }))
 end
 
-function Troubadour.utils.hook_before_function(table, funcname, hook)
+function Troubadour.hook_before_function(table, funcname, hook)
   if not table[funcname] then
     table[funcname] = hook
   else
@@ -113,7 +132,7 @@ function Troubadour.utils.hook_before_function(table, funcname, hook)
   end
 end
 
-function Troubadour.utils.hook_after_function(table, funcname, hook, always_run)
+function Troubadour.hook_after_function(table, funcname, hook, always_run)
   if not table[funcname] then
     table[funcname] = hook
   else
