@@ -167,20 +167,8 @@ function Troubadour.REROLL.check_rates()
 end
 
 function Tag:TRO_remove_tag()
-  G.E_MANAGER:add_event(Event({
-    func = (function()
-      self.HUD_tag.states.visible = false
-      return true
-    end)
-  }))
-  G.E_MANAGER:add_event(Event({
-    trigger = 'after',
-    delay = 0.1,
-    func = (function()
-      self:remove()
-      return true
-    end)
-  }))
+  Troubadour.defer(function() self.HUD_tag.states.visible = false end)
+  Troubadour.defer(function() self:remove() end, {delay = 0.1})
 end
 
 function Troubadour.REROLL.skip_to_last()

@@ -46,12 +46,9 @@ function Troubadour.FUNCS.clear_targets(from_button)
       end
     elseif G.STATE == G.STATES.SHOP and not G.SETTINGS.paused then
       update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname = "Reroll targets cleared"})
-      G.E_MANAGER:add_event(Event({ trigger = 'after', delay = G.SETTINGS.GAMESPEED * 3,
-        func = function()
-          update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
-          return true
-        end
-      }))
+      Troubadour.defer(function()
+        update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
+      end, {delay = G.SETTINGS.GAMESPEED * 3})
     end
   end
 end

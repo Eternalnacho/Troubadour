@@ -109,14 +109,17 @@ function Troubadour.utils.safe_card_from_center(center_key, area)
 end
 
 -- metafunctions
-function Troubadour.defer(func, delay) -- Stealing this one from Emma holy moly that's useful
+function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly that's useful
+  if not args then args = {} end
   G.E_MANAGER:add_event(Event({
-    trigger = delay and 'after',
-    delay = delay,
+    trigger = args.trigger or args.delay and 'after',
+    delay = args.delay,
     func = function()
       func()
       return true
-    end
+    end,
+    blocking = args.blocking or true,
+    blockable = args.blockable or false,
   }))
 end
 

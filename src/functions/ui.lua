@@ -225,14 +225,11 @@ function G.FUNCS.TRO_view_options(e)
 end
 
 function Troubadour.UI.rerender_collection(set)
-  G.E_MANAGER:add_event(Event({
-    func = function()
-      Troubadour.UI.get_page_num, Troubadour.UI.rerendering = false, true
-      Troubadour.UI.rerender(Troubadour.FUNCS.get_type_collection_UIBox_func(set), true, set)
-      Troubadour.UI.get_page_num, Troubadour.UI.rerendering = true, false
-      return true
-    end,
-  }))
+  Troubadour.defer(function()
+    Troubadour.UI.get_page_num, Troubadour.UI.rerendering = false, true
+    Troubadour.UI.rerender(Troubadour.FUNCS.get_type_collection_UIBox_func(set), true, set)
+    Troubadour.UI.get_page_num, Troubadour.UI.rerendering = true, false
+  end)
 end
 
 function Troubadour.UI.config_from_coll()

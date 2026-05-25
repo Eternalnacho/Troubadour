@@ -35,32 +35,30 @@ function Troubadour.FUNCS.auto_roll_event(targets)
     return true
   end
   G.FUNCS.reroll_shop()
+
   -- Empty key queue and edition flags
   Troubadour.REROLL.key_queue = {}
   Troubadour.REROLL.edition_flags = {}
+
   -- Increment amount spent tracker and reroll count tracker
   Troubadour.REROLL.spent = Troubadour.REROLL.spent + G.GAME.current_round.reroll_cost - 1
   Troubadour.REROLL.rerolls = Troubadour.REROLL.rerolls + 1
   -- Check for either limit flag
   if (Troubadour.REROLL.spent + G.GAME.current_round.reroll_cost) > (to_number(G.GAME.dollars) - tro_config.reroll_spend_limit) then Troubadour.REROLL.spend_limit_flag = true end
   if Troubadour.REROLL.rerolls >= tro_config.reroll_limit then Troubadour.REROLL.reroll_limit_flag = true end
+
   -- Re-call event until something stops
-  G.E_MANAGER:add_event(Event {
-    func = function()
-      for _, card in pairs(G.shop_jokers.cards) do
-        Troubadour.REROLL.key_queue[#Troubadour.REROLL.key_queue+1] = card.config.center_key
-        if card.edition then Troubadour.REROLL.edition_flags[card.edition.key] = true end
-      end
-      if Troubadour.FUNCS.check_keys(targets) then
-        G.CONTROLLER.locks.shop_reroll = false
-        return true
-      end
-      Troubadour.FUNCS.auto_roll_event(Troubadour.collection_targets)
+  Troubadour.defer(function()
+    for _, card in pairs(G.shop_jokers.cards) do
+      Troubadour.REROLL.key_queue[#Troubadour.REROLL.key_queue+1] = card.config.center_key
+      if card.edition then Troubadour.REROLL.edition_flags[card.edition.key] = true end
+    end
+    if Troubadour.FUNCS.check_keys(targets) then
+      G.CONTROLLER.locks.shop_reroll = false
       return true
-    end,
-    blocking = false,
-    blockable = true
-  })
+    end
+    Troubadour.FUNCS.auto_roll_event(Troubadour.collection_targets)
+  end, {blocking = false, blockable = true})
   return true
 end
 
@@ -86,7 +84,7 @@ function Troubadour.FUNCS.predictive_reroll(targets)
   G.GAME.used_jokers = used_jokers
   G.GAME.pseudorandom = Troubadour.RNG_states.prev or RNG_state
   -- Reroll
-  G.E_MANAGER:add_event(Event({ func = function() G.FUNCS.reroll_shop() return true end }))
+  Troubadour.defer(G.FUNCS.reroll_shop)
   -- Display results
   Troubadour.FUNCS.display_results(targets)
   -- Reset values to defaults for next time
@@ -107,13 +105,10 @@ function Troubadour.FUNCS.display_results(targets)
   -- Display results for posterity, and for better tracking
   if not Troubadour.FUNCS.check_keys(targets) then print("Reached reroll limit, joker not found")
   else
-    G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.5,
-      func = function()
-        play_sound('holo1')
-        play_sound('timpani')
-        return true
-      end
-    }))
+    Troubadour.defer(function()
+      play_sound('holo1')
+      play_sound('timpani')
+    end, {delay = 0.5})
   end
   print("Total rerolls: " .. Troubadour.REROLL.rerolls)
 end
