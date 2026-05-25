@@ -63,10 +63,6 @@ function TRO_reroll_tab()
                     colour = tro_config.enable_auto_reroll and troC.active or troC.inactive,
                     hooked_colour = tro_config.enable_auto_reroll and darken(troC.active, 0.3) or troC.inactive,
                     ref_value = "reroll_spend_limit", default = 25,
-                    callback = function()
-                      tro_config.reroll_spend_limit = tonumber(tro_config.reroll_spend_limit)
-                      if type(tro_config.reroll_spend_limit) ~= "number" then tro_config.reroll_spend_limit = 0 end
-                    end
                   }
                 }}
               }}
