@@ -100,16 +100,16 @@ function SMODS.current_mod.extra_tabs()
 	return {
 		{
 			label = 'Mods List',
-			tab_definition_function = TRO_mod_list_tab
+			tab_definition_function = Troubadour.UI.mod_list_tab
 		},
     {
 			label = 'Reroller',
-			tab_definition_function = TRO_reroll_tab
+			tab_definition_function = Troubadour.UI.reroll_tab
 		}
 	}
 end
 
-function Troubadour.UI.update_TRO_config()
+function Troubadour.UI.update_config()
   if Troubadour.coll_from_button then
     Troubadour.UI.rerender(Troubadour.UI.config_from_coll, true)
   else
