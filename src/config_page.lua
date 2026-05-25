@@ -110,8 +110,8 @@ function SMODS.current_mod.extra_tabs()
 end
 
 function Troubadour.UI.update_config()
-  if Troubadour.coll_from_button then
-    Troubadour.UI.rerender(Troubadour.UI.config_from_coll, true)
+  if Troubadour.collection_from_button then
+    Troubadour.UI.rerender(Troubadour.UI.config_from_collection, true)
   else
     G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
     Troubadour.UI.rerender(create_UIBox_mods, true)

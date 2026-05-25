@@ -28,7 +28,7 @@ payload = '''
   {n=G.UIT.C, config={align = "cm"}, nodes={ {n=G.UIT.R, config={align = "cm"}, nodes={
     create_option_cycle({options = options, w = 4.5, cycle_shoulders = true, opt_callback = 'SMODS_card_collection_page', current_option = args.TRO_curr_option or 1, colour = G.ACTIVE_MOD_UI and (G.ACTIVE_MOD_UI.ui_config or {}).collection_option_cycle_colour or G.C.RED, no_pips = true, focus_args = {snap_to = true, nav = 'wide'}})
   }} }},
-  Troubadour.coll_from_button and Troubadour.UIDEF.added_key_UI()
-  }} or Troubadour.coll_from_button and {n=G.UIT.R, config={align = "cm"}, nodes={ Troubadour.UIDEF.added_key_UI() }}
+  Troubadour.collection_from_button and Troubadour.UIDEF.added_key_UI()
+  }} or Troubadour.collection_from_button and {n=G.UIT.R, config={align = "cm"}, nodes={ Troubadour.UIDEF.added_key_UI() }}
 '''
 match_indent = true

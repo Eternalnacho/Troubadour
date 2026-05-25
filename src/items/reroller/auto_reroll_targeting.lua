@@ -62,9 +62,9 @@ function Card:click()
     Troubadour.UI.targets.added_target = self.config.center_key
     Troubadour.adding_key = true
     local set = self.config.center.set
-    if Troubadour.FUNCS.get_type_collection_UIBox_func(set) and Troubadour.in_collection and not Troubadour.coll_from_button then
+    if Troubadour.FUNCS.get_type_collection_UIBox_func(set) and Troubadour.in_collection and not Troubadour.collection_from_button then
       Troubadour.UI.rerender_collection(set)
-      Troubadour.coll_from_button = true
+      Troubadour.collection_from_button = true
     elseif Troubadour.in_collection then
       local menu_object = G.OVERLAY_MENU:get_UIE_by_ID('TRO_targetsList')
       if menu_object then

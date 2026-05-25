@@ -194,7 +194,7 @@ end
 
 -- BUTTON FUNCTIONS
 function G.FUNCS.TRO_your_collection(e)
-  Troubadour.coll_from_button = true
+  Troubadour.collection_from_button = true
   G.FUNCS.your_collection()
 end
 
@@ -205,7 +205,7 @@ end
 
 function G.FUNCS.exit_search_collection()
   if G.SETTINGS.paused then
-    Troubadour.coll_from_button = nil
+    Troubadour.collection_from_button = nil
     G.FUNCS.exit_overlay_menu()
   end
 end
@@ -218,9 +218,9 @@ end
 
 function G.FUNCS.TRO_view_options(e)
   G.SETTINGS.paused = true
-  Troubadour.config_from_coll = true
+  Troubadour.config_from_collection = true
   Troubadour.in_collection = false
-  G.FUNCS.overlay_menu{ definition = Troubadour.UI.config_from_coll() }
+  G.FUNCS.overlay_menu{ definition = Troubadour.UI.config_from_collection() }
   G.OVERLAY_MENU:recalculate()
 end
 
@@ -232,7 +232,7 @@ function Troubadour.UI.rerender_collection(set)
   end)
 end
 
-function Troubadour.UI.config_from_coll()
+function Troubadour.UI.config_from_collection()
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
     back_func = 'TRO_exit_coll_config',
@@ -241,7 +241,7 @@ end
 
 function Troubadour.UI.reset_ui_states()
   Troubadour.in_collection = false
-  Troubadour.config_from_coll = nil
+  Troubadour.config_from_collection = nil
   Troubadour.UI.targets.added_target = ''
   Troubadour.UI.get_page_num = true
 end
