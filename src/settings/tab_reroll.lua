@@ -1,12 +1,12 @@
 -- MOD LIST CONFIG TAB UI
-local troC = TRO.UI.mod_colours
-local Row, Col = TRO.UI.create_row, TRO.UI.create_column
-local Text, Num_Input = TRO.UI.create_text_node, TRO.UI.create_num_input_node
-local TroUIBox = TRO.UI.create_UIBox_generic_options_custom
+local troC = Troubadour.UI.mod_colours
+local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local Text, Num_Input = Troubadour.UI.create_text_node, Troubadour.UI.create_num_input_node
+local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
 function TRO_reroll_tab()
   local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-  TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
+  Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
   return TroUIBox({
     padding = 0.15, minw = 7, emboss = 0.05, bg_colour = G.C.BLACK,
     contents = {
@@ -24,7 +24,7 @@ function TRO_reroll_tab()
                     w = 0, h = 0,
                     active_colour = troC.buttons,
                     label = 'Enable Auto Reroll?',
-                    callback = TRO.UI.update_TRO_config,
+                    callback = Troubadour.UI.update_TRO_config,
                     ref_table = tro_config,
                     ref_value = 'enable_auto_reroll'
                   })
@@ -51,10 +51,10 @@ function TRO_reroll_tab()
                     ref_value = "reroll_limit", default = 30,
                     callback = function()
                       local r_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-                      TRO.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + r_cost - 1) - math.summ(r_cost - 1))
+                      Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + r_cost - 1) - math.summ(r_cost - 1))
                     end
                   },
-                  Text { ref_table = TRO.REROLL, ref_value = 'reroll_limit_price', scale = 0.4 }
+                  Text { ref_table = Troubadour.REROLL, ref_value = 'reroll_limit_price', scale = 0.4 }
                 }},
                 Row { padding = 0.0 },
                 Row { padding = 0.05, nodes = {

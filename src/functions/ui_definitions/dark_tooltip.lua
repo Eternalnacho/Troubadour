@@ -1,7 +1,7 @@
 -- DARK TOOLTIP UI DEFINITION
-local troC = TRO.UI.mod_colours
-local Row, Col = TRO.UI.create_row, TRO.UI.create_column
-local TroUIBox = TRO.UI.create_UIBox_generic_options_custom
+local troC = Troubadour.UI.mod_colours
+local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
 -- DO I SERIOUSLY HAVE TO HOOK *UIE FUNCTIONS* ?!
 local uieSV = UIElement.set_values
@@ -22,7 +22,7 @@ function UIElement:hover()
     end
   end
   if self.config and self.config.TRO_dark_tooltip then
-    self.config.h_popup = TRO.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
+    self.config.h_popup = Troubadour.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
     self.config.h_popup_config = { align = "tm", offset = { x = 0, y = -0.1 }, parent = self }
   end
   uiehover(self)
@@ -40,7 +40,7 @@ function UIElement:stop_hover()
   end
 end
 
-function TRO.UIDEF.dark_tooltip(tooltip)
+function Troubadour.UIDEF.dark_tooltip(tooltip)
   local nodes = {}
   local version_col = copy_table(G.C.WHITE); version_col[4] = 0.7
 

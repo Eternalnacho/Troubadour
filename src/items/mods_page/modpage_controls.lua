@@ -32,7 +32,7 @@ function G.FUNCS.TRO_check_tile_ctrls(e)
   end
 end
 
-function TRO.ICONS.get_controls(nodes, args)
+function Troubadour.ICONS.get_controls(nodes, args)
   local ctrls = {}
   local ctrls_key = 'TRO_modControls_tooltip' .. (tro_config.invert_tile_controls and '_i' or '')
   localize{type = 'descriptions', set = 'Other', key = ctrls_key, nodes = ctrls, text_colour = args.colour}

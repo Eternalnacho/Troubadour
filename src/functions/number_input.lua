@@ -19,6 +19,6 @@ end
 
 local text_input_ref = G.FUNCS.text_input
 G.FUNCS.text_input = function(e, ...)
-  TRO.nums_only = e.from_num_input and true
+  Troubadour.nums_only = e.from_num_input and true
   text_input_ref(e, ...)
 end

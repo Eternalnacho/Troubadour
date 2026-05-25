@@ -1,8 +1,8 @@
 -- CONFIG TAB UI
-local troC = TRO.UI.mod_colours
-local Root, Row, Col = TRO.UI.create_root_node, TRO.UI.create_row, TRO.UI.create_column
-local Text, Num_Input = TRO.UI.create_text_node, TRO.UI.create_num_input_node
-local TroUIBox = TRO.UI.create_UIBox_generic_options_custom
+local troC = Troubadour.UI.mod_colours
+local Root, Row, Col = Troubadour.UI.create_root_node, Troubadour.UI.create_row, Troubadour.UI.create_column
+local Text, Num_Input = Troubadour.UI.create_text_node, Troubadour.UI.create_num_input_node
+local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
 SMODS.current_mod.ui_config = {
   colour = troC.colour,
@@ -14,11 +14,11 @@ SMODS.current_mod.ui_config = {
 }
 
 local function is_chosen(tab)
-  return TRO.LAST_OPEN_TAB == tab
+  return Troubadour.LAST_OPEN_TAB == tab
 end
 
 local function choose_tab(tab)
-  TRO.LAST_OPEN_TAB = tab
+  Troubadour.LAST_OPEN_TAB = tab
 end
 
 local config_contents = assert(SMODS.load_file("src/settings/collection_pages.lua"))()
@@ -26,7 +26,7 @@ function SMODS.current_mod.config_tab()
   local vertical_tabs = {}
   choose_tab "Jokers"
 
-  TRO.utils.for_each(config_contents.pages, function(page)
+  Troubadour.utils.for_each(config_contents.pages, function(page)
     table.insert(vertical_tabs, {
       label = page.label..'s',
       chosen = is_chosen(page.label..'s'),
@@ -59,7 +59,7 @@ function SMODS.current_mod.config_tab()
         nodes = { Text{ align = "tm", text = "Widen Collections", scale = 0.7 } } },
       Row { padding = 0, align = "tl", colour = G.C.CLEAR,
         nodes = {
-          TRO.UI.create_column_tabs({
+          Troubadour.UI.create_column_tabs({
             tab_alignment = 'tl',
             text_scale = 0.4,
             snap_to_nav = true,
@@ -109,12 +109,12 @@ function SMODS.current_mod.extra_tabs()
 	}
 end
 
-function TRO.UI.update_TRO_config()
-  if TRO.coll_from_button then
-    TRO.UI.rerender(TRO.UI.config_from_coll, true)
+function Troubadour.UI.update_TRO_config()
+  if Troubadour.coll_from_button then
+    Troubadour.UI.rerender(Troubadour.UI.config_from_coll, true)
   else
     G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
-    TRO.UI.rerender(create_UIBox_mods, true)
+    Troubadour.UI.rerender(create_UIBox_mods, true)
   end
 end
 

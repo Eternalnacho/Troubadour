@@ -1,5 +1,5 @@
 -- SHOP REROLL SIMULATION FUNCTIONS
-TRO.REROLL = {
+Troubadour.REROLL = {
   key_queue = {},
   tag_cache = {},
   tag_queue = {},
@@ -13,59 +13,59 @@ TRO.REROLL = {
   reroll_spend_limit = tro_config.reroll_spend_limit,
 }
 
-function TRO.REROLL.simulate_reroll()
-  TRO.reroll_cost = TRO.reroll_cost or G.GAME.current_round.reroll_cost
-  if (TRO.REROLL.spent + TRO.reroll_cost) > (to_number(G.GAME.dollars) - tro_config.reroll_spend_limit) then
-    TRO.REROLL.spend_limit_flag = true
+function Troubadour.REROLL.simulate_reroll()
+  Troubadour.reroll_cost = Troubadour.reroll_cost or G.GAME.current_round.reroll_cost
+  if (Troubadour.REROLL.spent + Troubadour.reroll_cost) > (to_number(G.GAME.dollars) - tro_config.reroll_spend_limit) then
+    Troubadour.REROLL.spend_limit_flag = true
     return
   end
   -- Tracking total money spent
-  TRO.REROLL.spent = TRO.REROLL.spent + TRO.reroll_cost
+  Troubadour.REROLL.spent = Troubadour.REROLL.spent + Troubadour.reroll_cost
   -- Accounting for free rerolls in spending calculations
-  TRO.free_rerolls = TRO.free_rerolls or G.GAME.current_round.free_rerolls
-  local final_free = TRO.free_rerolls > 0
-  TRO.free_rerolls = math.max(TRO.free_rerolls - 1, 0)
-  TRO.REROLL.calculate_reroll_cost(final_free)
+  Troubadour.free_rerolls = Troubadour.free_rerolls or G.GAME.current_round.free_rerolls
+  local final_free = Troubadour.free_rerolls > 0
+  Troubadour.free_rerolls = math.max(Troubadour.free_rerolls - 1, 0)
+  Troubadour.REROLL.calculate_reroll_cost(final_free)
   -- Clearing the "shop jokers" in simulation
-  for i = #TRO.REROLL.key_queue, 1, -1 do
-    if G.GAME.used_jokers[TRO.REROLL.key_queue[i]] then G.GAME.used_jokers[TRO.REROLL.key_queue[i]] = nil end
-    table.remove(TRO.REROLL.key_queue, i)
+  for i = #Troubadour.REROLL.key_queue, 1, -1 do
+    if G.GAME.used_jokers[Troubadour.REROLL.key_queue[i]] then G.GAME.used_jokers[Troubadour.REROLL.key_queue[i]] = nil end
+    table.remove(Troubadour.REROLL.key_queue, i)
   end
-  TRO.REROLL.tag_queue = {}
+  Troubadour.REROLL.tag_queue = {}
   -- Get next set of shop jokers
   for _ = 1, G.GAME.shop.joker_max do
-    TRO.REROLL.get_next_shop_key()
+    Troubadour.REROLL.get_next_shop_key()
   end
   -- Increment reroll count
-  TRO.REROLL.rerolls = TRO.REROLL.rerolls + 1
-  if TRO.REROLL.rerolls >= tro_config.reroll_limit then TRO.REROLL.reroll_limit_flag = true end
+  Troubadour.REROLL.rerolls = Troubadour.REROLL.rerolls + 1
+  if Troubadour.REROLL.rerolls >= tro_config.reroll_limit then Troubadour.REROLL.reroll_limit_flag = true end
 end
 
-function TRO.REROLL.calculate_reroll_cost(skip_increase)
-  TRO.reroll_cost_inc = TRO.reroll_cost_inc or 0
-  if not skip_increase then TRO.reroll_cost_inc = TRO.reroll_cost_inc + 1 end
-  TRO.reroll_cost = G.GAME.current_round.reroll_cost + TRO.reroll_cost_inc
+function Troubadour.REROLL.calculate_reroll_cost(skip_increase)
+  Troubadour.reroll_cost_inc = Troubadour.reroll_cost_inc or 0
+  if not skip_increase then Troubadour.reroll_cost_inc = Troubadour.reroll_cost_inc + 1 end
+  Troubadour.reroll_cost = G.GAME.current_round.reroll_cost + Troubadour.reroll_cost_inc
 end
 
-function TRO.REROLL.get_next_shop_key()
+function Troubadour.REROLL.get_next_shop_key()
   -- Checking tags for store modifiers
-  local k_shop_tag, k_tag_type = TRO.REROLL.get_next_shop_tag('create')
-  local e_shop_tag, e_tag_type = TRO.REROLL.get_next_shop_tag('modify')
-  local args = TRO.REROLL.check_rates()
+  local k_shop_tag, k_tag_type = Troubadour.REROLL.get_next_shop_tag('create')
+  local e_shop_tag, e_tag_type = Troubadour.REROLL.get_next_shop_tag('modify')
+  local args = Troubadour.REROLL.check_rates()
   -- Check if tag changes rates / keys
   if k_shop_tag then
-    TRO.REROLL.calculate_shop_tag(k_shop_tag, k_tag_type, args)
-    table.insert(TRO.REROLL.tag_cache, k_shop_tag)
-    table.insert(TRO.REROLL.tag_queue, k_shop_tag)
+    Troubadour.REROLL.calculate_shop_tag(k_shop_tag, k_tag_type, args)
+    table.insert(Troubadour.REROLL.tag_cache, k_shop_tag)
+    table.insert(Troubadour.REROLL.tag_queue, k_shop_tag)
   end
   if e_shop_tag then
-    TRO.REROLL.calculate_shop_tag(e_shop_tag, e_tag_type, args)
-    table.insert(TRO.REROLL.tag_cache, e_shop_tag)
-    table.insert(TRO.REROLL.tag_queue, k_shop_tag)
+    Troubadour.REROLL.calculate_shop_tag(e_shop_tag, e_tag_type, args)
+    table.insert(Troubadour.REROLL.tag_cache, e_shop_tag)
+    table.insert(Troubadour.REROLL.tag_queue, k_shop_tag)
   end
   -- if there's a forced key we know what joker will appear
   if args.key then
-    TRO.REROLL.key_queue[#TRO.REROLL.key_queue+1] = args.key
+    Troubadour.REROLL.key_queue[#Troubadour.REROLL.key_queue+1] = args.key
   -- *now* we get the pool and so on
   else
     local _pool, _pool_key = get_current_pool(args.set, args.rarity, args.legendary, args.key_append)
@@ -75,30 +75,30 @@ function TRO.REROLL.get_next_shop_key()
         it = it + 1
         center_key = pseudorandom_element(_pool, pseudoseed(_pool_key..'_resample'..it))
     end
-    TRO.REROLL.key_queue[#TRO.REROLL.key_queue+1] = center_key
+    Troubadour.REROLL.key_queue[#Troubadour.REROLL.key_queue+1] = center_key
   end
   -- counting editions
   if args.edition then
-    TRO.REROLL.edition_flags[args.edition] = true
+    Troubadour.REROLL.edition_flags[args.edition] = true
   elseif args.set == 'Joker' then
     local edition = poll_edition('edi'..(args.key_append or '')..G.GAME.round_resets.ante)
-    if edition then TRO.REROLL.edition_flags[edition] = true end
+    if edition then Troubadour.REROLL.edition_flags[edition] = true end
   end
-  G.GAME.used_jokers[TRO.REROLL.key_queue[#TRO.REROLL.key_queue]] = true
+  G.GAME.used_jokers[Troubadour.REROLL.key_queue[#Troubadour.REROLL.key_queue]] = true
 end
 
-function TRO.REROLL.get_next_shop_tag(_type)
+function Troubadour.REROLL.get_next_shop_tag(_type)
   for _, v in ipairs(G.GAME.tags) do
-    if v.config.type == 'store_joker_'.._type and not TRO.utils.contains(TRO.REROLL.tag_cache, v) then
+    if v.config.type == 'store_joker_'.._type and not Troubadour.utils.contains(Troubadour.REROLL.tag_cache, v) then
       return v, v.config.type
     end
   end
 end
 
-function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
-  TRO.from_tag = true
+function Troubadour.REROLL.calculate_shop_tag(tag, tag_type, args)
+  Troubadour.from_tag = true
   local flags = SMODS.calculate_context({prevent_tag_trigger = tag, other_context = {type = tag_type, area = G.shop_jokers}})
-  if flags and flags.prevent_trigger or TRO.utils.contains(TRO.REROLL.tag_cache, tag) then return end
+  if flags and flags.prevent_trigger or Troubadour.utils.contains(Troubadour.REROLL.tag_cache, tag) then return end
   if tag_type == 'store_joker_create' then
     -- There are only two vanilla store_joker_create tags
     if tag.name == 'Rare Tag' then
@@ -112,7 +112,7 @@ function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
     -- Modded store_joker_create tags
     else
       local card = tag:apply_to_run({type = 'store_joker_create', area = G.shop_jokers})
-      for k, v in pairs(TRO.REROLL.tag_args) do
+      for k, v in pairs(Troubadour.REROLL.tag_args) do
         args[k] = v
       end
       if card then card:remove() end
@@ -120,13 +120,13 @@ function TRO.REROLL.calculate_shop_tag(tag, tag_type, args)
   else
     local tag_center = G.P_TAGS[tag.key]
     if tag_center and tag_center.config.edition and args.set == 'Joker' then
-      TRO.REROLL.edition_flags['e_'..tag_center.config.edition] = true
+      Troubadour.REROLL.edition_flags['e_'..tag_center.config.edition] = true
     end
   end
-  TRO.from_tag = nil
+  Troubadour.from_tag = nil
 end
 
-function TRO.REROLL.get_card_type_rates()
+function Troubadour.REROLL.get_card_type_rates()
   G.GAME.spectral_rate = G.GAME.spectral_rate or 0
   -- need to preserve order to leave RNG unchanged
   local rates = {
@@ -144,8 +144,8 @@ function TRO.REROLL.get_card_type_rates()
   return rates
 end
 
-function TRO.REROLL.check_rates()
-  local rates = TRO.REROLL.get_card_type_rates()
+function Troubadour.REROLL.check_rates()
+  local rates = Troubadour.REROLL.get_card_type_rates()
   local check_rate = 0
   local total_rate = G.GAME.joker_rate + G.GAME.playing_card_rate
   for _, v in ipairs(SMODS.ConsumableType.ctype_buffer) do
@@ -183,26 +183,26 @@ function Tag:TRO_remove_tag()
   }))
 end
 
-function TRO.REROLL.skip_to_last()
-  for _, v in pairs(TRO.REROLL.tag_cache) do
-    if not TRO.utils.contains(TRO.REROLL.tag_queue, v) then v:TRO_remove_tag() end
+function Troubadour.REROLL.skip_to_last()
+  for _, v in pairs(Troubadour.REROLL.tag_cache) do
+    if not Troubadour.utils.contains(Troubadour.REROLL.tag_queue, v) then v:TRO_remove_tag() end
   end
 
-  if TRO.REROLL.rerolls > 0 then
-    inc_career_stat('c_shop_dollars_spent', TRO.REROLL.spent - TRO.reroll_cost)
-    inc_career_stat('c_shop_rerolls', TRO.REROLL.rerolls - 1)
-    ease_dollars(-(TRO.REROLL.spent - TRO.reroll_cost))
+  if Troubadour.REROLL.rerolls > 0 then
+    inc_career_stat('c_shop_dollars_spent', Troubadour.REROLL.spent - Troubadour.reroll_cost)
+    inc_career_stat('c_shop_rerolls', Troubadour.REROLL.rerolls - 1)
+    ease_dollars(-(Troubadour.REROLL.spent - Troubadour.reroll_cost))
   end
 
-  TRO.skip_anims = true
+  Troubadour.skip_anims = true
   if next(G.jokers.cards) then
-    for i = 1, TRO.REROLL.rerolls - 1 do
+    for i = 1, Troubadour.REROLL.rerolls - 1 do
       SMODS.calculate_context({reroll_shop = true, cost = G.GAME.current_round.reroll_cost + (i-1)})
     end
   end
-  TRO.skip_anims = nil
+  Troubadour.skip_anims = nil
 
-  G.GAME.current_round.reroll_cost = G.GAME.current_round.reroll_cost + TRO.REROLL.rerolls - 1
-  G.GAME.current_round.reroll_cost_increase = G.GAME.current_round.reroll_cost_increase + TRO.reroll_cost_inc - 1
-  G.GAME.round_scores.times_rerolled.amt = G.GAME.round_scores.times_rerolled.amt + TRO.REROLL.rerolls - 1
+  G.GAME.current_round.reroll_cost = G.GAME.current_round.reroll_cost + Troubadour.REROLL.rerolls - 1
+  G.GAME.current_round.reroll_cost_increase = G.GAME.current_round.reroll_cost_increase + Troubadour.reroll_cost_inc - 1
+  G.GAME.round_scores.times_rerolled.amt = G.GAME.round_scores.times_rerolled.amt + Troubadour.REROLL.rerolls - 1
 end

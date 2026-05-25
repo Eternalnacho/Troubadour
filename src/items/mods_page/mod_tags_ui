@@ -1,29 +1,29 @@
 local m = assert(SMODS.load_file("src/items/mods_page/modpage_helper.lua"))()
-local Row, Col = TRO.UI.create_row, TRO.UI.create_column
-local Text, TextCol = TRO.UI.create_text_node, m.createTextColNode
+local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local Text, TextCol = Troubadour.UI.create_text_node, m.createTextColNode
 
 -- MOD-ICON MODS PAGE UIDEFS
 
-function TRO.UIDEF.mod_icon_popup(mod, scale)
-  local col, bg_col, text_col = TRO.ICONS.get_mod_popup_colours(mod)
+function Troubadour.UIDEF.mod_icon_popup(mod, scale)
+  local col, bg_col, text_col = Troubadour.ICONS.get_mod_popup_colours(mod)
   local version_col = copy_table(G.C.WHITE); version_col[4] = 0.6
   local the_colour = mix_colours(G.C.BLACK, G.C.WHITE, 0.2); the_colour[4] = 0.8
   local label_nodes = {}
   -- Get Mod Name Node
-  TRO.ICONS.get_modName_node(mod, label_nodes, {scale = scale * 0.65, colour = text_col})
+  Troubadour.ICONS.get_modName_node(mod, label_nodes, {scale = scale * 0.65, colour = text_col})
   -- Get "Lovely Only" Node
-  TRO.ICONS.get_lovely_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
+  Troubadour.ICONS.get_lovely_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
   -- Get Version Node
-  TRO.ICONS.get_version_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
+  Troubadour.ICONS.get_version_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
   -- Get Author DynaText Node
-  TRO.ICONS.get_authorDyna_node(mod, label_nodes, {scale = scale * 0.4, colour = the_colour})
+  Troubadour.ICONS.get_authorDyna_node(mod, label_nodes, {scale = scale * 0.4, colour = the_colour})
   -- Priority Node ???
-  TRO.ICONS.get_priority_node(mod, label_nodes, {scale = scale * 0.5, colour = version_col})
+  Troubadour.ICONS.get_priority_node(mod, label_nodes, {scale = scale * 0.5, colour = version_col})
   -- Get Load State Node
-  TRO.ICONS.get_loadState_nodes(mod, label_nodes, {scale = scale * 0.4, colour = version_col})
+  Troubadour.ICONS.get_loadState_nodes(mod, label_nodes, {scale = scale * 0.4, colour = version_col})
 
   -- Controls at bottom of UIBox
-  TRO.ICONS.get_controls(label_nodes, {scale = scale * 0.3, colour = version_col})
+  Troubadour.ICONS.get_controls(label_nodes, {scale = scale * 0.3, colour = version_col})
 
   return Col { r = 0.2, padding = 0.1, emboss = 0.1, colour = bg_col,
     outline = 1, outline_colour = mix_colours(col, G.C.WHITE, 0.7),
@@ -34,7 +34,7 @@ function TRO.UIDEF.mod_icon_popup(mod, scale)
     }}
 end
 
-function TRO.ICONS.get_mod_popup_colours(mod)
+function Troubadour.ICONS.get_mod_popup_colours(mod)
   local col, bg_col, text_col
   if mod.can_load then
     col = mix_colours(G.C.UI.BACKGROUND_INACTIVE, {0, 0.1, 0.2, 1}, 0.8)
@@ -50,20 +50,20 @@ function TRO.ICONS.get_mod_popup_colours(mod)
   return col, bg_col, text_col
 end
 
-function TRO.ICONS.get_modName_node(mod, nodes, args)
+function Troubadour.ICONS.get_modName_node(mod, nodes, args)
   local modname_split = SMODS.smart_line_splitter(mod.name, 18, true)
   for _,v in ipairs(modname_split) do
     table.insert(nodes, TextCol(v, args.scale, args.colour))
   end
 end
 
-function TRO.ICONS.get_lovely_node(mod, nodes, args)
+function Troubadour.ICONS.get_lovely_node(mod, nodes, args)
   if mod.lovely_only then
     table.insert(nodes, TextCol(localize('b_lovely_mod'), args.scale, args.colour))
   end
 end
 
-function TRO.ICONS.get_version_node(mod, nodes, args)
+function Troubadour.ICONS.get_version_node(mod, nodes, args)
   local sub_node = {}
   if mod.version and mod.version ~= '0.0.0' then
     table.insert(sub_node, TextCol(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
@@ -71,7 +71,7 @@ function TRO.ICONS.get_version_node(mod, nodes, args)
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
 
-function TRO.ICONS.get_authorDyna_node(mod, nodes, args)
+function Troubadour.ICONS.get_authorDyna_node(mod, nodes, args)
   if not mod.lovely_only then
     local tx = m.concatAuthors(mod.author)
     local authorDynatext = DynaText{
@@ -92,7 +92,7 @@ function TRO.ICONS.get_authorDyna_node(mod, nodes, args)
   end
 end
 
-function TRO.ICONS.get_priority_node(mod, nodes, args)
+function Troubadour.ICONS.get_priority_node(mod, nodes, args)
   local sub_node = {}
   if not _RELEASE_MODE and mod.priority then
     table.insert(nodes, TextCol(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
@@ -100,7 +100,7 @@ function TRO.ICONS.get_priority_node(mod, nodes, args)
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
 
-function TRO.ICONS.get_loadState_nodes(mod, nodes, args)
+function Troubadour.ICONS.get_loadState_nodes(mod, nodes, args)
   local sub_node = {}
   local tag_state = 'load_success'
   local specific_vars = {}

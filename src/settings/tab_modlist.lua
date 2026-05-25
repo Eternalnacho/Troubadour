@@ -1,7 +1,7 @@
 -- MOD LIST CONFIG TAB UI
-local troC = TRO.UI.mod_colours
-local Row, Col, Text = TRO.UI.create_row, TRO.UI.create_column, TRO.UI.create_text_node
-local TroUIBox = TRO.UI.create_UIBox_generic_options_custom
+local troC = Troubadour.UI.mod_colours
+local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
+local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
 function TRO_mod_list_tab()
   return TroUIBox({
@@ -18,7 +18,7 @@ function TRO_mod_list_tab()
                 align = 'cr',
                 active_colour = troC.buttons,
                 label = 'Use Shortened Mods Page?',
-                callback = TRO.UI.update_TRO_config,
+                callback = Troubadour.UI.update_TRO_config,
                 ref_table = tro_config,
                 ref_value = 'mod_icons_only'
               })}
@@ -29,7 +29,7 @@ function TRO_mod_list_tab()
                 align = 'cr',
                 active_colour = troC.buttons,
                 label = 'Switch Click Controls?',
-                callback = TRO.UI.update_TRO_config,
+                callback = Troubadour.UI.update_TRO_config,
                 ref_table = tro_config,
                 ref_value = 'invert_tile_controls'
               })}

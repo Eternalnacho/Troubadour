@@ -11,7 +11,7 @@ pattern = '''local text = hook_config.text'''
 position = "before"
 payload = '''
 
-if TRO.nums_only then corpus = '1234567890' end
+if Troubadour.nums_only then corpus = '1234567890' end
 
 '''
 match_indent = true

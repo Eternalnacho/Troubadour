@@ -30,9 +30,9 @@ create_UIBox_your_collection_vouchers = function()
 end
 
 -- Consumables
-TRO.UI.widen_consumable_screens = function()
+Troubadour.UI.widen_consumable_screens = function()
   for _, con in pairs(SMODS.ConsumableTypes) do
-    local amt = #TRO.utils.filter(G.P_CENTER_POOLS[con.key], function(v) return not v.no_collection end)
+    local amt = #Troubadour.utils.filter(G.P_CENTER_POOLS[con.key], function(v) return not v.no_collection end)
     local con_w = math.round(tro_config.gallery_width_c)
     local con_h = math.round(tro_config.gallery_height_c)
     -- evening out the rows

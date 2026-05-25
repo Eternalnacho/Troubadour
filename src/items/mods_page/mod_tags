@@ -1,9 +1,9 @@
 local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
-local Col = TRO.UI.create_column
+local Col = Troubadour.UI.create_column
 
 -- MOD TAG + ICON BUILDING
 
-function TRO.ICONS.getModtagInfo(mod)
+function Troubadour.ICONS.getModtagInfo(mod)
   local tag_pos = { x = 0, y = 0 }
   local tag_atlas = mod.prefix and mod.prefix .. '_modicon' or 'modicon'
 
@@ -16,8 +16,8 @@ function TRO.ICONS.getModtagInfo(mod)
   return tag_atlas, tag_pos
 end
 
-function TRO.ICONS.buildModtag(mod)
-  local tag_atlas, tag_pos = TRO.ICONS.getModtagInfo(mod)
+function Troubadour.ICONS.buildModtag(mod)
+  local tag_atlas, tag_pos = Troubadour.ICONS.getModtagInfo(mod)
   local tag_sprite = SMODS.create_sprite(0, 0, 0.8 * 1, 0.8 * 1, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
   tag_sprite.T.scale = 1
   tag_sprite:define_draw_steps({
@@ -42,7 +42,7 @@ function TRO.ICONS.buildModtag(mod)
           play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
           play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
         end
-        _self.config.h_popup = TRO.UIDEF.mod_icon_popup(mod, 0.75)
+        _self.config.h_popup = Troubadour.UIDEF.mod_icon_popup(mod, 0.75)
         _self.config.h_popup_config = { align = 'tm', offset = { x = 0, y = -0.3 }, parent = _self }
         Node.hover(_self)
         if _self.children.alert then
@@ -74,7 +74,7 @@ function TRO.ICONS.buildModtag(mod)
   return tag_sprite
 end
 
-function TRO.ICONS.createModBoxTile(modInfo)
+function Troubadour.ICONS.createModBoxTile(modInfo)
   local units, mod_tile
   if modInfo.should_enable == nil then
     modInfo.should_enable = not modInfo.disabled
@@ -87,7 +87,7 @@ function TRO.ICONS.createModBoxTile(modInfo)
   mod_tile = Tile({
     ref_table = modInfo,
     ref_value = 'should_enable',
-    object = TRO.ICONS.buildModtag(modInfo),
+    object = Troubadour.ICONS.buildModtag(modInfo),
     object_args = {w = units, h = units, colour = G.C.BLUE},
     TRO_mods_tile = true,
     no_outline = true,

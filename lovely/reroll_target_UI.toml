@@ -10,7 +10,7 @@ priority = 0
 target = '=[SMODS _ "src/ui.lua"]'
 pattern = '''if not e or not e.cycle_config then return end'''
 position = "after"
-payload = '''if TRO.UI.get_page_num then TRO.UI.curr_page = e.cycle_config.current_option end'''
+payload = '''if Troubadour.UI.get_page_num then Troubadour.UI.curr_page = e.cycle_config.current_option end'''
 match_indent = true
 
 # Adding the "Search Target Added" UI to collection pages
@@ -28,7 +28,7 @@ payload = '''
   {n=G.UIT.C, config={align = "cm"}, nodes={ {n=G.UIT.R, config={align = "cm"}, nodes={
     create_option_cycle({options = options, w = 4.5, cycle_shoulders = true, opt_callback = 'SMODS_card_collection_page', current_option = args.TRO_curr_option or 1, colour = G.ACTIVE_MOD_UI and (G.ACTIVE_MOD_UI.ui_config or {}).collection_option_cycle_colour or G.C.RED, no_pips = true, focus_args = {snap_to = true, nav = 'wide'}})
   }} }},
-  TRO.coll_from_button and TRO.UIDEF.added_key_UI()
-  }} or TRO.coll_from_button and {n=G.UIT.R, config={align = "cm"}, nodes={ TRO.UIDEF.added_key_UI() }}
+  Troubadour.coll_from_button and Troubadour.UIDEF.added_key_UI()
+  }} or Troubadour.coll_from_button and {n=G.UIT.R, config={align = "cm"}, nodes={ Troubadour.UIDEF.added_key_UI() }}
 '''
 match_indent = true

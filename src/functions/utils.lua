@@ -1,8 +1,8 @@
 -- UTILITY FUNCTIONS
-TRO.utils = {}
+Troubadour.utils = {}
 
 -- List functions
-function TRO.utils.contains(table, element)
+function Troubadour.utils.contains(table, element)
   for _, value in pairs(table) do
     if value == element then
       return true
@@ -11,7 +11,7 @@ function TRO.utils.contains(table, element)
   return false
 end
 
-function TRO.utils.filter(list, func)
+function Troubadour.utils.filter(list, func)
   local new_list = {}
   for _, v in pairs(list) do
     if func(v) then
@@ -21,17 +21,17 @@ function TRO.utils.filter(list, func)
   return new_list
 end
 
-function TRO.utils.for_each(list, func)
+function Troubadour.utils.for_each(list, func)
   for _, v in pairs(list) do
     func(v)
   end
 end
 
-function TRO.utils.copy_list(list)
-  return TRO.utils.map_list(list, TRO.utils.id)
+function Troubadour.utils.copy_list(list)
+  return Troubadour.utils.map_list(list, Troubadour.utils.id)
 end
 
-function TRO.utils.map_list(list, func)
+function Troubadour.utils.map_list(list, func)
   local new_list = {}
   for _, v in pairs(list) do
     new_list[#new_list + 1] = func(v)
@@ -39,11 +39,11 @@ function TRO.utils.map_list(list, func)
   return new_list
 end
 
-function TRO.utils.id(a)
+function Troubadour.utils.id(a)
   return a
 end
 
-function TRO.utils.tableToString(tbl, sep)
+function Troubadour.utils.tableToString(tbl, sep)
   local result = {}
   for _, line in ipairs(tbl) do
       local cleanedLine = line:gsub("{.-}", "")
@@ -90,7 +90,7 @@ end
 -- metafunctions
 
 -- Stealing this one from Emma holy moly that's useful
-function TRO.utils.defer(func, delay)
+function Troubadour.utils.defer(func, delay)
   G.E_MANAGER:add_event(Event({
     trigger = delay and 'after',
     delay = delay,
@@ -101,7 +101,7 @@ function TRO.utils.defer(func, delay)
   }))
 end
 
-function TRO.utils.hook_before_function(table, funcname, hook)
+function Troubadour.utils.hook_before_function(table, funcname, hook)
   if not table[funcname] then
     table[funcname] = hook
   else
@@ -113,7 +113,7 @@ function TRO.utils.hook_before_function(table, funcname, hook)
   end
 end
 
-function TRO.utils.hook_after_function(table, funcname, hook, always_run)
+function Troubadour.utils.hook_after_function(table, funcname, hook, always_run)
   if not table[funcname] then
     table[funcname] = hook
   else

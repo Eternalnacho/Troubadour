@@ -1,5 +1,5 @@
 tro_config = SMODS.current_mod.config
-TRO = {
+Troubadour = {
   FUNCS = {},
   UIDEF = {},
   UI = {},

@@ -1,12 +1,12 @@
 local m = assert(SMODS.load_file("src/items/mods_page/modpage_helper.lua"))()
-local Row, Col, Text = TRO.UI.create_row, TRO.UI.create_column, TRO.UI.create_text_node
+local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
 
 -- SMALLER MODLIST
 
 local statModList_ref = SMODS.GUI.staticModListContent
 SMODS.GUI.staticModListContent = function()
   if tro_config.mod_icons_only then
-    return TRO.UIDEF.statModList()
+    return Troubadour.UIDEF.statModList()
   else
     return statModList_ref()
   end
@@ -15,13 +15,13 @@ end
 local dynaModList_ref = SMODS.GUI.dynamicModListContent
 SMODS.GUI.dynamicModListContent = function(page, ...)
   if tro_config.mod_icons_only then
-    return TRO.UIDEF.dynaModList(page)
+    return Troubadour.UIDEF.dynaModList(page)
   else
     return dynaModList_ref(page, ...)
   end
 end
 
-function TRO.UIDEF.statModList()
+function Troubadour.UIDEF.statModList()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
   return Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
@@ -70,7 +70,7 @@ function TRO.UIDEF.statModList()
   }}
 end
 
-function TRO.UIDEF.dynaModList(page)
+function Troubadour.UIDEF.dynaModList(page)
   local scale = 0.75
   local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = m.recalculateModsList(page)
 
@@ -96,7 +96,7 @@ function TRO.UIDEF.dynaModList(page)
         if condition(modInfo) then
           id = id + 1
           if id >= startIndex and id <= endIndex then
-            table.insert(current_row, TRO.ICONS.createModBoxTile(modInfo))
+            table.insert(current_row, Troubadour.ICONS.createModBoxTile(modInfo))
             modCount = modCount + 1
             if math.fmod(modCount, modsColPerRow) == 0 then
               table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })

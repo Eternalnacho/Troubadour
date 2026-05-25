@@ -2,19 +2,19 @@
 
 local s_create_card_ref = SMODS.create_card
 SMODS.create_card = function(t)
-  if TRO.in_reroll_sim and TRO.from_tag then
-    TRO.REROLL.tag_args = copy_table(t)
-    TRO.REROLL.from_scc = true
+  if Troubadour.in_reroll_sim and Troubadour.from_tag then
+    Troubadour.REROLL.tag_args = copy_table(t)
+    Troubadour.REROLL.from_scc = true
   end
   local ret = s_create_card_ref(t)
-  TRO.REROLL.from_scc, TRO.from_tag = nil, nil
+  Troubadour.REROLL.from_scc, Troubadour.from_tag = nil, nil
   return ret
 end
 
 local create_card_ref = create_card
 create_card = function(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append, ...)
-  if TRO.in_reroll_sim and not TRO.REROLL.from_scc then
-    TRO.REROLL.tag_args = {
+  if Troubadour.in_reroll_sim and not Troubadour.REROLL.from_scc then
+    Troubadour.REROLL.tag_args = {
       set = _type,
       legendary = legendary,
       rarity = _rarity,

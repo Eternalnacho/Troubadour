@@ -1,15 +1,15 @@
 -- UI FUNCTIONS
-TRO.UI.mod_colours = {
+Troubadour.UI.mod_colours = {
   buttons = mix_colours(G.C.GREEN, G.C.GREY, 0.8),
   active = mix_colours(G.C.FILTER, G.C.RED, 0.5),
   inactive = darken(copy_table(G.C.GREY), 0.5),
   colour = mix_colours(G.C.UI.BACKGROUND_INACTIVE, {0, 0.1, 0.2, 1}, 0.8),
 }
-TRO.UI.mod_colours.bg_colour = mix_colours({0.5, 0.5, 0.5, 1}, TRO.UI.mod_colours.colour, 0.5)
-TRO.UI.mod_colours.outline_colour = mix_colours(TRO.UI.mod_colours.colour, G.C.WHITE, 0.7)
+Troubadour.UI.mod_colours.bg_colour = mix_colours({0.5, 0.5, 0.5, 1}, Troubadour.UI.mod_colours.colour, 0.5)
+Troubadour.UI.mod_colours.outline_colour = mix_colours(Troubadour.UI.mod_colours.colour, G.C.WHITE, 0.7)
 
 -- UIElement args
-function TRO.UI.UIE_config_args(args)
+function Troubadour.UI.UIE_config_args(args)
   return {
     align = args.align or "cm",
     padding = args.padding or 0.05,
@@ -34,31 +34,31 @@ function TRO.UI.UIE_config_args(args)
   }
 end
 
-function TRO.UI.create_column(args)
+function Troubadour.UI.create_column(args)
   return {
     n = G.UIT.C,
-    config = TRO.UI.UIE_config_args(args),
+    config = Troubadour.UI.UIE_config_args(args),
     nodes = args.nodes or {}
   }
 end
 
-function TRO.UI.create_row(args)
+function Troubadour.UI.create_row(args)
   return {
     n = G.UIT.R,
-    config = TRO.UI.UIE_config_args(args),
+    config = Troubadour.UI.UIE_config_args(args),
     nodes = args.nodes or {}
   }
 end
 
-function TRO.UI.create_root_node(args)
+function Troubadour.UI.create_root_node(args)
   return {
     n = G.UIT.ROOT,
-    config = TRO.UI.UIE_config_args(args),
+    config = Troubadour.UI.UIE_config_args(args),
     nodes = args.nodes or {}
   }
 end
 
-function TRO.UI.create_text_node(args)
+function Troubadour.UI.create_text_node(args)
   return {
     n = G.UIT.T,
     config = {
@@ -73,7 +73,7 @@ function TRO.UI.create_text_node(args)
   }
 end
 
-function TRO.UI.create_num_input_node(args)
+function Troubadour.UI.create_num_input_node(args)
   return create_num_input({
     id = args.id,
     colour = args.colour,
@@ -89,7 +89,7 @@ function TRO.UI.create_num_input_node(args)
 end
 
 -- I am VERY BLATANTLY ripping these straight from Cartomancer
-function TRO.UI.create_UIBox_generic_options_custom(args)
+function Troubadour.UI.create_UIBox_generic_options_custom(args)
   args = args or {}
   local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
   return {
@@ -104,11 +104,11 @@ function TRO.UI.create_UIBox_generic_options_custom(args)
       r = 0.1,
       colour = args.bg_colour or translucent_grey
     },
-    nodes = { TRO.UI.create_column({ padding = 0.0, minh = args.minh or 3, nodes = args.contents }) }
+    nodes = { Troubadour.UI.create_column({ padding = 0.0, minh = args.minh or 3, nodes = args.contents }) }
   }
 end
 
-function TRO.UI.create_column_tabs(args)
+function Troubadour.UI.create_column_tabs(args)
   args = args or {}
   args.colour = args.colour or G.C.CLEAR
   args.tab_alignment = args.tab_alignment or 'cl'
@@ -125,7 +125,7 @@ function TRO.UI.create_column_tabs(args)
     local id = 'tab_but_'..(v.label or '')
     tab_buttons[#tab_buttons+1] = { n = G.UIT.R, config = { align = "tm" }, nodes={
       UIBox_button({
-        id = id, ref_table = v, button = 'TRO_settings_change_tab', label = {v.label}, colour = darken(TRO.UI.mod_colours.buttons, 0.2),
+        id = id, ref_table = v, button = 'TRO_settings_change_tab', label = {v.label}, colour = darken(Troubadour.UI.mod_colours.buttons, 0.2),
         minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale,
         chosen = v.chosen and 'vert', func = v.func, focus_args = { snap_to = args.snap_to_nav, nav = 'wide' },
       })
@@ -138,7 +138,7 @@ function TRO.UI.create_column_tabs(args)
     config = { padding = 0.0, align = "cl", colour = args.colour },
     nodes = {
       -- Tabs
-      TRO.UI.create_column({ align = "cl", padding = 0.15, colour = G.C.CLEAR, focus_args = { button = 'x', type = 'none' }, nodes = tab_buttons }),
+      Troubadour.UI.create_column({ align = "cl", padding = 0.15, colour = G.C.CLEAR, focus_args = { button = 'x', type = 'none' }, nodes = tab_buttons }),
       -- Tab contents
       {
         n = G.UIT.C, config = { align = args.tab_alignment, padding = args.padding or 0.1, no_fill = true, minh = args.tab_h, minw = args.tab_w },
@@ -161,7 +161,7 @@ function TRO.UI.create_column_tabs(args)
 end
 
 -- Stole these from Handy
-function TRO.UI.rerender(def, silent, set)
+function Troubadour.UI.rerender(def, silent, set)
   local result = set and { definition = def(SMODS.ConsumableTypes[set]) } or { definition = def() }
   if silent then
     G.ROOM.jiggle = G.ROOM.jiggle - 1
@@ -174,10 +174,10 @@ function TRO.UI.rerender(def, silent, set)
   end
   G.FUNCS.overlay_menu(result)
   G.OVERLAY_MENU:recalculate()
-  TRO.UI.cleanup_dead_elements(G, "MOVEABLES")
+  Troubadour.UI.cleanup_dead_elements(G, "MOVEABLES")
 end
 
-function TRO.UI.cleanup_dead_elements(ref_table, ref_key)
+function Troubadour.UI.cleanup_dead_elements(ref_table, ref_key)
 	local new_values = {}
 	local target = ref_table[ref_key]
 	if not target then
@@ -194,57 +194,57 @@ end
 
 -- BUTTON FUNCTIONS
 function G.FUNCS.TRO_your_collection(e)
-  TRO.coll_from_button = true
+  Troubadour.coll_from_button = true
   G.FUNCS.your_collection()
 end
 
 function G.FUNCS.TRO_exit_coll_config(e)
-  SMODS.save_mod_config(TRO)
+  SMODS.save_mod_config(Troubadour)
   G.FUNCS.your_collection()
 end
 
 function G.FUNCS.exit_search_collection()
   if G.SETTINGS.paused then
-    TRO.coll_from_button = nil
+    Troubadour.coll_from_button = nil
     G.FUNCS.exit_overlay_menu()
   end
 end
 
 function G.FUNCS.TRO_clear_targets(e)
-  if next(TRO.collection_targets) then
-    TRO.FUNCS.clear_targets(true)
+  if next(Troubadour.collection_targets) then
+    Troubadour.FUNCS.clear_targets(true)
   end
 end
 
 function G.FUNCS.TRO_view_options(e)
   G.SETTINGS.paused = true
-  TRO.config_from_coll = true
-  TRO.in_collection = false
-  G.FUNCS.overlay_menu{ definition = TRO.UI.config_from_coll() }
+  Troubadour.config_from_coll = true
+  Troubadour.in_collection = false
+  G.FUNCS.overlay_menu{ definition = Troubadour.UI.config_from_coll() }
   G.OVERLAY_MENU:recalculate()
 end
 
-function TRO.UI.rerender_collection(set)
+function Troubadour.UI.rerender_collection(set)
   G.E_MANAGER:add_event(Event({
     func = function()
-      TRO.UI.get_page_num, TRO.UI.rerendering = false, true
-      TRO.UI.rerender(TRO.FUNCS.get_type_collection_UIBox_func(set), true, set)
-      TRO.UI.get_page_num, TRO.UI.rerendering = true, false
+      Troubadour.UI.get_page_num, Troubadour.UI.rerendering = false, true
+      Troubadour.UI.rerender(Troubadour.FUNCS.get_type_collection_UIBox_func(set), true, set)
+      Troubadour.UI.get_page_num, Troubadour.UI.rerendering = true, false
       return true
     end,
   }))
 end
 
-function TRO.UI.config_from_coll()
+function Troubadour.UI.config_from_coll()
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
     back_func = 'TRO_exit_coll_config',
     contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
 end
 
-function TRO.UI.reset_ui_states()
-  TRO.in_collection = false
-  TRO.config_from_coll = nil
-  TRO.UI.targets.added_target = ''
-  TRO.UI.get_page_num = true
+function Troubadour.UI.reset_ui_states()
+  Troubadour.in_collection = false
+  Troubadour.config_from_coll = nil
+  Troubadour.UI.targets.added_target = ''
+  Troubadour.UI.get_page_num = true
 end
