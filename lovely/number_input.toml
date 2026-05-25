@@ -1,0 +1,18 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Adding a nums_only mode to text input
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''local text = hook_config.text'''
+position = "before"
+payload = '''
+
+if TRO.nums_only then corpus = '1234567890' end
+
+'''
+match_indent = true
+overwrite = false

@@ -1,5 +1,4 @@
 -- UI FUNCTIONS
-TRO.UI = {}
 TRO.UI.mod_colours = {
   buttons = mix_colours(G.C.GREEN, G.C.GREY, 0.8),
   active = mix_colours(G.C.FILTER, G.C.RED, 0.5),
@@ -87,18 +86,6 @@ function TRO.UI.create_num_input_node(args)
     keyboard_offset = 1,
     callback = args.callback
   })
-end
-
--- This is functionally the same as a normal text input but with a different text input func
-function create_num_input(args)
-  args = args or {}
-  args.prompt_text = args.prompt_text or localize('k_enter_text')
-  args.current_prompt_text = ''
-  args.id = args.id or "num_input"
-
-  local ret = create_text_input(args)
-  ret.nodes[1].nodes[1].nodes[1].config.func = 'TRO_num_input'
-  return ret
 end
 
 -- I am VERY BLATANTLY ripping these straight from Cartomancer

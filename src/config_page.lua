@@ -117,3 +117,13 @@ function TRO.UI.update_TRO_config()
     TRO.UI.rerender(create_UIBox_mods, true)
   end
 end
+
+SMODS.current_mod.save_mod_config = function(tro)
+  if type(tro_config.reroll_limit) ~= "number" then
+    tro_config.reroll_limit = 0
+  end
+  if type(tro_config.reroll_spend_limit) ~= "number" then
+    tro_config.reroll_spend_limit = 0
+  end
+  SMODS.save_mod_config(tro)
+end
