@@ -52,6 +52,19 @@ function Troubadour.utils.tableToString(tbl, sep)
   return table.concat(result, (sep or " "))
 end
 
+function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly that's useful
+  if not args then args = {} end
+  G.E_MANAGER:add_event(Event({
+    trigger = args.trigger or args.delay and 'after',
+    delay = args.delay,
+    func = function()
+      func()
+      return true
+    end,
+    blocking = args.blocking or true,
+    blockable = args.blockable or false,
+  }))
+end
 
 -- math functions
 to_number = to_number or function(x) return x end
@@ -108,20 +121,8 @@ function Troubadour.utils.safe_card_from_center(center_key, area)
 	end
 end
 
--- metafunctions
-function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly that's useful
-  if not args then args = {} end
-  G.E_MANAGER:add_event(Event({
-    trigger = args.trigger or args.delay and 'after',
-    delay = args.delay,
-    func = function()
-      func()
-      return true
-    end,
-    blocking = args.blocking or true,
-    blockable = args.blockable or false,
-  }))
-end
+-- table functions
+table.unpack = table.unpack or unpack
 
 function Troubadour.hook_before_function(table, funcname, hook)
   if not table[funcname] then
