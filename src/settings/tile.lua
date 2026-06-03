@@ -27,20 +27,9 @@ function G.FUNCS.TRO_toggle_tile(e)
 end
 
 function Tile:init(args)
-  self.label = args.label or ''
-  self.ref_value = args.ref_value
-  self.ref_table = args.ref_table
-  self.button_func = args.button_func
-  self.callback = args.callback
-
-  self.detailed_tooltip = args.tooltip
-  self.TRO_dark_tooltip = args.TRO_dark_tooltip
-  self.object = args.object
-  self.object_args = args.object_args
-
-  self.no_outline = args.no_outline
-  self.TRO_mods_tile = args.TRO_mods_tile
-
+  for k, _ in pairs(args) do
+    self[k] = args[k]
+  end
   self.click_timeout = 0.3
 end
 
@@ -61,9 +50,9 @@ function Tile:render()
       callback = self.callback,
       TRO_dark_tooltip = self.TRO_dark_tooltip,
       detailed_tooltip = self.detailed_tooltip,
-      TRO_mods_tile = self.TRO_mods_tile,
     }
   }
+  tile_node.config.TRO_mods_tile = self.TRO_mods_tile
 
   tile_node.nodes = {
     {

@@ -111,5 +111,9 @@ function Troubadour.UIDEF.dynaModList(page)
     end
   end
 
-  return Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes }
+  return Col { nodes = {
+    Row { nodes = {
+      Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
+      -- Col { r = 0.1, padding = 0, nodes = {Troubadour.UIDEF.mod_folder_button()} }
+    } } } }
 end

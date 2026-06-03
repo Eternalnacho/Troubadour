@@ -16,6 +16,54 @@ function Troubadour.ICONS.getModtagInfo(mod)
   return tag_atlas, tag_pos
 end
 
+function Troubadour.ICONS.buildClickableTag(sprite, size, draw_steps, popup, click_func)
+  if not size then size = 1 end
+  if not draw_steps then draw_steps = {} end
+  sprite.T.scale = size
+  sprite:define_draw_steps({
+    { shader = 'dissolve', shadow_height = 0.05 },
+    { shader = 'dissolve' },
+    type(draw_steps) == 'table' and next(draw_steps) and table.unpack(draw_steps)
+  })
+  sprite.float = true
+  sprite.states.hover.can = true
+  sprite.states.click.can = true
+  sprite.states.collide.can = true
+  sprite.states.drag.can = false
+
+  sprite.hover = function(_self)
+    if not G.CONTROLLER.dragging.target or G.CONTROLLER.using_touch then
+      if not _self.hovering and _self.states.visible then
+        _self.hovering = true
+        if _self == sprite then
+          _self.hover_tilt = 3
+          _self:juice_up(0.05, 0.02)
+          play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
+          play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
+        end
+        _self.config.h_popup = popup
+        if _self.config.h_popup then _self.config.h_popup_config = { align = 'tm', offset = { x = 0, y = -0.3 }, parent = _self } end
+        Node.hover(_self)
+        if _self.children.alert then
+          _self.children.alert:remove()
+          _self.children.alert = nil
+          G:save_progress()
+        end
+      end
+    end
+  end
+
+  sprite.stop_hover = function(_self)
+    _self.hovering = false
+    _self.hover_tilt = 0
+    Node.stop_hover(_self)
+  end
+
+  sprite.click = click_func
+
+  sprite:juice_up()
+end
+
 function Troubadour.ICONS.buildModtag(mod)
   local tag_atlas, tag_pos = Troubadour.ICONS.getModtagInfo(mod)
   local tag_sprite = SMODS.create_sprite(0, 0, 0.8 * 1, 0.8 * 1, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
@@ -30,7 +78,6 @@ function Troubadour.ICONS.buildModtag(mod)
   tag_sprite.states.click.can = true
   tag_sprite.states.collide.can = true
   tag_sprite.states.drag.can = false
-  tag_sprite.TRO_mods_sprite = true
 
   tag_sprite.hover = function(_self)
     if not G.CONTROLLER.dragging.target or G.CONTROLLER.using_touch then
@@ -70,6 +117,7 @@ function Troubadour.ICONS.buildModtag(mod)
     Node.stop_hover(_self)
   end
 
+  tag_sprite.TRO_mods_sprite = true
   tag_sprite:juice_up()
   return tag_sprite
 end
@@ -84,6 +132,7 @@ function Troubadour.ICONS.createModBoxTile(modInfo)
   end
 
   units = SMODS.pixels_to_unit(34) * 2
+
   mod_tile = Tile({
     ref_table = modInfo,
     ref_value = 'should_enable',
