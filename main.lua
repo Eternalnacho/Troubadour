@@ -12,11 +12,11 @@ local load_dir = assert(SMODS.load_file("src/loader.lua"))()
 -- Load backend functions
 load_dir("src/functions")
 
--- Load config page
-assert(SMODS.load_file("src/config_page.lua"))()
-
 -- Load mod features
 load_dir("src/items")
+
+-- Load config page
+assert(SMODS.load_file("src/config_page.lua"))()
 
 -- Load atlases
 assert(SMODS.load_file("atlases.lua"))()
