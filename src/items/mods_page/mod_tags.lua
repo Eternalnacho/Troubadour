@@ -66,42 +66,13 @@ end
 
 function Troubadour.ICONS.buildModtag(mod)
   local tag_atlas, tag_pos = Troubadour.ICONS.getModtagInfo(mod)
-  local tag_sprite = SMODS.create_sprite(0, 0, 0.8 * 1, 0.8 * 1, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
-  tag_sprite.T.scale = 1
-  tag_sprite:define_draw_steps({
-    { shader = 'dissolve', shadow_height = 0.05 },
-    { shader = 'dissolve' },
-    mod.icon_path and mod.disabled and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1} or nil,
-  })
-  tag_sprite.float = true
-  tag_sprite.states.hover.can = true
-  tag_sprite.states.click.can = true
-  tag_sprite.states.collide.can = true
-  tag_sprite.states.drag.can = false
+  local tag_sprite = SMODS.create_sprite(0, 0, 0.8, 0.8, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
 
-  tag_sprite.hover = function(_self)
-    if not G.CONTROLLER.dragging.target or G.CONTROLLER.using_touch then
-      if not _self.hovering and _self.states.visible then
-        _self.hovering = true
-        if _self == tag_sprite then
-          _self.hover_tilt = 3
-          _self:juice_up(0.05, 0.02)
-          play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
-          play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
-        end
-        _self.config.h_popup = Troubadour.UIDEF.mod_icon_popup(mod, 0.75)
-        _self.config.h_popup_config = { align = 'tm', offset = { x = 0, y = -0.3 }, parent = _self }
-        Node.hover(_self)
-        if _self.children.alert then
-          _self.children.alert:remove()
-          _self.children.alert = nil
-          G:save_progress()
-        end
-      end
-    end
-  end
+  local disabled_shadow = (mod.icon_path and mod.disabled) and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1}
 
-  tag_sprite.click = function(self)
+  local mod_popup = Troubadour.UIDEF.mod_icon_popup(mod, 0.75)
+
+  local mod_click_func = function(self)
     if tro_config.invert_tile_controls then
       if (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then G.FUNCS.TRO_open_mod(self.parent.parent.parent)
       else self.parent.parent.parent:click() end
@@ -110,12 +81,8 @@ function Troubadour.ICONS.buildModtag(mod)
       else G.FUNCS.TRO_open_mod(self.parent.parent.parent) end
     end
   end
-  
-  tag_sprite.stop_hover = function(_self)
-    _self.hovering = false
-    _self.hover_tilt = 0
-    Node.stop_hover(_self)
-  end
+
+  Troubadour.ICONS.buildClickableTag(tag_sprite, 1, {disabled_shadow}, mod_popup, mod_click_func)
 
   tag_sprite.TRO_mods_sprite = true
   tag_sprite:juice_up()
