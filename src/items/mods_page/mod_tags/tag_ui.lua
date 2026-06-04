@@ -152,3 +152,12 @@ function Troubadour.ICONS.get_loadState_nodes(mod, nodes, args)
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
+
+function Troubadour.ICONS.get_controls(nodes, args)
+  local ctrls = {}
+  local ctrls_key = 'TRO_modControls_tooltip' .. (tro_config.invert_tile_controls and '_i' or '')
+  localize{type = 'descriptions', set = 'Other', key = ctrls_key, nodes = ctrls, text_colour = args.colour}
+  for _, v in ipairs(ctrls) do
+    table.insert(nodes, { n = G.UIT.R, config = {}, nodes = v })
+  end
+end

@@ -31,12 +31,3 @@ function G.FUNCS.TRO_check_tile_ctrls(e)
     else G.FUNCS.TRO_open_mod(e) end
   end
 end
-
-function Troubadour.ICONS.get_controls(nodes, args)
-  local ctrls = {}
-  local ctrls_key = 'TRO_modControls_tooltip' .. (tro_config.invert_tile_controls and '_i' or '')
-  localize{type = 'descriptions', set = 'Other', key = ctrls_key, nodes = ctrls, text_colour = args.colour}
-  for _, v in ipairs(ctrls) do
-    table.insert(nodes, { n = G.UIT.R, config = {}, nodes = v })
-  end
-end

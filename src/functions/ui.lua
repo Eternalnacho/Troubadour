@@ -31,6 +31,7 @@ function Troubadour.UI.UIE_config_args(args)
     h_popup = args.h_popup,
     h_popup_config = args.h_popup_config,
     focus_args = args.focus_args,
+    button = args.button,
   }
 end
 
@@ -80,7 +81,7 @@ function Troubadour.UI.create_num_input_node(args)
     hooked_colour = args.hooked_colour,
     w = 2, h = 1,
     prompt_text = "",
-    ref_table = tro_config,
+    ref_table = args.ref_table or tro_config,
     ref_value = args.ref_value,
     extended_corpus = true,
     keyboard_offset = 1,

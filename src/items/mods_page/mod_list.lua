@@ -1,4 +1,5 @@
 local m = assert(SMODS.load_file("src/items/mods_page/modpage_helper.lua"))()
+local troC = Troubadour.UI.mod_colours
 local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
 
 -- SMALLER MODLIST
@@ -50,8 +51,6 @@ function Troubadour.UIDEF.statModList()
           }},
         }},
         -- add some empty rows for spacing
-        Row { padding = 0.05 },
-        Row { padding = 0.05 },
         Row { padding = 0.05 },
         Row { padding = 0.05 },
         -- dynamic content rendered in this row container
@@ -123,4 +122,52 @@ function Troubadour.UIDEF.dynaModList(page)
     Row { nodes = {
       Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
     } } } }
+end
+
+function Troubadour.UIDEF.mod_folder_button()
+  local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, 'tro_folder', {x = 0, y = 0})
+  local tile_node = Col {
+    r = 0.1,
+    align = 'cm',
+    padding = 0.05,
+    emboss = 0.05,
+    colour = troC.inactive,
+    outline = 1,
+    outline_colour = troC.outline_colour,
+    button = 'Troubadour_mod_folder_button',
+    TRO_dark_tooltip = 'TRO_mod_folder_page',
+  }
+
+  tile_node.nodes = {
+    Row { align = "cm", r = 0.1, padding = 0.1, emboss = 0.02, colour = troC.inactive,
+      nodes = {
+        { n = G.UIT.O, config = { align = "cm", object = tag_sprite, focus_with_object = true } }
+      }
+    }
+  }
+  return Col { padding = 0.1, nodes = {tile_node} }
+end
+
+function Troubadour.UIDEF.modpage_config_button()
+  local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, 'mod_tags', {x = 2, y = 0})
+  local tile_node = Col {
+    r = 0.1,
+    align = 'cm',
+    padding = 0.05,
+    emboss = 0.05,
+    colour = troC.inactive,
+    outline = 1,
+    outline_colour = troC.outline_colour,
+    button = 'Troubadour_mod_list_config',
+    TRO_dark_tooltip = 'TRO_config',
+  }
+
+  tile_node.nodes = {
+    Row { align = "cm", r = 0.1, padding = 0.1, emboss = 0.02, colour = troC.inactive,
+      nodes = {
+        { n = G.UIT.O, config = { align = "cm", object = tag_sprite, focus_with_object = true } }
+      }
+    }
+  }
+  return Col{ padding = 0, nodes = {tile_node} }
 end

@@ -69,7 +69,7 @@ function Troubadour.ICONS.buildModtag(mod)
   local tag_atlas, tag_pos = Troubadour.ICONS.getModtagInfo(mod)
   local tag_sprite = SMODS.create_sprite(0, 0, 0.8, 0.8, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
 
-  local disabled_shadow = (mod.icon_path and mod.disabled) and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1}
+  local disabled_shadow = mod.disabled and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1}
 
   local mod_popup = Troubadour.UIDEF.mod_icon_popup
 
