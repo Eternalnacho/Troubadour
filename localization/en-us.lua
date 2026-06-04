@@ -1,6 +1,16 @@
 return {
   descriptions = {
     Other = {
+      TRO_mod_folder_page = {
+        text = {
+          '{C:green}Mod Folders',
+        }
+      },
+      TRO_config = {
+        text = {
+          '{C:green}Troubadour Config',
+        }
+      },
       TRO_icons_only = {
         text = {
           '{C:green}Mods{} page will use',

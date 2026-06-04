@@ -112,6 +112,8 @@ end
 function Troubadour.UI.update_config()
   if Troubadour.collection_from_button then
     Troubadour.UI.rerender(Troubadour.UI.config_from_collection, true)
+  elseif Troubadour.config_from_modslist then
+    Troubadour.UI.rerender(Troubadour.UI.config_from_modlist, true)
   else
     G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
     Troubadour.UI.rerender(create_UIBox_mods, true)
