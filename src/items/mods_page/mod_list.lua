@@ -158,7 +158,7 @@ function Troubadour.UIDEF.modpage_config_button()
     colour = troC.inactive,
     outline = 1,
     outline_colour = troC.outline_colour,
-    button = 'Troubadour_mod_list_config',
+    button = 'Troubadour_modlist_config',
     TRO_dark_tooltip = 'TRO_config',
   }
 

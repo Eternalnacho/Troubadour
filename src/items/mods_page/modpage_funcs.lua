@@ -36,7 +36,7 @@ G.FUNCS.Troubadour_mod_folder_button = function(e)
   return
 end
 
-G.FUNCS.Troubadour_mod_list_config = function(e)
+G.FUNCS.Troubadour_modlist_config = function(e)
   G.SETTINGS.paused = true
   Troubadour.config_from_modslist = true
   G.FUNCS.overlay_menu{ definition = Troubadour.UI.config_from_modlist() }
