@@ -3,7 +3,12 @@ return {
     Other = {
       TRO_mod_folder_page = {
         text = {
-          'Mod Folders',
+          '{C:green}Mod Folders',
+        }
+      },
+      TRO_config = {
+        text = {
+          '{C:green}Troubadour Config',
         }
       },
       TRO_icons_only = {

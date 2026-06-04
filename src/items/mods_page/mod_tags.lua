@@ -19,6 +19,7 @@ end
 function Troubadour.ICONS.buildClickableTag(sprite, size, draw_steps, popup, popup_args, click_func)
   if not size then size = 1 end
   if not draw_steps then draw_steps = {} end
+  if not popup_args then popup_args = {} end
   sprite.T.scale = size
   sprite:define_draw_steps({
     { shader = 'dissolve', shadow_height = 0.05 },
@@ -41,7 +42,7 @@ function Troubadour.ICONS.buildClickableTag(sprite, size, draw_steps, popup, pop
           play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
           play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
         end
-        _self.config.h_popup = popup(popup_args and table.unpack(popup_args))
+        _self.config.h_popup = popup(table.unpack(popup_args))
         _self.config.h_popup_config = { align = 'tm', offset = { x = 0, y = -0.3 }, parent = _self }
         Node.hover(_self)
         if _self.children.alert then

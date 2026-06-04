@@ -31,15 +31,23 @@ function Troubadour.UIDEF.statModList()
       Col { minw = 5, padding = 0.05, r = 0.1, colour = G.C.CLEAR, nodes = {
         -- title row
         Row { padding = 0.05, nodes = {
-          UIBox_button({
-            label = { localize('b_mod_list') },
-            shadow = true,
-            scale = scale * 0.85,
-            colour = G.C.BOOSTER,
-            button = "openModsDirectory",
-            minh = scale,
-            minw = 9
-          }),
+          Col { nodes = {
+            UIBox_button({
+              label = { localize('b_mod_list') },
+              shadow = true,
+              scale = scale * 0.85,
+              colour = G.C.BOOSTER,
+              button = "openModsDirectory",
+              minh = scale,
+              minw = 4.5
+            }),
+          }},
+          Col { nodes = {
+            Troubadour.UIDEF.mod_folder_button()
+          }},
+          Col { nodes = {
+            Troubadour.UIDEF.modpage_config_button()
+          }},
         }},
         -- add some empty rows for spacing
         Row { padding = 0.05 },
@@ -114,6 +122,5 @@ function Troubadour.UIDEF.dynaModList(page)
   return Col { nodes = {
     Row { nodes = {
       Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
-      -- Col { r = 0.1, padding = 0, nodes = {Troubadour.UIDEF.mod_folder_button()} }
     } } } }
 end
