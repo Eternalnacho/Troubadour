@@ -15,10 +15,9 @@ end
 local uiehover = UIElement.hover
 function UIElement:hover()
   if self.config and self.config.TRO_mods_tile then
-    self.hovering = true
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite then
-      tag_sprite:hover()
+      tag_sprite:hover(self)
     end
   end
   if self.config and self.config.TRO_dark_tooltip then
@@ -30,12 +29,14 @@ end
 
 local uiestophover = UIElement.stop_hover
 function UIElement:stop_hover()
+  if self.config and self.config.TRO_dark_tooltip then
+    self.config.h_popup = nil
+  end
   uiestophover(self)
   if self.config and self.config.TRO_mods_tile then
-    self.hovering = false
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite and tag_sprite.hovering and not tag_sprite.states.hover.is then
-      self.children[1].children[1].config.object:stop_hover()
+      tag_sprite:stop_hover(self)
     end
   end
 end

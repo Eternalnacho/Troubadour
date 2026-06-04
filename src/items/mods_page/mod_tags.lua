@@ -16,7 +16,7 @@ function Troubadour.ICONS.getModtagInfo(mod)
   return tag_atlas, tag_pos
 end
 
-function Troubadour.ICONS.buildClickableTag(sprite, size, draw_steps, popup, click_func)
+function Troubadour.ICONS.buildClickableTag(sprite, size, draw_steps, popup, popup_args, click_func)
   if not size then size = 1 end
   if not draw_steps then draw_steps = {} end
   sprite.T.scale = size
@@ -41,8 +41,8 @@ function Troubadour.ICONS.buildClickableTag(sprite, size, draw_steps, popup, cli
           play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
           play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
         end
-        _self.config.h_popup = popup
-        if _self.config.h_popup then _self.config.h_popup_config = { align = 'tm', offset = { x = 0, y = -0.3 }, parent = _self } end
+        _self.config.h_popup = popup(popup_args and table.unpack(popup_args))
+        _self.config.h_popup_config = { align = 'tm', offset = { x = 0, y = -0.3 }, parent = _self }
         Node.hover(_self)
         if _self.children.alert then
           _self.children.alert:remove()
@@ -70,7 +70,7 @@ function Troubadour.ICONS.buildModtag(mod)
 
   local disabled_shadow = (mod.icon_path and mod.disabled) and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1}
 
-  local mod_popup = Troubadour.UIDEF.mod_icon_popup(mod, 0.75)
+  local mod_popup = Troubadour.UIDEF.mod_icon_popup
 
   local mod_click_func = function(self)
     if tro_config.invert_tile_controls then
@@ -82,7 +82,7 @@ function Troubadour.ICONS.buildModtag(mod)
     end
   end
 
-  Troubadour.ICONS.buildClickableTag(tag_sprite, 1, {disabled_shadow}, mod_popup, mod_click_func)
+  Troubadour.ICONS.buildClickableTag(tag_sprite, 1, {disabled_shadow}, mod_popup, {mod, 0.75}, mod_click_func)
 
   tag_sprite.TRO_mods_sprite = true
   tag_sprite:juice_up()
