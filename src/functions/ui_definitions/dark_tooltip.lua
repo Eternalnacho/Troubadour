@@ -1,6 +1,6 @@
 -- DARK TOOLTIP UI DEFINITION
 local troC = Troubadour.UI.mod_colours
-local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local Root, Row, Col = Troubadour.UI.create_root_node, Troubadour.UI.create_row, Troubadour.UI.create_column
 local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
 -- DO I SERIOUSLY HAVE TO HOOK *UIE FUNCTIONS* ?!
@@ -17,7 +17,10 @@ function UIElement:hover()
   if self.config and self.config.TRO_mods_tile then
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite then
-      tag_sprite:hover(self)
+      tag_sprite.hover_tilt = 3
+      tag_sprite:juice_up(0.05, 0.02)
+      play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
+      play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
     end
   end
   if self.config and self.config.TRO_dark_tooltip then
@@ -35,13 +38,17 @@ function UIElement:stop_hover()
   uiestophover(self)
   if self.config and self.config.TRO_mods_tile then
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
-    if tag_sprite and tag_sprite.hovering and not tag_sprite.states.hover.is then
-      tag_sprite:stop_hover(self)
+    if tag_sprite then
+      tag_sprite.hover_tilt = 0
     end
   end
 end
 
 function Troubadour.UIDEF.dark_tooltip(tooltip)
+  if type(tooltip) == 'function' then
+    return Root{ nodes = {tooltip()} }
+  end
+
   local nodes = {}
   local version_col = copy_table(G.C.WHITE); version_col[4] = 0.7
 
