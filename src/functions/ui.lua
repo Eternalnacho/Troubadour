@@ -10,29 +10,18 @@ Troubadour.UI.mod_colours.outline_colour = mix_colours(Troubadour.UI.mod_colours
 
 -- UIElement args
 function Troubadour.UI.UIE_config_args(args)
-  return {
-    align = args.align or "cm",
-    padding = args.padding or 0.05,
-    outline = args.outline,
-    outline_colour = args.outline_colour,
-    colour = args.colour or G.C.CLEAR,
-    emboss = args.emboss,
-    minh = args.minh,
-    maxh = args.maxh,
-    minw = args.minw,
-    maxw = args.maxw,
-    h = args.h,
-    w = args.w,
-    r = args.r,
-    id = args.id,
-    detailed_tooltip = args.detailed_tooltip,
-    on_demand_tooltip = args.on_demand_tooltip,
-    TRO_dark_tooltip = args.TRO_dark_tooltip,
-    h_popup = args.h_popup,
-    h_popup_config = args.h_popup_config,
-    focus_args = args.focus_args,
-    button = args.button,
+  local default_values = {
+    ['align'] = "cm",
+    ['padding'] = 0.05,
+    ['colour'] = G.C.CLEAR,
   }
+  local new_args = {}; for k, _ in pairs(args) do new_args[k] = args[k] end
+
+  for k, v in pairs(default_values) do
+    if not new_args[k] then new_args[k] = v end
+  end
+
+  return new_args
 end
 
 function Troubadour.UI.create_column(args)
