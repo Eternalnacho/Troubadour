@@ -12,6 +12,13 @@ SMODS.Atlas({
   py = 32
 })
 
+SMODS.Atlas({
+  key = "list",
+  path = "list.png",
+  px = 32,
+  py = 32
+})
+
 for _, mod in pairs(SMODS.Mods) do
   local icon_names = {"icon", "modicon", "mod_icon"}
   if mod.prefix then

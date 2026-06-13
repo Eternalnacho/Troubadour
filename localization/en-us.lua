@@ -1,6 +1,11 @@
 return {
   descriptions = {
     Other = {
+      TRO_mod_list = {
+        text = {
+          '{C:green}Mods List',
+        }
+      },
       TRO_mod_folder_page = {
         text = {
           '{C:green}Mod Folders',
@@ -50,6 +55,9 @@ return {
     },
   },
   misc = {
-    dictionary = {},
+    dictionary = {
+      b_no_mod_folders = "No Mod Folders",
+      b_create_mod_folder = "Create Mod Folder",
+    },
   },
 }

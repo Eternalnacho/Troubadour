@@ -6,7 +6,9 @@ local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Tr
 
 local statModList_ref = SMODS.GUI.staticModListContent
 SMODS.GUI.staticModListContent = function()
-  if tro_config.mod_icons_only then
+  if Troubadour.mod_folder_view then
+    return Troubadour.UIDEF.statModFolderPage()
+  elseif tro_config.mod_icons_only then
     return Troubadour.UIDEF.statModList()
   else
     return statModList_ref()
@@ -44,10 +46,13 @@ function Troubadour.UIDEF.statModList()
             }),
           }},
           Col { nodes = {
-            Troubadour.UIDEF.mod_folder_button()
+            Troubadour.UIDEF.modlist_header_icon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
           }},
           Col { nodes = {
-            Troubadour.UIDEF.modpage_config_button()
+            Troubadour.UIDEF.modlist_header_icon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
+          }},
+          Col { nodes = {
+            Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_config')
           }},
         }},
         -- add some empty rows for spacing
@@ -124,8 +129,8 @@ function Troubadour.UIDEF.dynaModList(page)
     } } } }
 end
 
-function Troubadour.UIDEF.mod_folder_button()
-  local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, 'tro_folder', {x = 0, y = 0})
+function Troubadour.UIDEF.modlist_header_icon(atlas, pos, button_func, tooltip_key)
+  local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, atlas, pos)
   local tile_node = Col {
     r = 0.1,
     align = 'cm',
@@ -134,8 +139,8 @@ function Troubadour.UIDEF.mod_folder_button()
     colour = troC.inactive,
     outline = 1,
     outline_colour = troC.outline_colour,
-    button = 'Troubadour_mod_folder_button',
-    TRO_dark_tooltip = 'TRO_mod_folder_page',
+    button = button_func,
+    TRO_dark_tooltip = tooltip_key,
   }
 
   tile_node.nodes = {
@@ -146,28 +151,4 @@ function Troubadour.UIDEF.mod_folder_button()
     }
   }
   return Col { padding = 0.1, nodes = {tile_node} }
-end
-
-function Troubadour.UIDEF.modpage_config_button()
-  local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, 'mod_tags', {x = 2, y = 0})
-  local tile_node = Col {
-    r = 0.1,
-    align = 'cm',
-    padding = 0.05,
-    emboss = 0.05,
-    colour = troC.inactive,
-    outline = 1,
-    outline_colour = troC.outline_colour,
-    button = 'Troubadour_modlist_config',
-    TRO_dark_tooltip = 'TRO_config',
-  }
-
-  tile_node.nodes = {
-    Row { align = "cm", r = 0.1, padding = 0.1, emboss = 0.02, colour = troC.inactive,
-      nodes = {
-        { n = G.UIT.O, config = { align = "cm", object = tag_sprite, focus_with_object = true } }
-      }
-    }
-  }
-  return Col{ padding = 0, nodes = {tile_node} }
 end

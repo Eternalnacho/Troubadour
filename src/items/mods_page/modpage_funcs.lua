@@ -32,8 +32,27 @@ function G.FUNCS.TRO_check_tile_ctrls(e)
   end
 end
 
+G.FUNCS.Troubadour_modlist_button = function(e)
+  Troubadour.mod_folder_view = nil
+  Troubadour.UI.rerender(create_UIBox_mods_button, true)
+  SMODS.GUI.DynamicUIManager.updateDynamicAreas({
+    ["modsList"] = SMODS.GUI.dynamicModListContent(1)
+  })
+end
+
 G.FUNCS.Troubadour_mod_folder_button = function(e)
-  return
+  Troubadour.mod_folder_view = true
+  Troubadour.UI.rerender(create_UIBox_mods_button, true)
+  SMODS.GUI.DynamicUIManager.updateDynamicAreas({
+    ["modFolderList"] = Troubadour.UIDEF.modFolderList(1)
+  })
+end
+
+function G.FUNCS.Troubadour_update_mod_folder_list(args)
+  if not args or not args.cycle_config then return end
+  SMODS.GUI.DynamicUIManager.updateDynamicAreas({
+    ["modFolderList"] = Troubadour.UIDEF.modFolderList(args.cycle_config.current_option)
+  })
 end
 
 G.FUNCS.Troubadour_modlist_config = function(e)
