@@ -6,6 +6,8 @@ Troubadour = {
   ICONS = {},
 }
 
+Troubadour.folders = {}
+
 -- Get directory loader
 local load_dir = assert(SMODS.load_file("src/loader.lua"))()
 

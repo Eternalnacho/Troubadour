@@ -1,4 +1,5 @@
 local m = assert(SMODS.load_file("src/items/mods_page/modpage_helper.lua"))()
+local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
 local troC = Troubadour.UI.mod_colours
 local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
 
@@ -27,13 +28,14 @@ end
 function Troubadour.UIDEF.statModList()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
+
   return Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
     -- row container
-    Col { padding = 0.05, nodes = {
+    Col { nodes = {
       -- column container
-      Col { minw = 5, padding = 0.05, r = 0.1, colour = G.C.CLEAR, nodes = {
+      Col { minw = 5, r = 0.1, colour = G.C.CLEAR, nodes = {
         -- title row
-        Row { padding = 0.05, nodes = {
+        Row { nodes = {
           Col { nodes = {
             UIBox_button({
               label = { localize('b_mod_list') },
@@ -131,24 +133,15 @@ end
 
 function Troubadour.UIDEF.modlist_header_icon(atlas, pos, button_func, tooltip_key)
   local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, atlas, pos)
-  local tile_node = Col {
-    r = 0.1,
-    align = 'cm',
-    padding = 0.05,
-    emboss = 0.05,
-    colour = troC.inactive,
-    outline = 1,
-    outline_colour = troC.outline_colour,
-    button = button_func,
+  local tile_enabled = { is = false } -- I like the darker tile look better for this
+  local tile = Tile({
+    ref_table = tile_enabled, ref_value = 'is',
+    object = tag_sprite, object_args = {w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE},
+    TRO_mods_tile = true,
     TRO_dark_tooltip = tooltip_key,
-  }
-
-  tile_node.nodes = {
-    Row { align = "cm", r = 0.1, padding = 0.1, emboss = 0.02, colour = troC.inactive,
-      nodes = {
-        { n = G.UIT.O, config = { align = "cm", object = tag_sprite, focus_with_object = true } }
-      }
-    }
-  }
-  return Col { padding = 0.1, nodes = {tile_node} }
+    no_outline = true,
+    colour_override = {colour = troC.outline_colour},
+    button_func = button_func,
+  })
+  return Col { padding = 0.1, nodes = {tile:render()} }
 end

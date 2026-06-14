@@ -16,10 +16,10 @@ function Troubadour.ICONS.getModtagInfo(mod)
   return tag_atlas, tag_pos
 end
 
-function Troubadour.ICONS.drawTag(sprite, size, draw_steps, popup, popup_args, click_func)
+function Troubadour.ICONS.drawTag(sprite, size, draw_steps)
   if not size then size = 1 end
   if not draw_steps then draw_steps = {} end
-  if not popup_args then popup_args = {} end
+
   sprite.T.scale = size
   sprite:define_draw_steps({
     { shader = 'dissolve', shadow_height = 0.05 },
@@ -27,7 +27,6 @@ function Troubadour.ICONS.drawTag(sprite, size, draw_steps, popup, popup_args, c
     type(draw_steps) == 'table' and next(draw_steps) and table.unpack(draw_steps)
   })
   sprite.float = true
-  sprite.states.drag.can = false
 end
 
 function Troubadour.ICONS.buildModtag(mod)
@@ -42,21 +41,14 @@ function Troubadour.ICONS.buildModtag(mod)
 end
 
 function Troubadour.ICONS.createModBoxTile(modInfo)
-  local units, mod_tile
-  if modInfo.should_enable == nil then
-    modInfo.should_enable = not modInfo.disabled
-  end
-  if SMODS.full_restart == nil then
-    SMODS.full_restart = 0
-  end
+  if modInfo.should_enable == nil then modInfo.should_enable = not modInfo.disabled end
+  if SMODS.full_restart == nil then SMODS.full_restart = 0 end
 
-  units = SMODS.pixels_to_unit(34) * 2
-
-  mod_tile = Tile({
+  local mod_tile = Tile({
     ref_table = modInfo,
     ref_value = 'should_enable',
     object = Troubadour.ICONS.buildModtag(modInfo),
-    object_args = {w = units, h = units, colour = G.C.BLUE},
+    object_args = {w = SMODS.pixels_to_unit(34) * 2, h = SMODS.pixels_to_unit(34) * 2, colour = G.C.BLUE},
     TRO_mods_tile = true,
     TRO_dark_tooltip = function() return Troubadour.UIDEF.mod_icon_popup(modInfo, 0.75) end,
     no_outline = true,

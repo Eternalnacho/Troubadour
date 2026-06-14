@@ -65,6 +65,10 @@ function Tile:render()
     }
   }
 
+  if self.colour_override then for k, _ in pairs(self.colour_override) do
+    tile_node.config[k] = self.colour_override[k] end
+  end
+
   tile_node.nodes = {
     {
       n = G.UIT.R,
@@ -74,6 +78,8 @@ function Tile:render()
         padding = 0.1,
         emboss = 0.02,
         colour = enabled and tile_colour_enabled or tile_colour_disabled,
+        minw = self.minw,
+        minh = self.minh,
       },
       nodes = {
         {
