@@ -193,7 +193,7 @@ function G.FUNCS.TRO_exit_coll_config(e)
   G.FUNCS.your_collection()
 end
 
-function G.FUNCS.exit_search_collection()
+function G.FUNCS.TRO_exit_search_collection()
   if G.SETTINGS.paused then
     Troubadour.collection_from_button = nil
     G.FUNCS.exit_overlay_menu()

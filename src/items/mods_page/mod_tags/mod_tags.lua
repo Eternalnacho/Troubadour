@@ -1,4 +1,4 @@
-local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
+local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
 local Col = Troubadour.UI.create_column
 
 -- MOD TAG + ICON BUILDING

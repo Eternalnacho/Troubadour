@@ -1,5 +1,5 @@
 local m = assert(SMODS.load_file("src/items/mods_page/modpage_helper.lua"))()
-local Tile = assert(SMODS.load_file("src/settings/tile.lua"))()
+local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
 local troC = Troubadour.UI.mod_colours
 local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
 
