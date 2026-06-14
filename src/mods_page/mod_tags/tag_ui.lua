@@ -1,4 +1,4 @@
-local m = assert(SMODS.load_file("src/mods_page/modpage_helper.lua"))()
+local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
 local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
 local Text, TextCol = Troubadour.UI.create_text_node, m.createTextColNode
 

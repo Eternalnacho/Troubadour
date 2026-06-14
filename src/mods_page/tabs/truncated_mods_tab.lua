@@ -1,30 +1,9 @@
-local m = assert(SMODS.load_file("src/mods_page/modpage_helper.lua"))()
+local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
 local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
 local troC = Troubadour.UI.mod_colours
 local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
 
 -- SMALLER MODLIST
-
-local statModList_ref = SMODS.GUI.staticModListContent
-SMODS.GUI.staticModListContent = function()
-  if Troubadour.mod_folder_view then
-    return Troubadour.UIDEF.statModFolderPage()
-  elseif tro_config.mod_icons_only then
-    return Troubadour.UIDEF.statModList()
-  else
-    return statModList_ref()
-  end
-end
-
-local dynaModList_ref = SMODS.GUI.dynamicModListContent
-SMODS.GUI.dynamicModListContent = function(page, ...)
-  if tro_config.mod_icons_only then
-    return Troubadour.UIDEF.dynaModList(page)
-  else
-    return dynaModList_ref(page, ...)
-  end
-end
-
 function Troubadour.UIDEF.statModList()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
@@ -54,7 +33,7 @@ function Troubadour.UIDEF.statModList()
             Troubadour.UIDEF.modlist_header_icon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
           }},
           Col { nodes = {
-            Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_config')
+            Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_mod_page_config')
           }},
         }},
         -- add some empty rows for spacing

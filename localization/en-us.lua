@@ -11,9 +11,9 @@ return {
           '{C:green}Mod Folders',
         }
       },
-      TRO_config = {
+      TRO_mod_page_config = {
         text = {
-          '{C:green}Troubadour Config',
+          '{C:green}Mod Page Config',
         }
       },
       TRO_icons_only = {

@@ -16,24 +16,17 @@ function Troubadour.ICONS.getModtagInfo(mod)
   return tag_atlas, tag_pos
 end
 
-function Troubadour.ICONS.drawTag(sprite, size, draw_steps)
-  if not size then size = 1 end
-  if not draw_steps then draw_steps = {} end
-
-  sprite.T.scale = size
-  sprite:define_draw_steps({
-    { shader = 'dissolve', shadow_height = 0.05 },
-    { shader = 'dissolve' },
-    type(draw_steps) == 'table' and next(draw_steps) and table.unpack(draw_steps)
-  })
-  sprite.float = true
-end
-
 function Troubadour.ICONS.buildModtag(mod)
   local tag_atlas, tag_pos = Troubadour.ICONS.getModtagInfo(mod)
   local tag_sprite = SMODS.create_sprite(0, 0, 0.8, 0.8, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
-  local disabled_shadow = mod.disabled and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1}
-  Troubadour.ICONS.drawTag(tag_sprite, 1, {disabled_shadow})
+
+  tag_sprite.T.scale = 1
+  tag_sprite:define_draw_steps({
+    { shader = 'dissolve', shadow_height = 0.05 },
+    { shader = 'dissolve' },
+    mod.disabled and {shader = 'dissolve', shadow_height = 0, tilt_shadow = 1}
+  })
+  tag_sprite.float = true
 
   tag_sprite.TRO_mods_sprite = true
   tag_sprite:juice_up(0.2)
