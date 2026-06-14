@@ -1,49 +1,9 @@
--- DARK TOOLTIP UI DEFINITION
 local troC = Troubadour.UI.mod_colours
 local Root, Row, Col = Troubadour.UI.create_root_node, Troubadour.UI.create_row, Troubadour.UI.create_column
 local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
 
--- DO I SERIOUSLY HAVE TO HOOK *UIE FUNCTIONS* ?!
-local uieSV = UIElement.set_values
-function UIElement:set_values(...)
-  uieSV(self, ...)
-  if self.config.TRO_dark_tooltip or self.config.TRO_mods_tile then
-    self.states.collide.can = true
-  end
-end
 
-local uiehover = UIElement.hover
-function UIElement:hover()
-  if self.config and self.config.TRO_mods_tile then
-    local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
-    if tag_sprite then
-      tag_sprite.hover_tilt = 3
-      tag_sprite:juice_up(0.05, 0.02)
-      play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
-      play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
-    end
-  end
-  if self.config and self.config.TRO_dark_tooltip then
-    self.config.h_popup = Troubadour.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
-    self.config.h_popup_config = { align = "tm", offset = { x = 0, y = -0.1 }, parent = self }
-  end
-  uiehover(self)
-end
-
-local uiestophover = UIElement.stop_hover
-function UIElement:stop_hover()
-  if self.config and self.config.TRO_dark_tooltip then
-    self.config.h_popup = nil
-  end
-  uiestophover(self)
-  if self.config and self.config.TRO_mods_tile then
-    local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
-    if tag_sprite then
-      tag_sprite.hover_tilt = 0
-    end
-  end
-end
-
+-- DARK TOOLTIP UI DEFINITION
 function Troubadour.UIDEF.dark_tooltip(tooltip)
   if type(tooltip) == 'function' then
     return Root{ nodes = {tooltip()} }
@@ -73,4 +33,32 @@ function Troubadour.UIDEF.dark_tooltip(tooltip)
       }}
     }
   }
+end
+
+
+
+-- UI ELEMENT HOOKS FOR DARK TOOLTIP
+local uieSV = UIElement.set_values
+function UIElement:set_values(...)
+  uieSV(self, ...)
+  if self.config.TRO_dark_tooltip then
+    self.states.collide.can = true
+  end
+end
+
+local uiehover = UIElement.hover
+function UIElement:hover()
+  if self.config and self.config.TRO_dark_tooltip then
+    self.config.h_popup = Troubadour.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
+    self.config.h_popup_config = { align = "tm", offset = { x = 0, y = -0.1 }, parent = self }
+  end
+  uiehover(self)
+end
+
+local uiestophover = UIElement.stop_hover
+function UIElement:stop_hover()
+  if self.config and self.config.TRO_dark_tooltip then
+    self.config.h_popup = nil
+  end
+  uiestophover(self)
 end
