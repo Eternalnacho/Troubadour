@@ -9,10 +9,16 @@ end
 local old_FUNCS_your_collection = G.FUNCS.your_collection
 function G.FUNCS.your_collection(...)
     Troubadour.in_collection = true
-    Troubadour.UI.targets.added_target = ''
     Troubadour.config_from_collection = nil
-    Troubadour.UI.widen_consumable_screens()
+    Troubadour.UI.targets.added_target = ''
+    Troubadour.FUNCS.widen_collection()
     return old_FUNCS_your_collection(...)
+end
+
+local SMODS_BAT = buildAdditionsTab
+buildAdditionsTab = function(mod, ...)
+  Troubadour.FUNCS.widen_collection()
+  return SMODS_BAT(mod, ...)
 end
 
 local uibox_your_collection = create_UIBox_your_collection

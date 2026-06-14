@@ -1,4 +1,5 @@
 tro_config = SMODS.current_mod.config
+
 Troubadour = {
   FUNCS = {},
   UIDEF = {},
@@ -22,3 +23,7 @@ assert(SMODS.load_file("src/config_page.lua"))()
 
 -- Load atlases
 assert(SMODS.load_file("atlases.lua"))()
+
+
+-- functions to execute after load
+Troubadour.defer(Troubadour.FUNCS.widen_collection)

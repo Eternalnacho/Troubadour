@@ -1,38 +1,39 @@
 -- WIDER COLLECTION SCREENS
 
--- Jokers
-create_UIBox_your_collection_jokers = function()
-  local w = math.round(tro_config.gallery_width_j)
-  local h = math.round(tro_config.gallery_height_j)
-  local area = {}; for _ = 1, h do area[#area+1] = w end
-  return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Joker, area, {
-      no_materialize = true,
-      modify_card = function(card, center) card.sticker = get_joker_win_sticker(center) end,
-      h_mod = 0.95 * (3 / h),
-      card_scale = 1 - (h / 100),
-  })
-end
+Troubadour.FUNCS.widen_collection = function()
+  -- Jokers
+  create_UIBox_your_collection_jokers = function()
+    local w = math.round(tro_config.gallery_width_j)
+    local h = math.round(tro_config.gallery_height_j)
+    local area = {}; for _ = 1, h do area[#area+1] = w end
+    return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Joker, area, {
+        no_materialize = true,
+        modify_card = function(card, center) card.sticker = get_joker_win_sticker(center) end,
+        h_mod = 0.95 * (3 / h),
+        card_scale = 1 - (h / 100),
+    })
+  end
 
--- Vouchers
-create_UIBox_your_collection_vouchers = function()
-  local w = math.round(tro_config.gallery_width_v) * 2
-  local h = math.round(tro_config.gallery_height_v)
-  local area = {}; for _ = 1, h do area[#area+1] = w end
-  return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Voucher, area, {
-    area_type = 'voucher',
-    modify_card = function(card, center, i, j)
-      card.ability.order = i+(j-1)*4
-      if (SMODS.Mods["FlowerPot"] or {}).can_load then
-        if FlowerPot.CONFIG.voucher_sticker_enabled < 3 then card.sticker = get_voucher_win_sticker(center) end
-      end
-    end,
-  })
-end
+  -- Vouchers
+  create_UIBox_your_collection_vouchers = function()
+    local w = math.round(tro_config.gallery_width_v) * 2
+    local h = math.round(tro_config.gallery_height_v)
+    local area = {}; for _ = 1, h do area[#area+1] = w end
+    return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Voucher, area, {
+      area_type = 'voucher',
+      modify_card = function(card, center, i, j)
+        card.ability.order = i+(j-1)*4
+        if (SMODS.Mods["FlowerPot"] or {}).can_load then
+          if FlowerPot.CONFIG.voucher_sticker_enabled < 3 then card.sticker = get_voucher_win_sticker(center) end
+        end
+      end,
+    })
+  end
 
--- Consumables
-Troubadour.UI.widen_consumable_screens = function()
+  -- Consumables
   for _, con in pairs(SMODS.ConsumableTypes) do
-    local amt = #Troubadour.utils.filter(G.P_CENTER_POOLS[con.key], function(v) return not v.no_collection end)
+    local amt = G.ACTIVE_MOD_UI and modsCollectionTally(G.P_CENTER_POOLS[con.key]).of
+      or #Troubadour.utils.filter(G.P_CENTER_POOLS[con.key], function(v) return not v.no_collection end)
     local con_w = math.round(tro_config.gallery_width_c)
     local con_h = math.round(tro_config.gallery_height_c)
     -- evening out the rows
@@ -44,31 +45,38 @@ Troubadour.UI.widen_consumable_screens = function()
       con_area[#con_area+1] = (con.collection_rows[1] ~= con.collection_rows[2] and i % 2 == 1) and con_w - 1 or con_w
     end
     con.collection_rows = con_area
+    con.create_UIBox_your_collection = function(self)
+      local type_buf = {}
+      for _, v in ipairs(SMODS.ConsumableType.visible_buffer) do
+          if not v.no_collection and (not G.ACTIVE_MOD_UI or modsCollectionTally(G.P_CENTER_POOLS[v]).of > 0) then type_buf[#type_buf + 1] = v end
+      end
+      return SMODS.card_collection_UIBox(G.P_CENTER_POOLS[self.key], self.collection_rows, { back_func = #type_buf>3 and 'your_collection_consumables' or nil })
+    end
   end
-end
 
--- Enhancements
-create_UIBox_your_collection_enhancements = function()
-  local w = math.round(tro_config.gallery_width_e)
-  local h = math.round(tro_config.gallery_height_e)
-  local area = {}; for _ = 1, h do area[#area+1] = w end
-  return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Enhanced, area, {
-      no_materialize = true,
-      snap_back = true,
-      h_mod = 1.03,
-      infotip = localize('ml_edition_seal_enhancement_explanation'),
-      hide_single_page = true,
-  })
-end
+  -- Enhancements
+  create_UIBox_your_collection_enhancements = function()
+    local w = math.round(tro_config.gallery_width_e)
+    local h = math.round(tro_config.gallery_height_e)
+    local area = {}; for _ = 1, h do area[#area+1] = w end
+    return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Enhanced, area, {
+        no_materialize = true,
+        snap_back = true,
+        h_mod = 1.03,
+        infotip = localize('ml_edition_seal_enhancement_explanation'),
+        hide_single_page = true,
+    })
+  end
 
--- Enhancements
-create_UIBox_your_collection_boosters = function()
-  local w = math.round(tro_config.gallery_width_b)
-  local h = math.round(tro_config.gallery_height_b)
-  local area = {}; for _ = 1, h do area[#area+1] = w end
-  return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Booster, area, {
-      h_mod = 1.3 * (2 / h),
-      w_mod = 1.25 * (1 - (w - 4) / 50),
-      card_scale = 1.27 - (h / 50),
-  })
+  -- Boosters
+  create_UIBox_your_collection_boosters = function()
+    local w = math.round(tro_config.gallery_width_b)
+    local h = math.round(tro_config.gallery_height_b)
+    local area = {}; for _ = 1, h do area[#area+1] = w end
+    return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Booster, area, {
+        h_mod = 1.3 * (2 / h),
+        w_mod = 1.25 * (1 - (w - 4) / 50),
+        card_scale = 1.27 - (h / 50),
+    })
+  end
 end
