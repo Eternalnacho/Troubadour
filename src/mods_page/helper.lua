@@ -34,19 +34,19 @@ local modpage_helper = {
     page = page or Troubadour.LAST_VIEWED_FOLDER_PAGE or 1
     Troubadour.LAST_VIEWED_FOLDER_PAGE = page
 
-    local foldersRowPerPage = math.min( math.ceil(#Troubadour.folders / 2), 4 )
+    local foldersRowPerPage = math.min( math.ceil(#Troubadour.Folders / 2), 4 )
     local foldersColPerRow = 2
     local startIndex = (page - 1) * foldersRowPerPage * foldersColPerRow + 1
     local endIndex = startIndex + foldersRowPerPage * foldersColPerRow - 1
 
-    local totalPages = math.ceil(#Troubadour.folders / (foldersRowPerPage * foldersColPerRow))
+    local totalPages = math.ceil(#Troubadour.Folders / (foldersRowPerPage * foldersColPerRow))
     local currentPage = localize('k_page') .. ' ' .. page .. "/" .. totalPages
 
     local pageOptions = {}
     for i = 1, totalPages do
       table.insert(pageOptions, (localize('k_page') .. ' ' .. tostring(i) .. "/" .. totalPages))
     end
-    local showingList = #Troubadour.folders > 0
+    local showingList = #Troubadour.Folders > 0
 
     return currentPage, pageOptions, showingList, startIndex, endIndex, foldersRowPerPage, foldersColPerRow
   end,

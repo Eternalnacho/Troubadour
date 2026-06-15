@@ -22,7 +22,7 @@ end
 
 
 
--- CONTROL SCHEME FUNCTIONS
+-- CONTROL SCHEME FUNCS FOR MOD TILES
 
 function G.FUNCS.TRO_open_mod(e)
   play_sound('button', 1, 0.3)
@@ -48,6 +48,10 @@ function G.FUNCS.TRO_check_tile_ctrls(e)
   end
 end
 
+
+
+-- BUTTON FUNCS FOR PAGE HEADER BUTTONS
+
 G.FUNCS.Troubadour_modlist_button = function(e)
   Troubadour.mod_folder_view = nil
   Troubadour.UI.rerender(create_UIBox_mods_button, true)
@@ -70,6 +74,10 @@ function G.FUNCS.Troubadour_update_mod_folder_list(args)
     ["modFolderList"] = Troubadour.UIDEF.modFolderList(args.cycle_config.current_option)
   })
 end
+
+
+
+-- SEPARATE DEFINITION FOR SPECIFICALLY THE MOD LIST CONFIG
 
 G.FUNCS.Troubadour_modlist_config = function(e)
   G.SETTINGS.paused = true

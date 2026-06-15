@@ -26,4 +26,14 @@ local function load_directory(path, load_item, options)
   end
 end
 
+local function load_folders()
+  -- load whatever file we store folder data in
+
+
+  -- iterate over whatever list we load and do the init thing
+  -- for _, folder in pairs(result) do
+  --   Troubadour.Folder({ --[[ Folder details here ]] })
+  -- end
+end
+
 return load_directory

@@ -1,5 +1,3 @@
-local Tile = Object:extend()
-
 local tile_colour_enabled = mix_colours(G.C.UI.TEXT_DARK, {0.7,0.8,0.9,1}, 0.8)
 local tile_colour_disabled = mix_colours(G.C.UI.BACKGROUND_INACTIVE, { 0, 0, 0, 1 }, 0.6)
 
@@ -9,6 +7,9 @@ local backdrop_colour_disabled = mix_colours({ 0.5, 0.5, 0.5, 0.2 }, tile_colour
 local outline_colour_enabled = mix_colours(tile_colour_enabled, G.C.BLACK, 0.5)
 local outline_colour_disabled = mix_colours(tile_colour_disabled, G.C.BLACK, 0.5)
 
+
+-- TILE OBJECT
+local Tile = Object:extend()
 
 function G.FUNCS.TRO_toggle_tile(e)
   e.config.ref_table[e.config.ref_value] = not e.config.ref_table[e.config.ref_value]
@@ -27,7 +28,6 @@ function G.FUNCS.TRO_toggle_tile(e)
 end
 
 function Tile:init(args)
-  self.label = args.label or ''
   self.ref_value = args.ref_value
   self.ref_table = args.ref_table
   self.button_func = args.button_func
@@ -40,6 +40,10 @@ function Tile:init(args)
 
   self.no_outline = args.no_outline
   self.TRO_mods_tile = args.TRO_mods_tile
+
+  self.shadow = args.shadow
+  self.shadow_height = args.shadow_height
+  self.hovering = args.hovering
 
   self.click_timeout = 0.3
 end
@@ -62,6 +66,7 @@ function Tile:render()
       TRO_dark_tooltip = self.TRO_dark_tooltip,
       detailed_tooltip = self.detailed_tooltip,
       TRO_mods_tile = self.TRO_mods_tile,
+      shadow = self.shadow, shadow_height = self.shadow_height, hover = self.hovering,
     }
   }
 

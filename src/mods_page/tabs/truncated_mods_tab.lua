@@ -121,6 +121,7 @@ function Troubadour.UIDEF.modlist_header_icon(atlas, pos, button_func, tooltip_k
     no_outline = true,
     colour_override = {colour = troC.outline_colour},
     button_func = button_func,
+    shadow = true, shadow_height = 0.25, hovering = true,
   })
   return Col { padding = 0.1, nodes = {tile:render()} }
 end

@@ -65,3 +65,18 @@ function Troubadour.FUNCS.get_type_collection_UIBox_func(set)
   end
   return func
 end
+
+function Troubadour.UI.rerender_collection(set)
+  Troubadour.defer(function()
+    Troubadour.UI.get_page_num, Troubadour.UI.rerendering = false, true
+    Troubadour.UI.rerender(Troubadour.FUNCS.get_type_collection_UIBox_func(set), true, set)
+    Troubadour.UI.get_page_num, Troubadour.UI.rerendering = true, false
+  end)
+end
+
+function Troubadour.UI.config_from_collection()
+  return create_UIBox_generic_options({
+    colour = G.C.BLACK,
+    back_func = 'TRO_exit_coll_config',
+    contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
+end
