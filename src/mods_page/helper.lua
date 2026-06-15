@@ -51,17 +51,13 @@ local modpage_helper = {
     return currentPage, pageOptions, showingList, startIndex, endIndex, foldersRowPerPage, foldersColPerRow
   end,
 
-  createTextColNode = function(text, scale, colour, node)
+  TextColumn = function(text, scale, colour, node)
     return { n = node or G.UIT.R, config = { padding = 0, align = "lc", maxw = 2.8, maxh = 1.5, },
       nodes = {
         { n = G.UIT.T, config = { text = text, colour = colour or G.C.UI.TEXT_LIGHT, scale = scale * 0.7 } },
       }
     }
   end,
-
-  create_tile_spacer = function(w, h)
-    return { n = G.UIT.B, config = { w = w, h = h } }
-  end
 }
 
 return modpage_helper

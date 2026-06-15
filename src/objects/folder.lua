@@ -1,4 +1,4 @@
-local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local T = Troubadour.UI
 local troC = Troubadour.UI.mod_colours
 
 -- FOLDER OBJECT
@@ -34,26 +34,26 @@ end
 function Troubadour.Folder:render()
   local colour, bg_colour, _ = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
   local folder_icon = SMODS.create_sprite(0, 0, 0.5, 0.5, 'tro_folder', {x = 0, y = 0})
-  local folder_tab = Col { padding = 0.1, r = 0.1, colour = troC.colour, outline = 1, outline_colour = bg_colour, nodes = {
+  local folder_tab = T.Col { padding = 0.1, r = 0.1, colour = troC.colour, outline = 1, outline_colour = bg_colour, nodes = {
       { n = G.UIT.O, config = { w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE, object = folder_icon, focus_with_object = true } },
     }}
   local label_node = self:get_label()
 
-  return Col { nodes = {
-    Col {
+  return T.Col { nodes = {
+    T.Col {
       colour = bg_colour, emboss = 0.05, r = 0.1, minw = 1.5, minh = 1, shadow = true, shadow_height = 0.25, hover = true,
       nodes = {
-        Col {
+        T.Col {
           padding = 0.1, align = "lc", minw = 4.5, minh = 1, maxh = 1.4, emboss = 0.05, r = 0.1,
           colour = colour,
           button = "Troubadour_open_folder_" .. self.name,
           nodes = {
-            Col { nodes = { folder_tab } },
-            Col { align = "lc", nodes = { label_node } },
+            T.Col { nodes = { folder_tab } },
+            T.Col { align = "lc", nodes = { label_node } },
           }
         },
-        Col { nodes = {
-          Row { nodes = {
+        T.Col { nodes = {
+          T.Row { nodes = {
             create_toggle({
               label = '',
               ref_table = self,
@@ -76,7 +76,7 @@ end
 
 function Troubadour.Folder:get_label()
   local _, _, text_colour = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
-  return Row {
+  return T.Row {
     nodes = {{
       n = G.UIT.O,
       config = {

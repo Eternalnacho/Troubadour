@@ -1,14 +1,11 @@
 -- CONFIG TAB UI
-local troC = Troubadour.UI.mod_colours
-local Root, Row, Col = Troubadour.UI.create_root_node, Troubadour.UI.create_row, Troubadour.UI.create_column
-local Text, Num_Input = Troubadour.UI.create_text_node, Troubadour.UI.create_num_input_node
-local TroUIBox = Troubadour.UI.create_UIBox_generic_options_custom
+local T = Troubadour.UI
 
 SMODS.current_mod.ui_config = {
-  colour = troC.colour,
-  outline_colour = troC.outline_colour,
-  tab_button_colour = darken(troC.buttons, 0.2),
-  back_colour = troC.active,
+  colour = T.C.colour,
+  outline_colour = T.C.outline_colour,
+  tab_button_colour = darken(T.C.buttons, 0.2),
+  back_colour = T.C.active,
   -- misc. colours
   author_colour = HEX('E9B800'),
 }
@@ -31,16 +28,16 @@ function SMODS.current_mod.config_tab()
       label = page.label..'s',
       chosen = is_chosen(page.label..'s'),
       tab_definition_function = function (...)
-        return Root { r = 0.1, nodes = {
-          Col { nodes = {
-            Row { minh = math.max(1, #config_contents.pages), nodes = {
-              Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3), outline = 1,
-                  colour = troC.colour, outline_colour = troC.outline_colour, emboss = 0.05, nodes = {
-                Row { nodes = {
-                  Col { r = 0.1, colour = G.C.GREY, emboss = 0.05, nodes = {
-                    create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
+        return T.Root { r = 0.1, nodes = {
+          T.Col { nodes = {
+            T.Row { minh = math.max(1, #config_contents.pages), nodes = {
+              T.Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3), outline = 1,
+                  colour = T.C.colour, outline_colour = T.C.outline_colour, emboss = 0.05, nodes = {
+                T.Row { nodes = {
+                  T.Col { r = 0.1, colour = G.C.GREY, emboss = 0.05, nodes = {
+                    create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = T.C.active,
                       ref_table = tro_config, ref_value = page.ref_value_w or ('gallery_width'..page.label:lower()), min = page.minw, max = page.maxw }),
-                    create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = troC.active,
+                    create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = T.C.active,
                       ref_table = tro_config, ref_value = page.ref_value_h or ('gallery_height'..page.label:lower()), min = page.minh, max = page.maxh }),
                   }}
                 }}
@@ -52,12 +49,12 @@ function SMODS.current_mod.config_tab()
     })
   end)
 
-  return TroUIBox({
+  return T.UIBox({
     minw = 0.0, padding = 0.2, emboss = 0.05, bg_colour = G.C.BLACK,
     contents = {
-      Row { padding = 0.1, r = 0.1, outline = 1, outline_colour = troC.outline_colour,
-        nodes = { Text{ align = "tm", text = "Widen Collections", scale = 0.7 } } },
-      Row { padding = 0, align = "tl", colour = G.C.CLEAR,
+      T.Row { padding = 0.1, r = 0.1, outline = 1, outline_colour = T.C.outline_colour,
+        nodes = { T.Text{ align = "tm", text = "Widen Collections", scale = 0.7 } } },
+      T.Row { padding = 0, align = "tl", colour = G.C.CLEAR,
         nodes = {
           Troubadour.UI.create_column_tabs({
             tab_alignment = 'tl',

@@ -1,6 +1,5 @@
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
-local Row = Troubadour.UI.create_row
-local Text, TextCol = Troubadour.UI.create_text_node, m.createTextColNode
+local T = Troubadour.UI
 
 -- MOD-ICON MODS PAGE UIDEFS
 function Troubadour.ICONS.get_mod_popup_colours(mod)
@@ -22,20 +21,20 @@ end
 function Troubadour.ICONS.get_modName_node(mod, nodes, args)
   local modname_split = SMODS.smart_line_splitter(mod.name, 18, true)
   for _,v in ipairs(modname_split) do
-    table.insert(nodes, TextCol(v, args.scale, args.colour))
+    table.insert(nodes, m.TextColumn(v, args.scale, args.colour))
   end
 end
 
 function Troubadour.ICONS.get_lovely_node(mod, nodes, args)
   if mod.lovely_only then
-    table.insert(nodes, TextCol(localize('b_lovely_mod'), args.scale, args.colour))
+    table.insert(nodes, m.TextColumn(localize('b_lovely_mod'), args.scale, args.colour))
   end
 end
 
 function Troubadour.ICONS.get_version_node(mod, nodes, args)
   local sub_node = {}
   if mod.version and mod.version ~= '0.0.0' then
-    table.insert(sub_node, TextCol(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
+    table.insert(sub_node, m.TextColumn(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
@@ -52,7 +51,7 @@ function Troubadour.ICONS.get_authorDyna_node(mod, nodes, args)
         marquee = true,
     }
     table.insert(nodes,
-      Row { padding = 0, align = "lc", maxw = 4.5, maxh = 1.5, nodes =
+      T.Row { padding = 0, align = "lc", maxw = 4.5, maxh = 1.5, nodes =
           {
             { n = G.UIT.T, config = { text= localize('b_by'), scale = args.scale, colour = args.colour } },
             { n = G.UIT.O, config = {object = authorDynatext} }
@@ -64,7 +63,7 @@ end
 function Troubadour.ICONS.get_priority_node(mod, nodes, args)
   local sub_node = {}
   if not _RELEASE_MODE and mod.priority then
-    table.insert(nodes, TextCol(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
+    table.insert(nodes, m.TextColumn(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end
@@ -117,7 +116,7 @@ function Troubadour.ICONS.get_loadState_nodes(mod, nodes, args)
     for _, vv in ipairs(v) do
       table.insert(sub_node, vv)
     end
-    if i < #state_nodes then table.insert(sub_node, Text{ text = ' ', scale = args.scale }) end
+    if i < #state_nodes then table.insert(sub_node, T.Text{ text = ' ', scale = args.scale }) end
   end
   if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
 end

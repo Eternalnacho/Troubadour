@@ -1,7 +1,7 @@
 -- NUM INPUT FIELD
 
 -- This is functionally the same as a normal text input but with a different text input func
-function create_num_input(args)
+function Troubadour.UI.create_num_input(args)
   args = args or {}
   args.prompt_text = args.prompt_text or localize('k_enter_text')
   args.current_prompt_text = ''

@@ -19,30 +19,34 @@ function Troubadour.UI.UIE_config_args(args)
   return new_args
 end
 
-function Troubadour.UI.create_column(args)
+-- Column node wrapper
+function Troubadour.UI.create_column(args, nodes)
   return {
     n = G.UIT.C,
     config = Troubadour.UI.UIE_config_args(args),
-    nodes = args.nodes or {}
+    nodes = nodes or args.nodes or {}
   }
 end
 
-function Troubadour.UI.create_row(args)
+-- Row node wrapper
+function Troubadour.UI.create_row(args, nodes)
   return {
     n = G.UIT.R,
     config = Troubadour.UI.UIE_config_args(args),
-    nodes = args.nodes or {}
+    nodes = nodes or args.nodes or {}
   }
 end
 
-function Troubadour.UI.create_root_node(args)
+-- Root node wrapper
+function Troubadour.UI.create_root_node(args, nodes)
   return {
     n = G.UIT.ROOT,
     config = Troubadour.UI.UIE_config_args(args),
-    nodes = args.nodes or {}
+    nodes = nodes or args.nodes or {}
   }
 end
 
+-- Text node wrapper
 function Troubadour.UI.create_text_node(args)
   return {
     n = G.UIT.T,
@@ -58,8 +62,9 @@ function Troubadour.UI.create_text_node(args)
   }
 end
 
-function Troubadour.UI.create_num_input_node(args)
-  return create_num_input({
+-- Number input node wrapper
+function Troubadour.UI.create_number_node(args)
+  return Troubadour.UI.create_num_input({
     id = args.id,
     colour = args.colour,
     hooked_colour = args.hooked_colour,
@@ -73,7 +78,15 @@ function Troubadour.UI.create_num_input_node(args)
   })
 end
 
+
+
+
+
+
+
+
 -- I am VERY BLATANTLY ripping these straight from Cartomancer
+
 function Troubadour.UI.create_UIBox_generic_options_custom(args)
   args = args or {}
   local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
@@ -145,7 +158,7 @@ function Troubadour.UI.create_column_tabs(args)
   }
 end
 
--- Stole these from Handy
+-- Stole this from Handy
 function Troubadour.UI.rerender(def, silent, set)
   local result = set and { definition = def(SMODS.ConsumableTypes[set]) } or { definition = def() }
   if silent then
@@ -183,3 +196,15 @@ function Troubadour.UI.reset_ui_states()
   Troubadour.UI.targets.added_target = ''
   Troubadour.UI.get_page_num = true
 end
+
+
+-- Create shorthands for UI Helper Functions
+SMODS.merge_defaults(Troubadour.UI, {
+  ['Row'] = Troubadour.UI.create_row,
+  ['Col'] = Troubadour.UI.create_column,
+  ['Text'] = Troubadour.UI.create_text_node,
+  ['Num'] = Troubadour.UI.create_number_node,
+  ['Root'] = Troubadour.UI.create_root_node,
+  ['UIBox'] = Troubadour.UI.create_UIBox_generic_options_custom,
+  ['C'] = Troubadour.UI.mod_colours,
+})
