@@ -1,39 +1,8 @@
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
-local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local Row = Troubadour.UI.create_row
 local Text, TextCol = Troubadour.UI.create_text_node, m.createTextColNode
 
 -- MOD-ICON MODS PAGE UIDEFS
-
-function Troubadour.UIDEF.mod_icon_popup(mod, scale)
-  local col, bg_col, text_col = Troubadour.ICONS.get_mod_popup_colours(mod)
-  local version_col = copy_table(G.C.WHITE); version_col[4] = 0.6
-  local the_colour = mix_colours(G.C.BLACK, G.C.WHITE, 0.2); the_colour[4] = 0.8
-  local label_nodes = {}
-  -- Get Mod Name Node
-  Troubadour.ICONS.get_modName_node(mod, label_nodes, {scale = scale * 0.65, colour = text_col})
-  -- Get "Lovely Only" Node
-  Troubadour.ICONS.get_lovely_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
-  -- Get Version Node
-  Troubadour.ICONS.get_version_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
-  -- Get Author DynaText Node
-  Troubadour.ICONS.get_authorDyna_node(mod, label_nodes, {scale = scale * 0.4, colour = the_colour})
-  -- Priority Node ???
-  Troubadour.ICONS.get_priority_node(mod, label_nodes, {scale = scale * 0.5, colour = version_col})
-  -- Get Load State Node
-  Troubadour.ICONS.get_loadState_nodes(mod, label_nodes, {scale = scale * 0.4, colour = version_col})
-
-  -- Controls at bottom of UIBox
-  Troubadour.ICONS.get_controls(label_nodes, {scale = scale * 0.3, colour = version_col})
-
-  return Col { r = 0.2, padding = 0.1, emboss = 0.1, colour = bg_col,
-    outline = 1, outline_colour = mix_colours(col, G.C.WHITE, 0.7),
-    nodes = {
-      Row { r = 0.2, padding = 0.05, emboss = 0.05, colour = col, nodes = {
-        Col { r = 0.2, padding = 0.05, nodes = label_nodes }
-      }}
-    }}
-end
-
 function Troubadour.ICONS.get_mod_popup_colours(mod)
   local col, bg_col, text_col
   if mod.can_load then

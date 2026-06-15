@@ -89,7 +89,7 @@ function Troubadour.UIDEF.dynaModList(page)
         if condition(modInfo) then
           id = id + 1
           if id >= startIndex and id <= endIndex then
-            table.insert(current_row, Troubadour.ICONS.createModBoxTile(modInfo))
+            table.insert(current_row, Troubadour.ICONS.buildModTile(modInfo))
             modCount = modCount + 1
             if math.fmod(modCount, modsColPerRow) == 0 then
               table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })

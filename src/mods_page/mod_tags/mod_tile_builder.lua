@@ -33,7 +33,7 @@ function Troubadour.ICONS.buildModtag(mod)
   return tag_sprite
 end
 
-function Troubadour.ICONS.createModBoxTile(modInfo)
+function Troubadour.ICONS.buildModTile(modInfo)
   if modInfo.should_enable == nil then modInfo.should_enable = not modInfo.disabled end
   if SMODS.full_restart == nil then SMODS.full_restart = 0 end
   return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { ModTile({mod = modInfo}):render() } } } }

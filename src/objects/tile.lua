@@ -1,3 +1,5 @@
+local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+
 local tile_colour_enabled = mix_colours(G.C.UI.TEXT_DARK, {0.7,0.8,0.9,1}, 0.8)
 local tile_colour_disabled = mix_colours(G.C.UI.BACKGROUND_INACTIVE, { 0, 0, 0, 1 }, 0.6)
 
@@ -60,7 +62,9 @@ function Tile:render()
       callback = self.callback,
       TRO_dark_tooltip = self.TRO_dark_tooltip,
       detailed_tooltip = self.detailed_tooltip,
-      shadow = self.shadow, shadow_height = self.shadow_height, hover = self.hovering,
+      shadow = self.shadow,
+      shadow_height = self.shadow_height,
+      hover = self.hovering,
     }
   }
 
@@ -81,7 +85,7 @@ function Tile:render()
         minh = self.minh,
       },
       nodes = {
-        {
+        self.object and {
           n = G.UIT.O,
           config = {
             object = self.object,
