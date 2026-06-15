@@ -2,10 +2,13 @@ local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
 local troC = Troubadour.UI.mod_colours
 
 -- FOLDER OBJECT
+
 Troubadour.Folders = {}
 Troubadour.Folder = Object:extend()
 
 function Troubadour.Folder:init(args)
+  if not args.name then return end
+
   self.name = args.name or ''
   self.should_enable_all = true
   self.items = {}
@@ -20,45 +23,21 @@ function Troubadour.Folder:remove_item() end
 
 function Troubadour.Folder:save() end
 
-function Troubadour.Folder:render()
-  local colour, bg_colour, text_colour = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
+function Troubadour.Folder:open()
+  -- Something something overlay menu
+end
 
+function Troubadour.Folder:close()
+  -- Something something overlay menu back func
+end
+
+function Troubadour.Folder:render()
+  local colour, bg_colour, _ = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
   local folder_icon = SMODS.create_sprite(0, 0, 0.5, 0.5, 'tro_folder', {x = 0, y = 0})
   local folder_tab = Col { padding = 0.1, r = 0.1, colour = troC.colour, outline = 1, outline_colour = bg_colour, nodes = {
-    { n = G.UIT.O, config = { w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE, object = folder_icon, focus_with_object = true } },
-  } }
-
-  local label_node = Row {
-    nodes = {{
-      n = G.UIT.O,
-      config = {
-        object = SMODS.UIScrollBox({
-          content = DynaText({
-            string = self.name,
-            colours = { text_colour or G.C.UI.TEXT_LIGHT },
-            shadow = true,
-            scale = 0.375,
-          }),
-          container = { config = { can_collide = false } },
-          overflow = {
-            node_config = { no_overflow = "h", w = 3 },
-            config = { can_collide = false }
-          },
-          sync_mode = "progress",
-          scroll_move = function(self, dt)
-            self.real_progress = ((self.real_progress or 0) + G.real_dt / 8) % 1
-            if self.real_progress < 0.25 then
-              self.scroll_progress.x = 0
-            elseif self.real_progress > 0.75 then
-              self.scroll_progress.x = 1
-            else
-              self.scroll_progress.x = (self.real_progress - 0.25) / 0.5
-            end
-          end,
-        })
-      }
+      { n = G.UIT.O, config = { w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE, object = folder_icon, focus_with_object = true } },
     }}
-  }
+  local label_node = self:get_label()
 
   return Col { nodes = {
     Col {
@@ -95,10 +74,37 @@ function Troubadour.Folder:render()
   }}
 end
 
-function Troubadour.Folder:open()
-  -- Something something overlay menu
-end
-
-function Troubadour.Folder:close()
-  -- Something something overlay menu back func
+function Troubadour.Folder:get_label()
+  local _, _, text_colour = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
+  return Row {
+    nodes = {{
+      n = G.UIT.O,
+      config = {
+        object = SMODS.UIScrollBox({
+          content = DynaText({
+            string = self.name,
+            colours = { text_colour or G.C.UI.TEXT_LIGHT },
+            shadow = true,
+            scale = 0.375,
+          }),
+          container = { config = { can_collide = false } },
+          overflow = {
+            node_config = { no_overflow = "h", w = 3 },
+            config = { can_collide = false }
+          },
+          sync_mode = "progress",
+          scroll_move = function(_self, dt)
+            _self.real_progress = ((_self.real_progress or 0) + G.real_dt / 8) % 1
+            if _self.real_progress < 0.25 then
+              _self.scroll_progress.x = 0
+            elseif _self.real_progress > 0.75 then
+              _self.scroll_progress.x = 1
+            else
+              _self.scroll_progress.x = (_self.real_progress - 0.25) / 0.5
+            end
+          end,
+        })
+      }
+    }}
+  }
 end

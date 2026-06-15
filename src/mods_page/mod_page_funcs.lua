@@ -31,7 +31,7 @@ function G.FUNCS.TRO_open_mod(e)
 end
 
 tro_input_manager:add_listener({ 'right_click', 'right_stick', 'x' }, function(target)
-  if target and target.config and target.config.TRO_mods_tile then
+  if target and target.config and target.config.TRO_mod_tile then
     tro_config.invert_tile_controls = not tro_config.invert_tile_controls -- we do this essentially to treat a right-click like a left-click temporarily
     target:click() -- calling the click function rather than just the button function so we get that sweet VFX + SFX
     tro_config.invert_tile_controls = not tro_config.invert_tile_controls
@@ -47,7 +47,6 @@ function G.FUNCS.TRO_check_tile_ctrls(e)
     else G.FUNCS.TRO_open_mod(e) end
   end
 end
-
 
 
 -- BUTTON FUNCS FOR PAGE HEADER BUTTONS

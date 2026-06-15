@@ -116,7 +116,7 @@ function Troubadour.UIDEF.modlist_header_icon(atlas, pos, button_func, tooltip_k
   local tile = Tile({
     ref_table = tile_enabled, ref_value = 'is',
     object = tag_sprite, object_args = {w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE},
-    TRO_mods_tile = true,
+    TRO_mod_tile = true,
     TRO_dark_tooltip = tooltip_key,
     no_outline = true,
     colour_override = {colour = troC.outline_colour},

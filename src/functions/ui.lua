@@ -15,12 +15,7 @@ function Troubadour.UI.UIE_config_args(args)
     ['padding'] = 0.05,
     ['colour'] = G.C.CLEAR,
   }
-  local new_args = {}; for k, _ in pairs(args) do new_args[k] = args[k] end
-
-  for k, v in pairs(default_values) do
-    if not new_args[k] then new_args[k] = v end
-  end
-
+  local new_args = SMODS.merge_defaults(args, default_values)
   return new_args
 end
 

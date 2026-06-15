@@ -13,34 +13,29 @@ local Tile = Object:extend()
 
 function G.FUNCS.TRO_toggle_tile(e)
   e.config.ref_table[e.config.ref_value] = not e.config.ref_table[e.config.ref_value]
-
-  if e.config.callback then
-    e.config.callback(e.config.ref_table[e.config.ref_value])
-  end
-
   local enabled = e.config.ref_table[e.config.ref_value]
-  -- backdrop colour
+  if e.config.callback then e.config.callback(enabled) end
+
   e.config.colour = enabled and backdrop_colour_enabled or backdrop_colour_disabled
-  -- outline colour
   e.config.outline_colour = e.config.outline and (enabled and outline_colour_enabled or outline_colour_disabled)
+
   -- change tile colour
   e.children[1].config.colour = enabled and tile_colour_enabled or tile_colour_disabled
 end
 
 function Tile:init(args)
-  self.ref_value = args.ref_value
   self.ref_table = args.ref_table
+  self.ref_value = args.ref_value
   self.button_func = args.button_func
   self.callback = args.callback
 
   self.detailed_tooltip = args.tooltip
   self.TRO_dark_tooltip = args.TRO_dark_tooltip
+
   self.object = args.object
   self.object_args = args.object_args
 
   self.no_outline = args.no_outline
-  self.TRO_mods_tile = args.TRO_mods_tile
-
   self.shadow = args.shadow
   self.shadow_height = args.shadow_height
   self.hovering = args.hovering
@@ -65,7 +60,6 @@ function Tile:render()
       callback = self.callback,
       TRO_dark_tooltip = self.TRO_dark_tooltip,
       detailed_tooltip = self.detailed_tooltip,
-      TRO_mods_tile = self.TRO_mods_tile,
       shadow = self.shadow, shadow_height = self.shadow_height, hover = self.hovering,
     }
   }

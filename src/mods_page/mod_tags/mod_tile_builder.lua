@@ -1,4 +1,4 @@
-local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
+local ModTile = assert(SMODS.load_file("src/objects/modtile.lua"))()
 local Col = Troubadour.UI.create_column
 
 
@@ -36,21 +36,7 @@ end
 function Troubadour.ICONS.createModBoxTile(modInfo)
   if modInfo.should_enable == nil then modInfo.should_enable = not modInfo.disabled end
   if SMODS.full_restart == nil then SMODS.full_restart = 0 end
-
-  local mod_tile = Tile({
-    ref_table = modInfo,
-    ref_value = 'should_enable',
-    object = Troubadour.ICONS.buildModtag(modInfo),
-    object_args = {w = SMODS.pixels_to_unit(34) * 2, h = SMODS.pixels_to_unit(34) * 2, colour = G.C.BLUE},
-    TRO_mods_tile = true,
-    TRO_dark_tooltip = function() return Troubadour.UIDEF.mod_icon_popup(modInfo, 0.75) end,
-    no_outline = true,
-    button_func = 'TRO_check_tile_ctrls',
-    callback = function(_set_toggle) Troubadour.toggleMod(modInfo) end,
-  })
-
-  local tile_node = mod_tile:render()
-  return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { tile_node } } } }
+  return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { ModTile({mod = modInfo}):render() } } } }
 end
 
 function Troubadour.toggleMod(mod)
@@ -72,14 +58,14 @@ end
 local uieSV = UIElement.set_values
 function UIElement:set_values(...)
   uieSV(self, ...)
-  if self.config.TRO_mods_tile then
+  if self.config.TRO_mod_tile then
     self.states.collide.can = true
   end
 end
 
 local uiehover = UIElement.hover
 function UIElement:hover()
-  if self.config and self.config.TRO_mods_tile then
+  if self.config and self.config.TRO_mod_tile then
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite then
       tag_sprite.hover_tilt = 3
@@ -94,7 +80,7 @@ end
 local uiestophover = UIElement.stop_hover
 function UIElement:stop_hover()
   uiestophover(self)
-  if self.config and self.config.TRO_mods_tile then
+  if self.config and self.config.TRO_mod_tile then
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite then
       tag_sprite.hover_tilt = 0
