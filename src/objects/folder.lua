@@ -1,27 +1,50 @@
+---@diagnostic disable: undefined-field
 local T = Troubadour.UI
-local troC = Troubadour.UI.mod_colours
 
 -- FOLDER OBJECT
 
 Troubadour.Folders = {}
+Troubadour.FolderIndex = {}
 Troubadour.Folder = Object:extend()
 
-function Troubadour.Folder:init(args)
-  if not args.name then return end
-
-  self.name = args.name or ''
+---comment
+---@param name string
+function Troubadour.Folder:init(name)
+  if not name then return end
+  self.name = name
+  self.id = #Troubadour.FolderIndex + 1
   self.should_enable_all = true
   self.items = {}
-
-  table.insert(Troubadour.Folders, self)
+  self.item_index = {}
+  Troubadour.Folders[name] = self
+  Troubadour.FolderIndex[#Troubadour.FolderIndex + 1] = self
   G.FUNCS["Troubadour_open_folder_"..self.name] = function() self:open() end
 end
 
-function Troubadour.Folder:add_item() end
+function Troubadour.Folder:add_item(item)
+  if not Troubadour.utils.contains(self.items, item.id) then
+    self.items[#self.items+1] = item.id
+    self.item_index[item.id] = #self.items
+  end
+  self:save()
+end
 
-function Troubadour.Folder:remove_item() end
+function Troubadour.Folder:remove_item(item)
+  if self.items[item.id] then
+    table.remove(self.items, self.item_index[item.id])
+    self.item_index[item.id] = nil
+  end
+  self:save()
+end
 
-function Troubadour.Folder:save() end
+function Troubadour.Folder:save()
+  local save_table = {
+    ['name'] = self.name,
+    ['items'] = self.items,
+  }
+  local folder_string = STR_PACK(save_table)
+  NFS.write(Troubadour.path_to_folders()..self.name..'.lua', folder_string)
+end
 
 function Troubadour.Folder:open()
   -- Something something overlay menu
@@ -31,10 +54,16 @@ function Troubadour.Folder:close()
   -- Something something overlay menu back func
 end
 
+function Troubadour.Folder:delete()
+  SMODS.NFS.remove(Troubadour.path_to_folders()..self.name..'.lua')
+  Troubadour.Folders[self.name] = nil
+  table.remove(Troubadour.FolderIndex, self.id)
+end
+
 function Troubadour.Folder:render()
   local colour, bg_colour, _ = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
   local folder_icon = SMODS.create_sprite(0, 0, 0.5, 0.5, 'tro_folder', {x = 0, y = 0})
-  local folder_tab = T.Col { padding = 0.1, r = 0.1, colour = troC.colour, outline = 1, outline_colour = bg_colour, nodes = {
+  local folder_tab = T.Col { padding = 0.1, r = 0.1, colour = T.C.colour, outline = 1, outline_colour = bg_colour, nodes = {
       { n = G.UIT.O, config = { w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE, object = folder_icon, focus_with_object = true } },
     }}
   local label_node = self:get_label()

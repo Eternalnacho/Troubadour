@@ -1,5 +1,4 @@
-local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
-
+---@diagnostic disable: undefined-field
 local tile_colour_enabled = mix_colours(G.C.UI.TEXT_DARK, {0.7,0.8,0.9,1}, 0.8)
 local tile_colour_disabled = mix_colours(G.C.UI.BACKGROUND_INACTIVE, { 0, 0, 0, 1 }, 0.6)
 

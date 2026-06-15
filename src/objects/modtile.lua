@@ -1,4 +1,4 @@
-local Row, Col = Troubadour.UI.create_row, Troubadour.UI.create_column
+local T = Troubadour.UI
 local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
 
 -- SUBCLASS OF TILE
@@ -48,11 +48,11 @@ function ModTile:get_popup(mod, scale)
   -- Controls at bottom of UIBox
   Troubadour.ICONS.get_controls(label_nodes, {scale = scale * 0.3, colour = version_col})
 
-  return Col { r = 0.2, padding = 0.1, emboss = 0.1, colour = bg_col,
+  return T.Col { r = 0.2, padding = 0.1, emboss = 0.1, colour = bg_col,
     outline = 1, outline_colour = mix_colours(col, G.C.WHITE, 0.7),
     nodes = {
-      Row { r = 0.2, emboss = 0.05, colour = col, nodes = {
-        Col { r = 0.2, nodes = label_nodes }
+      T.Row { r = 0.2, emboss = 0.05, colour = col, nodes = {
+        T.Col { r = 0.2, nodes = label_nodes }
       }}
     }}
 end

@@ -28,7 +28,7 @@ end
 
 local function load_folders()
   -- load whatever file we store folder data in
-
+  NFS.createDirectory(Troubadour.path_to_folders())
 
   -- iterate over whatever list we load and do the init thing
   -- for _, folder in pairs(result) do
@@ -36,4 +36,4 @@ local function load_folders()
   -- end
 end
 
-return load_directory
+return load_directory, load_folders
