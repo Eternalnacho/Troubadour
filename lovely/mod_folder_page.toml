@@ -1,0 +1,29 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# patching uibox_mods
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/ui.lua"]'''
+pattern = '''
+return SMODS.GUI.DynamicUIManager.initTab({
+  updateFunctions = {
+      modsList = G.FUNCS.update_mod_list,
+  },
+  staticPageDefinition = SMODS.GUI.staticModListContent()
+})
+'''
+position = "before"
+payload = '''
+if Troubadour.mod_folder_view then
+  return SMODS.GUI.DynamicUIManager.initTab({
+    updateFunctions = {
+        modsList = G.FUNCS.Troubadour_update_mod_folder_list,
+    },
+    staticPageDefinition = Troubadour.UIDEF.statModFolderPage()
+  })
+end
+'''
+match_indent = true
