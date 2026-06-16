@@ -7,15 +7,22 @@ Troubadour.Folders = {}
 Troubadour.FolderIndex = {}
 Troubadour.Folder = Object:extend()
 
----comment
 ---@param name string
-function Troubadour.Folder:init(name)
-  if not name then return end
+---@param items table
+function Troubadour.Folder:init(name, items)
+  if not name then
+    sendWarnMessage(('Required parameter "name" missing'))
+    return
+  elseif Troubadour.Folders[name] then
+    sendWarnMessage(('Detected duplicate folder name, not creating folder'))
+    return
+  end
   self.name = name
   self.id = #Troubadour.FolderIndex + 1
   self.should_enable_all = true
-  self.items = {}
-  self.item_index = {}
+  self.items = items or {}
+  self.item_index = items and Troubadour.utils.index_list(items) or {}
+
   Troubadour.Folders[name] = self
   Troubadour.FolderIndex[#Troubadour.FolderIndex + 1] = self
   G.FUNCS["Troubadour_open_folder_"..self.name] = function() self:open() end
@@ -42,8 +49,7 @@ function Troubadour.Folder:save()
     ['name'] = self.name,
     ['items'] = self.items,
   }
-  local folder_string = STR_PACK(save_table)
-  NFS.write(Troubadour.path_to_folders()..self.name..'.lua', folder_string)
+  SMODS.NFS.write(Troubadour.path_to_folders()..self.name..'.json', JSON.encode(save_table))
 end
 
 function Troubadour.Folder:open()

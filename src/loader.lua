@@ -28,12 +28,19 @@ end
 
 local function load_folders()
   -- load whatever file we store folder data in
-  NFS.createDirectory(Troubadour.path_to_folders())
+  local folder_dir = SMODS.NFS.getInfo(Troubadour.path_to_folders())
+  if folder_dir.type ~= "directory" then
+    SMODS.NFS.createDirectory(Troubadour.path_to_folders())
+  end
+  folder_dir = SMODS.NFS.getDirectoryItems(Troubadour.path_to_folders())
 
   -- iterate over whatever list we load and do the init thing
-  -- for _, folder in pairs(result) do
-  --   Troubadour.Folder({ --[[ Folder details here ]] })
-  -- end
+  for _, path in pairs(folder_dir) do
+    if SMODS.NFS.newFileData(Troubadour.path_to_folders()..'/'..path):getExtension() == 'json' then
+      local folder_table = assert(JSON.decode(SMODS.NFS.read(Troubadour.path_to_folders()..'/'..path)))
+      Troubadour.Folder(folder_table.name, folder_table.items)
+    end
+  end
 end
 
 return load_directory, load_folders

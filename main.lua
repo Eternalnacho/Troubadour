@@ -1,4 +1,3 @@
-tro_config = SMODS.current_mod.config
 
 Troubadour = {
   FUNCS = {},
@@ -7,6 +6,7 @@ Troubadour = {
   ICONS = {},
 
   path_to_folders = function() return love.filesystem.getSaveDirectory().."/Troubadour - Mod Folders/" end,
+  config = SMODS.current_mod.config
 }
 
 -- Get directory loader
@@ -25,9 +25,6 @@ end
 -- Load mod folders
 assert(SMODS.load_file("src/objects/folder.lua"))()
 load_folders()
-Troubadour.Folder('argle')
-Troubadour.Folder('blargle')
-Troubadour.Folder('Supercalifragilisticexpialidocious is a very long word and also i am writing a long name lmao lol get rekt')
 
 -- Load config page
 assert(SMODS.load_file("src/config_page.lua"))()
