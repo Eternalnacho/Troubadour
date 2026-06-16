@@ -57,4 +57,40 @@ function ModTile:get_popup(mod, scale)
     }}
 end
 
+
+--- UI ELEMENT HOOKS FOR MOD TILE
+local uieSV = UIElement.set_values
+function UIElement:set_values(...)
+  uieSV(self, ...)
+  if self.config.TRO_mod_tile then
+    self.states.collide.can = true
+  end
+end
+
+local uiehover = UIElement.hover
+function UIElement:hover()
+  if self.config and self.config.TRO_mod_tile then
+    local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
+    if tag_sprite then
+      tag_sprite.hover_tilt = 3
+      tag_sprite:juice_up(0.05, 0.02)
+      play_sound('paper1', math.random() * 0.1 + 0.55, 0.42)
+      play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
+    end
+  end
+  uiehover(self)
+end
+
+local uiestophover = UIElement.stop_hover
+function UIElement:stop_hover()
+  uiestophover(self)
+  if self.config and self.config.TRO_mod_tile then
+    local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
+    if tag_sprite then
+      tag_sprite.hover_tilt = 0
+    end
+  end
+end
+
+
 return ModTile

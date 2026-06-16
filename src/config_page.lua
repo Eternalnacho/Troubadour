@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 -- CONFIG TAB UI
 local T = Troubadour.UI
 

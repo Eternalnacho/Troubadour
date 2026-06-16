@@ -10,23 +10,23 @@ Troubadour.Folder = Object:extend()
 ---@param name string
 ---@param items table
 function Troubadour.Folder:init(name, items)
-  if not name then
-    sendWarnMessage(('Required parameter "name" missing'))
-    return
-  elseif Troubadour.Folders[name] then
-    sendWarnMessage(('Detected duplicate folder name, not creating folder'))
-    return
-  end
+  if self:handle_errors(name) then return end
 
   self.name = name
   self.id = #Troubadour.FolderIndex + 1
   self.should_enable_all = true
-  self.items = items or {}
-  self.item_index = items and Troubadour.utils.index_list(items) or {}
+  self.items = {}
+  self.item_index = {}
+
+  if items and next(items) then
+    for _, item in ipairs(items) do self:add_item(SMODS.Mods[item]) end
+  end
 
   Troubadour.Folders[name] = self
   Troubadour.FolderIndex[#Troubadour.FolderIndex + 1] = self
   G.FUNCS["Troubadour_open_folder_"..self.name] = function() self:open() end
+
+  self:save()
 end
 
 function Troubadour.Folder:add_item(item)
@@ -143,4 +143,14 @@ function Troubadour.Folder:get_label()
       }
     }}
   }
+end
+
+function Troubadour.Folder:handle_errors(name)
+  if not name or name == '' then
+    sendWarnMessage(('No name entered, not creating folder'))
+    return true
+  elseif Troubadour.Folders[name] then
+    sendWarnMessage(('Detected duplicate folder name, not creating folder'))
+    return true
+  end
 end

@@ -89,7 +89,7 @@ function Troubadour.UI.config_from_modlist()
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
     back_func = "Troubadour_exit_modlist_config",
-    contents = SMODS.Mods["Troubadour"].extra_tabs()[1].tab_definition_function().nodes})
+    contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
 end
 
 function G.FUNCS.Troubadour_exit_modlist_config(e)

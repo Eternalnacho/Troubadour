@@ -1,7 +1,8 @@
 local T = Troubadour.UI
 
 function G.FUNCS.Troubadour_new_mod_folder()
-
+  Troubadour.Folder(Troubadour.new_folder_name)
+  G.FUNCS.mods_button()
 end
 
 function G.FUNCS.Troubadour_create_mod_folder_window(e)
@@ -10,7 +11,7 @@ function G.FUNCS.Troubadour_create_mod_folder_window(e)
 end
 
 Troubadour.UIDEF.createModFolderWindow = function()
-  Troubadour.UI.folder_name = ''
+  Troubadour.new_folder_name = ''
   local result_ui = T.Row(
 		{
       padding = 0.15,
@@ -25,13 +26,13 @@ Troubadour.UIDEF.createModFolderWindow = function()
             create_text_input({
               w = 4,
               max_length = 32,
-              ref_table = Troubadour.UI,
-              ref_value = "folder_name",
+              ref_table = Troubadour,
+              ref_value = "new_folder_name",
               extended_corpus = true,
               id = "Troubadour_folder_name_input",
               prompt_text = localize("b_tro_enter_mod_folder_name"),
               callback = function()
-                -- do stuff
+                G.FUNCS.Troubadour_new_mod_folder()
               end,
             }),
           }
