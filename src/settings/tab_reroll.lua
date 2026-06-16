@@ -3,7 +3,7 @@ local T = Troubadour.UI
 
 Troubadour.UIDEF.reroll_tab = function()
   local reroll_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-  Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
+  Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(Troubadour.config.reroll_limit + reroll_cost - 1) - math.summ(reroll_cost - 1))
   return T.UIBox({
     padding = 0.15, minw = 7, emboss = 0.05, bg_colour = G.C.BLACK,
     contents = {
@@ -22,7 +22,7 @@ Troubadour.UIDEF.reroll_tab = function()
                     active_colour = T.C.buttons,
                     label = 'Enable Auto Reroll?',
                     callback = Troubadour.UI.update_config,
-                    ref_table = tro_config,
+                    ref_table = Troubadour.config,
                     ref_value = 'enable_auto_reroll'
                   })
                 }},
@@ -31,8 +31,8 @@ Troubadour.UIDEF.reroll_tab = function()
                     align = 'cr',
                     w = 0,
                     label = 'Skip Reroll Animations?',
-                    active_colour = tro_config.enable_auto_reroll and T.C.buttons or T.C.inactive,
-                    ref_table = tro_config,
+                    active_colour = Troubadour.config.enable_auto_reroll and T.C.buttons or T.C.inactive,
+                    ref_table = Troubadour.config,
                     ref_value = 'skip_reroll_anims'
                   })
                 }},
@@ -44,13 +44,13 @@ Troubadour.UIDEF.reroll_tab = function()
                   T.Text { text = "Reroll Limit:  ", scale = 0.4 },
                   T.Num {
                     id = "TRO_set_reroll_limit",
-                    colour = tro_config.enable_auto_reroll and T.C.active or T.C.inactive,
-                    hooked_colour = tro_config.enable_auto_reroll and darken(T.C.active, 0.3) or T.C.inactive,
+                    colour = Troubadour.config.enable_auto_reroll and T.C.active or T.C.inactive,
+                    hooked_colour = Troubadour.config.enable_auto_reroll and darken(T.C.active, 0.3) or T.C.inactive,
                     ref_value = "reroll_limit", default = 30,
                     prompt_text = '' .. Troubadour.REROLL.reroll_limit_price,
                     callback = function()
                       local r_cost = G.STATES == G.STATES.RUN and G.GAME.current_round and G.GAME.current_round.reroll_cost or 5
-                      Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(tro_config.reroll_limit + r_cost - 1) - math.summ(r_cost - 1))
+                      Troubadour.REROLL.reroll_limit_price = '$'..(math.summ(Troubadour.config.reroll_limit + r_cost - 1) - math.summ(r_cost - 1))
                     end
                   },
                 }),
@@ -61,8 +61,8 @@ Troubadour.UIDEF.reroll_tab = function()
                   T.Text { text = "Savings Threshold: $", scale = 0.4 },
                   T.Num {
                     id = "TRO_set_spend_limit",
-                    colour = tro_config.enable_auto_reroll and T.C.active or T.C.inactive,
-                    hooked_colour = tro_config.enable_auto_reroll and darken(T.C.active, 0.3) or T.C.inactive,
+                    colour = Troubadour.config.enable_auto_reroll and T.C.active or T.C.inactive,
+                    hooked_colour = Troubadour.config.enable_auto_reroll and darken(T.C.active, 0.3) or T.C.inactive,
                     ref_value = "reroll_spend_limit", default = 25,
                   }
                 })

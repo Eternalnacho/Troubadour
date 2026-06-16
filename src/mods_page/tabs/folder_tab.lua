@@ -29,7 +29,7 @@ function Troubadour.UIDEF.statModFolderPage()
             Troubadour.UIDEF.modlist_header_icon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
           }},
           T.Col { nodes = {
-            Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_config')
+            Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'Troubadour.config')
           }},
         }},
         -- add some empty rows for spacing

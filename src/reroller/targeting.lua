@@ -1,6 +1,6 @@
 -- thank you Overstock and god bless you
 local function can_reroll_into(card_key)
-  if not tro_config.enable_auto_reroll or G.STATE ~= G.STATES.SHOP then return end
+  if not Troubadour.config.enable_auto_reroll or G.STATE ~= G.STATES.SHOP then return end
   local center = G.P_CENTERS[card_key]
   if not center then return false end
   if G.GAME.banned_keys and G.GAME.banned_keys[card_key] then return false end
@@ -36,9 +36,9 @@ local function update_menu_target_list(object)
 end
 
 function Troubadour.FUNCS.prompt_target(target)
-  if is_reroll_button(target) and tro_config.enable_auto_reroll then
+  if is_reroll_button(target) and Troubadour.config.enable_auto_reroll then
     if next(Troubadour.collection_targets) and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") or G.CONTROLLER.held_buttons.triggerleft) then
-      if type(tro_config.reroll_limit) ~= 'number' then tro_config.reroll_limit = tonumber(tro_config.reroll_limit) or 30 end
+      if type(Troubadour.config.reroll_limit) ~= 'number' then Troubadour.config.reroll_limit = tonumber(Troubadour.config.reroll_limit) or 30 end
       Troubadour.FUNCS.auto_reroll(Troubadour.collection_targets)
     else
       G.FUNCS.TRO_your_collection()

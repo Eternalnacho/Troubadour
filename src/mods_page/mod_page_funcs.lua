@@ -4,7 +4,7 @@ local statModList_ref = SMODS.GUI.staticModListContent
 SMODS.GUI.staticModListContent = function()
   if Troubadour.mod_folder_view then
     return Troubadour.UIDEF.statModFolderPage()
-  elseif tro_config.mod_icons_only then
+  elseif Troubadour.config.mod_icons_only then
     return Troubadour.UIDEF.statModList()
   else
     return statModList_ref()
@@ -13,7 +13,7 @@ end
 
 local dynaModList_ref = SMODS.GUI.dynamicModListContent
 SMODS.GUI.dynamicModListContent = function(page, ...)
-  if tro_config.mod_icons_only then
+  if Troubadour.config.mod_icons_only then
     return Troubadour.UIDEF.dynaModList(page)
   else
     return dynaModList_ref(page, ...)
@@ -32,18 +32,18 @@ end
 
 tro_input_manager:add_listener({ 'right_click', 'right_stick', 'x' }, function(target)
   if target and target.config and target.config.TRO_mod_tile then
-    tro_config.invert_tile_controls = not tro_config.invert_tile_controls -- we do this essentially to treat a right-click like a left-click temporarily
+    Troubadour.config.invert_tile_controls = not Troubadour.config.invert_tile_controls -- we do this essentially to treat a right-click like a left-click temporarily
     target:click() -- calling the click function rather than just the button function so we get that sweet VFX + SFX
-    tro_config.invert_tile_controls = not tro_config.invert_tile_controls
+    Troubadour.config.invert_tile_controls = not Troubadour.config.invert_tile_controls
   end
 end)
 
 function G.FUNCS.TRO_check_tile_ctrls(e)
   if (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-    if tro_config.invert_tile_controls then G.FUNCS.TRO_open_mod(e)
+    if Troubadour.config.invert_tile_controls then G.FUNCS.TRO_open_mod(e)
     else G.FUNCS.TRO_toggle_tile(e) end
   else
-    if tro_config.invert_tile_controls then G.FUNCS.TRO_toggle_tile(e)
+    if Troubadour.config.invert_tile_controls then G.FUNCS.TRO_toggle_tile(e)
     else G.FUNCS.TRO_open_mod(e) end
   end
 end

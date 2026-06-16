@@ -9,13 +9,13 @@ Troubadour.REROLL = {
   spent = 0,
   spend_limit_flag = nil,
   reroll_limit_flag = nil,
-  reroll_limit_price = tro_config.reroll_limit,
-  reroll_spend_limit = tro_config.reroll_spend_limit,
+  reroll_limit_price = Troubadour.config.reroll_limit,
+  reroll_spend_limit = Troubadour.config.reroll_spend_limit,
 }
 
 function Troubadour.REROLL.simulate_reroll()
   Troubadour.reroll_cost = Troubadour.reroll_cost or G.GAME.current_round.reroll_cost
-  if (Troubadour.REROLL.spent + Troubadour.reroll_cost) > (to_number(G.GAME.dollars) - tro_config.reroll_spend_limit) then
+  if (Troubadour.REROLL.spent + Troubadour.reroll_cost) > (to_number(G.GAME.dollars) - Troubadour.config.reroll_spend_limit) then
     Troubadour.REROLL.spend_limit_flag = true
     return
   end
@@ -38,7 +38,7 @@ function Troubadour.REROLL.simulate_reroll()
   end
   -- Increment reroll count
   Troubadour.REROLL.rerolls = Troubadour.REROLL.rerolls + 1
-  if Troubadour.REROLL.rerolls >= tro_config.reroll_limit then Troubadour.REROLL.reroll_limit_flag = true end
+  if Troubadour.REROLL.rerolls >= Troubadour.config.reroll_limit then Troubadour.REROLL.reroll_limit_flag = true end
 end
 
 function Troubadour.REROLL.calculate_reroll_cost(skip_increase)

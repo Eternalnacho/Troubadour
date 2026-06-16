@@ -7,7 +7,7 @@ function Troubadour.FUNCS.auto_reroll(targets)
   -- Start the reroll sim w/ shop_jokers as the first iteration
   for _, v in pairs(G.shop_jokers.cards) do table.insert(Troubadour.REROLL.key_queue, v.config.center_key) end
   -- Use predictive rerolling for skipping animations
-  if tro_config.skip_reroll_anims then
+  if Troubadour.config.skip_reroll_anims then
     Troubadour.FUNCS.predictive_reroll(targets)
   else
     -- Use a "normal" auto-reroll otherwise
@@ -44,8 +44,8 @@ function Troubadour.FUNCS.auto_roll_event(targets)
   Troubadour.REROLL.spent = Troubadour.REROLL.spent + G.GAME.current_round.reroll_cost - 1
   Troubadour.REROLL.rerolls = Troubadour.REROLL.rerolls + 1
   -- Check for either limit flag
-  if (Troubadour.REROLL.spent + G.GAME.current_round.reroll_cost) > (to_number(G.GAME.dollars) - tro_config.reroll_spend_limit) then Troubadour.REROLL.spend_limit_flag = true end
-  if Troubadour.REROLL.rerolls >= tro_config.reroll_limit then Troubadour.REROLL.reroll_limit_flag = true end
+  if (Troubadour.REROLL.spent + G.GAME.current_round.reroll_cost) > (to_number(G.GAME.dollars) - Troubadour.config.reroll_spend_limit) then Troubadour.REROLL.spend_limit_flag = true end
+  if Troubadour.REROLL.rerolls >= Troubadour.config.reroll_limit then Troubadour.REROLL.reroll_limit_flag = true end
 
   -- Re-call event until something stops
   Troubadour.defer(function()

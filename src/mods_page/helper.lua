@@ -7,8 +7,8 @@ local modpage_helper = {
   end,
 
   recalculateModsList = function(page)
-    local w = tro_config.mod_page_width * 10 % 10 < 5 and math.floor(tro_config.mod_page_width) or math.ceil(tro_config.mod_page_width)
-    local h = tro_config.mod_page_height * 10 % 10 < 5 and math.floor(tro_config.mod_page_height) or math.ceil(tro_config.mod_page_height)
+    local w = Troubadour.config.mod_page_width * 10 % 10 < 5 and math.floor(Troubadour.config.mod_page_width) or math.ceil(Troubadour.config.mod_page_width)
+    local h = Troubadour.config.mod_page_height * 10 % 10 < 5 and math.floor(Troubadour.config.mod_page_height) or math.ceil(Troubadour.config.mod_page_height)
 
     page = page or 1
     SMODS.LAST_VIEWED_MODS_PAGE = page

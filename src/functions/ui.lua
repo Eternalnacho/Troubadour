@@ -70,7 +70,7 @@ function Troubadour.UI.create_number_node(args)
     hooked_colour = args.hooked_colour,
     w = 2, h = 1,
     prompt_text = "",
-    ref_table = args.ref_table or tro_config,
+    ref_table = args.ref_table or Troubadour.config,
     ref_value = args.ref_value,
     extended_corpus = true,
     keyboard_offset = 1,

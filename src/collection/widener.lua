@@ -3,8 +3,8 @@
 Troubadour.FUNCS.widen_collection = function()
   -- Jokers
   create_UIBox_your_collection_jokers = function()
-    local w = math.round(tro_config.gallery_width_j)
-    local h = math.round(tro_config.gallery_height_j)
+    local w = math.round(Troubadour.config.gallery_width_j)
+    local h = math.round(Troubadour.config.gallery_height_j)
     local area = {}; for _ = 1, h do area[#area+1] = w end
     return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Joker, area, {
         no_materialize = true,
@@ -16,8 +16,8 @@ Troubadour.FUNCS.widen_collection = function()
 
   -- Vouchers
   create_UIBox_your_collection_vouchers = function()
-    local w = math.round(tro_config.gallery_width_v) * 2
-    local h = math.round(tro_config.gallery_height_v)
+    local w = math.round(Troubadour.config.gallery_width_v) * 2
+    local h = math.round(Troubadour.config.gallery_height_v)
     local area = {}; for _ = 1, h do area[#area+1] = w end
     return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Voucher, area, {
       area_type = 'voucher',
@@ -34,8 +34,8 @@ Troubadour.FUNCS.widen_collection = function()
   for _, con in pairs(SMODS.ConsumableTypes) do
     local amt = G.ACTIVE_MOD_UI and modsCollectionTally(G.P_CENTER_POOLS[con.key]).of
       or #Troubadour.utils.filter(G.P_CENTER_POOLS[con.key], function(v) return not v.no_collection end)
-    local con_w = math.round(tro_config.gallery_width_c)
-    local con_h = math.round(tro_config.gallery_height_c)
+    local con_w = math.round(Troubadour.config.gallery_width_c)
+    local con_h = math.round(Troubadour.config.gallery_height_c)
     -- evening out the rows
     con_h = math.min(con_h, math.ceil(amt/con_w))
     local st_rows = (con_h % 2) == 1 and math.round(con_h / 2) or 0
@@ -56,8 +56,8 @@ Troubadour.FUNCS.widen_collection = function()
 
   -- Enhancements
   create_UIBox_your_collection_enhancements = function()
-    local w = math.round(tro_config.gallery_width_e)
-    local h = math.round(tro_config.gallery_height_e)
+    local w = math.round(Troubadour.config.gallery_width_e)
+    local h = math.round(Troubadour.config.gallery_height_e)
     local area = {}; for _ = 1, h do area[#area+1] = w end
     return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Enhanced, area, {
         no_materialize = true,
@@ -70,8 +70,8 @@ Troubadour.FUNCS.widen_collection = function()
 
   -- Boosters
   create_UIBox_your_collection_boosters = function()
-    local w = math.round(tro_config.gallery_width_b)
-    local h = math.round(tro_config.gallery_height_b)
+    local w = math.round(Troubadour.config.gallery_width_b)
+    local h = math.round(Troubadour.config.gallery_height_b)
     local area = {}; for _ = 1, h do area[#area+1] = w end
     return SMODS.card_collection_UIBox(G.P_CENTER_POOLS.Booster, area, {
         h_mod = 1.3 * (2 / h),

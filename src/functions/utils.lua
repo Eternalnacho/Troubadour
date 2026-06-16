@@ -43,6 +43,14 @@ function Troubadour.utils.id(a)
   return a
 end
 
+function Troubadour.utils.index_list(list)
+  local new_list = {}
+  for k, v in pairs(list) do
+    if not new_list[v] then new_list[v] = k end
+  end
+  return new_list
+end
+
 function Troubadour.utils.tableToString(tbl, sep)
   local result = {}
   for _, line in ipairs(tbl) do
