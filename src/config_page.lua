@@ -10,64 +10,18 @@ SMODS.current_mod.ui_config = {
   author_colour = HEX('E9B800'),
 }
 
-local function is_chosen(tab)
-  return Troubadour.LAST_OPEN_TAB == tab
-end
-
-local function choose_tab(tab)
-  Troubadour.LAST_OPEN_TAB = tab
-end
-
-local config_contents = assert(SMODS.load_file("src/settings/collection_pages.lua"))()
-function SMODS.current_mod.config_tab()
-  local vertical_tabs = {}
-  choose_tab "Jokers"
-
-  Troubadour.utils.for_each(config_contents.pages, function(page)
-    table.insert(vertical_tabs, {
-      label = page.label..'s',
-      chosen = is_chosen(page.label..'s'),
-      tab_definition_function = function (...)
-        return T.Root { r = 0.1, nodes = {
-          T.Col { nodes = {
-            T.Row { minh = math.max(1, #config_contents.pages), nodes = {
-              T.Col { padding = 0.1, r = 0.2, minh = math.max(1, #config_contents.pages * 2 / 3), outline = 1,
-                  colour = T.C.colour, outline_colour = T.C.outline_colour, emboss = 0.05, nodes = {
-                T.Row { nodes = {
-                  T.Col { r = 0.1, colour = G.C.GREY, emboss = 0.05, nodes = {
-                    create_slider({ label = page.label..' Page Width', label_scale = 0.45, w = 4, h = 0.3, colour = T.C.active,
-                      ref_table = Troubadour.config, ref_value = page.ref_value_w or ('gallery_width'..page.label:lower()), min = page.minw, max = page.maxw }),
-                    create_slider({ label = page.label..' Page Height', label_scale = 0.45, w = 4, h = 0.3, colour = T.C.active,
-                      ref_table = Troubadour.config, ref_value = page.ref_value_h or ('gallery_height'..page.label:lower()), min = page.minh, max = page.maxh }),
-                  }}
-                }}
-              }}
-            }}
-          }}
-        }}
-      end
-    })
-  end)
-
-  return T.UIBox({
-    minw = 0.0, padding = 0.2, emboss = 0.05, bg_colour = G.C.BLACK,
-    contents = {
-      T.Row { padding = 0.1, r = 0.1, outline = 1, outline_colour = T.C.outline_colour,
-        nodes = { T.Text{ align = "tm", text = "Widen Collections", scale = 0.7 } } },
-      T.Row { padding = 0, align = "tl", colour = G.C.CLEAR,
-        nodes = {
-          Troubadour.UI.create_column_tabs({
-            tab_alignment = 'tl',
-            text_scale = 0.4,
-            snap_to_nav = true,
-            colour =  G.C.CLEAR, -- G.C.RED,
-            tabs = vertical_tabs
-          })
-        }
-      },
-    }
-  })
-end
+-- function SMODS.current_mod.config_tab()
+--   return T.UIBox({
+--     minw = 0.0, padding = 0.2, emboss = 0.05, bg_colour = G.C.BLACK,
+--     contents = {
+--       T.Row { padding = 0, align = "tl",
+--         nodes = {
+          
+--         }
+--       },
+--     }
+--   })
+-- end
 
 G.FUNCS.TRO_settings_change_tab = function(e)
   if not e then return end
@@ -90,11 +44,16 @@ G.FUNCS.TRO_settings_change_tab = function(e)
 end
 
 -- Load Config Tabs
+assert(SMODS.load_file("src/settings/tab_collection.lua"))()
 assert(SMODS.load_file("src/settings/tab_modlist.lua"))()
 assert(SMODS.load_file("src/settings/tab_reroll.lua"))()
 
 function SMODS.current_mod.extra_tabs()
 	return {
+    {
+			label = 'Collection',
+			tab_definition_function = Troubadour.UIDEF.collection_tab
+		},
 		{
 			label = 'Mods List',
 			tab_definition_function = Troubadour.UIDEF.mod_list_tab

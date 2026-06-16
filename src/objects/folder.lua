@@ -17,6 +17,7 @@ function Troubadour.Folder:init(name, items)
     sendWarnMessage(('Detected duplicate folder name, not creating folder'))
     return
   end
+
   self.name = name
   self.id = #Troubadour.FolderIndex + 1
   self.should_enable_all = true

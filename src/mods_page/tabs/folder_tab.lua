@@ -62,7 +62,7 @@ function Troubadour.UIDEF.statModFolderPage()
           -- Create Folder Button
           T.Col { nodes = {
             UIBox_button({
-              label = { localize('b_create_mod_folder') },
+              label = { localize('b_tro_create_mod_folder') },
               shadow = true,
               scale = 0.4,
               colour = G.C.BOOSTER,
@@ -85,7 +85,7 @@ function Troubadour.UIDEF.modFolderList(page)
   -- If no mod folders exist, show a default message
   if showingList == false then
     table.insert(modNodes, T.Row { padding = 0,
-      nodes = { T.Text { text = localize('b_no_mod_folders'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK } }
+      nodes = { T.Text { text = localize('b_tro_no_mod_folders'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK } }
     })
   else
     local folderCount = 0
