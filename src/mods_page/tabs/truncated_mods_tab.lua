@@ -1,21 +1,19 @@
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
-local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
-local troC = Troubadour.UI.mod_colours
-local Row, Col, Text = Troubadour.UI.create_row, Troubadour.UI.create_column, Troubadour.UI.create_text_node
+local T = Troubadour.UI
 
 -- SMALLER MODLIST
 function Troubadour.UIDEF.statModList()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
 
-  return Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
+  return T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
     -- row container
-    Col { nodes = {
+    T.Col { nodes = {
       -- column container
-      Col { minw = 5, r = 0.1, colour = G.C.CLEAR, nodes = {
+      T.Col { minw = 5, r = 0.1, colour = G.C.CLEAR, nodes = {
         -- title row
-        Row { nodes = {
-          Col { nodes = {
+        T.Row { nodes = {
+          T.Col { nodes = {
             UIBox_button({
               label = { localize('b_mod_list') },
               shadow = true,
@@ -26,28 +24,28 @@ function Troubadour.UIDEF.statModList()
               minw = 4.5
             }),
           }},
-          Col { nodes = {
+          T.Col { nodes = {
             Troubadour.UIDEF.modlist_header_icon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
           }},
-          Col { nodes = {
+          T.Col { nodes = {
             Troubadour.UIDEF.modlist_header_icon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
           }},
-          Col { nodes = {
+          T.Col { nodes = {
             Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_mod_page_config')
           }},
         }},
         -- add some empty rows for spacing
-        Row { padding = 0.05 },
-        Row { padding = 0.05 },
+        T.Row { padding = 0.05 },
+        T.Row { padding = 0.05 },
         -- dynamic content rendered in this row container
         -- list of 4 x 4 mods on the current page
-        Row { padding = 0.05, minh = dminh + 1, minw = dminw + 1,
+        T.Row { padding = 0.05, minh = dminh + 1, minw = dminw + 1,
           nodes = {
             { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
           }
         },
         -- another empty row for spacing
-        Row { padding = 0.8 },
+        T.Row { padding = 0.8 },
         -- page selector
         -- does not appear when list of mods is empty
         showingList and SMODS.GUI.createOptionSelector({
@@ -70,8 +68,8 @@ function Troubadour.UIDEF.dynaModList(page)
   local modNodes = {}
   -- If no mods are loaded, show a default message
   if showingList == false then
-    table.insert(modNodes, Row { padding = 0, nodes = {
-        Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
+    table.insert(modNodes, T.Row { padding = 0, nodes = {
+        T.Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
       }})
   else
     local modCount = 0
@@ -92,7 +90,7 @@ function Troubadour.UIDEF.dynaModList(page)
             table.insert(current_row, Troubadour.ICONS.buildModTile(modInfo))
             modCount = modCount + 1
             if math.fmod(modCount, modsColPerRow) == 0 then
-              table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })
+              table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
               current_row = {}
             end
           end
@@ -100,28 +98,28 @@ function Troubadour.UIDEF.dynaModList(page)
       end
     end
     if #current_row > 0 then
-      table.insert(modNodes, Row { padding = 0, align = "lc", nodes = current_row })
+      table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
     end
   end
 
-  return Col { nodes = {
-    Row { nodes = {
-      Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
+  return T.Col { nodes = {
+    T.Row { nodes = {
+      T.Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
     } } } }
 end
 
 function Troubadour.UIDEF.modlist_header_icon(atlas, pos, button_func, tooltip_key)
   local tag_sprite = SMODS.create_sprite(0, 0, 0.5, 0.5, atlas, pos)
   local tile_enabled = { is = false } -- I like the darker tile look better for this
-  local tile = Tile({
+  local tile = Troubadour.Tile({
     ref_table = tile_enabled, ref_value = 'is',
     object = tag_sprite, object_args = {w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE},
     TRO_mod_tile = true,
     TRO_dark_tooltip = tooltip_key,
     no_outline = true,
-    colour_override = {colour = troC.outline_colour},
+    colour_override = {colour = T.C.outline_colour},
     button_func = button_func,
     shadow = true, shadow_height = 0.25, hovering = true,
   })
-  return Col { padding = 0.1, nodes = {tile:render()} }
+  return T.Col { padding = 0.1, nodes = {tile:render()} }
 end

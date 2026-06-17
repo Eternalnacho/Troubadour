@@ -1,6 +1,5 @@
-local ModTile = assert(SMODS.load_file("src/objects/modtile.lua"))()
-local Col = Troubadour.UI.create_column
-
+local T = Troubadour.UI
+local ModTile = Troubadour.ModTile
 
 -- MOD TAG + ICON BUILDING
 function Troubadour.ICONS.getModtagInfo(mod)
@@ -36,7 +35,7 @@ end
 function Troubadour.ICONS.buildModTile(modInfo)
   if modInfo.should_enable == nil then modInfo.should_enable = not modInfo.disabled end
   if SMODS.full_restart == nil then SMODS.full_restart = 0 end
-  return Col { padding = 0.05, nodes = { Col { padding = 0.0, minw = 1, minh = 1, nodes = { ModTile({mod = modInfo}):render() } } } }
+  return T.Col { padding = 0.05, nodes = { T.Col { padding = 0.0, minw = 1, minh = 1, nodes = { ModTile({mod = modInfo}):render() } } } }
 end
 
 function Troubadour.toggleMod(mod)

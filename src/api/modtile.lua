@@ -1,10 +1,10 @@
 local T = Troubadour.UI
-local Tile = assert(SMODS.load_file("src/objects/tile.lua"))()
+local Tile = Troubadour.Tile
 
 -- SUBCLASS OF TILE
-local ModTile = Tile:extend()
+Troubadour.ModTile = Tile:extend()
 
-function ModTile:init(args)
+function Troubadour.ModTile:init(args)
   Tile.init(self, args)
   self.TRO_mod_tile = true
   self.ref_table = args.mod
@@ -20,14 +20,14 @@ function ModTile:init(args)
   self.callback = function(_set_toggle) Troubadour.toggleMod(args.mod) end
 end
 
-function ModTile:render()
+function Troubadour.ModTile:render()
   self.no_outline = true
   local tile_node = Tile.render(self)
   tile_node.config.TRO_mod_tile = self.TRO_mod_tile
   return tile_node
 end
 
-function ModTile:get_popup(mod, scale)
+function Troubadour.ModTile:get_popup(mod, scale)
   local col, bg_col, text_col = Troubadour.ICONS.get_mod_popup_colours(mod)
   local version_col = copy_table(G.C.WHITE); version_col[4] = 0.6
   local the_colour = mix_colours(G.C.BLACK, G.C.WHITE, 0.2); the_colour[4] = 0.8
@@ -91,6 +91,3 @@ function UIElement:stop_hover()
     end
   end
 end
-
-
-return ModTile

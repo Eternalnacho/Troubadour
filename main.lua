@@ -15,6 +15,7 @@ local load_dir, load_folders = assert(SMODS.load_file("src/loader.lua"))()
 -- Load directories
 for _, path in ipairs {
   "src/functions",
+  "api",
   "src/collection",
   "src/mods_page",
   "src/reroller",
@@ -23,7 +24,6 @@ for _, path in ipairs {
 end
 
 -- Load mod folders
-assert(SMODS.load_file("src/objects/folder.lua"))()
 load_folders()
 
 -- Load config page
