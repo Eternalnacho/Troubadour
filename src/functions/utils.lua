@@ -49,15 +49,6 @@ function Troubadour.utils.append(t1, t2)
   end
 end
 
-function Troubadour.utils.tableToString(tbl, sep)
-  local result = {}
-  for _, line in ipairs(tbl) do
-      local cleanedLine = line:gsub("{.-}", "")
-      table.insert(result, cleanedLine)
-  end
-  return table.concat(result, (sep or " "))
-end
-
 function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly that's useful
   if not args then args = {} end
   G.E_MANAGER:add_event(Event({
@@ -106,29 +97,19 @@ function containsString(str, substring)
 	return string.find(lowerStr, lowerSubstring, 1, true) ~= nil
 end
 
--- card functions
-function Troubadour.utils.safe_card_from_center(center_key, area)
-	local card = SMODS.create_card({
-		key = "c_base",
-		front = false,
-		area = area,
-		bypass_discovery_center = true,
-		bypass_discovery_ui = true,
-		bypass_lock = true,
-	})
-	local success = pcall(function()
-		card:set_ability(center_key, false, false)
-	end)
-	if success then
-		return card
-	else
-		card:remove()
-		return nil
-	end
-end
-
 -- table functions
 table.unpack = table.unpack or unpack
+
+function Troubadour.utils.tableToString(tbl, sep)
+  local result = {}
+  for _, line in ipairs(tbl) do
+      local cleanedLine = line:gsub("{.-}", "")
+      table.insert(result, cleanedLine)
+  end
+  return table.concat(result, (sep or " "))
+end
+
+-- meta functions
 
 function Troubadour.hook_before_function(table, funcname, hook)
   if not table[funcname] then

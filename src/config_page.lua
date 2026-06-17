@@ -16,9 +16,7 @@ SMODS.current_mod.ui_config = {
 --     minw = 0.0, padding = 0.2, emboss = 0.05, bg_colour = G.C.BLACK,
 --     contents = {
 --       T.Row { padding = 0, align = "tl",
---         nodes = {
-          
---         }
+--         nodes = {}
 --       },
 --     }
 --   })
