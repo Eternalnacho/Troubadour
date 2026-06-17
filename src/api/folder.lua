@@ -69,7 +69,7 @@ function Troubadour.Folder:delete()
 end
 
 function Troubadour.Folder:render()
-  local colour, bg_colour, _ = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
+  local colour, bg_colour, _ = Troubadour.UIDEF.get_mod_popup_colours()
   local folder_icon = SMODS.create_sprite(0, 0, 0.5, 0.5, 'tro_folder', {x = 0, y = 0})
   local folder_tab = T.Col { padding = 0.1, r = 0.1, colour = T.C.colour, outline = 1, outline_colour = bg_colour, nodes = {
       { n = G.UIT.O, config = { w = SMODS.pixels_to_unit(34), h = SMODS.pixels_to_unit(34), colour = G.C.BLUE, object = folder_icon, focus_with_object = true } },
@@ -112,7 +112,7 @@ function Troubadour.Folder:render()
 end
 
 function Troubadour.Folder:get_label()
-  local _, _, text_colour = Troubadour.ICONS.get_mod_popup_colours({ can_load = true })
+  local _, _, text_colour = Troubadour.UIDEF.get_mod_popup_colours()
   return T.Row {
     nodes = {{
       n = G.UIT.O,

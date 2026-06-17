@@ -9,7 +9,7 @@ function Troubadour.ModTile:init(args)
   self.TRO_mod_tile = true
   self.ref_table = args.mod
   self.ref_value = 'should_enable'
-  self.object = Troubadour.ICONS.buildModtag(args.mod)
+  self.object = Troubadour.UIDEF.modTagSprite(args.mod)
   self.object_args = {
     w = SMODS.pixels_to_unit(34) * 2,
     h = SMODS.pixels_to_unit(34) * 2,
@@ -28,25 +28,25 @@ function Troubadour.ModTile:render()
 end
 
 function Troubadour.ModTile:get_popup(mod, scale)
-  local col, bg_col, text_col = Troubadour.ICONS.get_mod_popup_colours(mod)
+  local col, bg_col, text_col = Troubadour.UIDEF.get_mod_popup_colours(mod)
   local version_col = copy_table(G.C.WHITE); version_col[4] = 0.6
   local the_colour = mix_colours(G.C.BLACK, G.C.WHITE, 0.2); the_colour[4] = 0.8
+
   local label_nodes = {}
   -- Get Mod Name Node
-  Troubadour.ICONS.get_modName_node(mod, label_nodes, {scale = scale * 0.65, colour = text_col})
+  Troubadour.UIDEF.modNodes.name(mod, label_nodes, {scale = scale * 0.65, colour = text_col})
   -- Get "Lovely Only" Node
-  Troubadour.ICONS.get_lovely_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
+  Troubadour.UIDEF.modNodes.lovely(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
   -- Get Version Node
-  Troubadour.ICONS.get_version_node(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
+  Troubadour.UIDEF.modNodes.version(mod, label_nodes, {scale = scale * 0.6, colour = version_col})
   -- Get Author DynaText Node
-  Troubadour.ICONS.get_authorDyna_node(mod, label_nodes, {scale = scale * 0.4, colour = the_colour})
-  -- Priority Node ???
-  Troubadour.ICONS.get_priority_node(mod, label_nodes, {scale = scale * 0.5, colour = version_col})
+  Troubadour.UIDEF.modNodes.authors(mod, label_nodes, {scale = scale * 0.4, colour = the_colour})
+  -- Priority Node
+  Troubadour.UIDEF.modNodes.priority(mod, label_nodes, {scale = scale * 0.5, colour = version_col})
   -- Get Load State Node
-  Troubadour.ICONS.get_loadState_nodes(mod, label_nodes, {scale = scale * 0.4, colour = version_col})
-
+  Troubadour.UIDEF.modNodes.loadState(mod, label_nodes, {scale = scale * 0.4, colour = version_col})
   -- Controls at bottom of UIBox
-  Troubadour.ICONS.get_controls(label_nodes, {scale = scale * 0.3, colour = version_col})
+  Troubadour.UIDEF.modNodes.controls(label_nodes, {scale = scale * 0.3, colour = version_col})
 
   return T.Col { r = 0.2, padding = 0.1, emboss = 0.1, colour = bg_col,
     outline = 1, outline_colour = mix_colours(col, G.C.WHITE, 0.7),

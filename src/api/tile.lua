@@ -12,7 +12,6 @@ T.C.Tile.backdrop_disabled = mix_colours({ 0.5, 0.5, 0.5, 0.2 }, T.C.Tile.disabl
 T.C.Tile.outline_enabled = mix_colours(T.C.Tile.enabled, G.C.BLACK, 0.5)
 T.C.Tile.outline_disabled = mix_colours(T.C.Tile.disabled, G.C.BLACK, 0.5)
 
-
 local tile_colour = T.C.Tile
 
 

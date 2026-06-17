@@ -1,15 +1,22 @@
 -- HOOKS FOR TAB POINTERS
 
-local statModList_ref = SMODS.GUI.staticModListContent
-SMODS.GUI.staticModListContent = function()
+Troubadour.hook_before_function(SMODS.GUI, 'staticModListContent', function()
   if Troubadour.mod_folder_view then
     return Troubadour.UIDEF.statModFolderPage()
   elseif Troubadour.config.mod_icons_only then
     return Troubadour.UIDEF.statModList()
-  else
-    return statModList_ref()
   end
-end
+end)
+-- local statModList_ref = SMODS.GUI.staticModListContent
+-- SMODS.GUI.staticModListContent = function()
+--   if Troubadour.mod_folder_view then
+--     return Troubadour.UIDEF.statModFolderPage()
+--   elseif Troubadour.config.mod_icons_only then
+--     return Troubadour.UIDEF.statModList()
+--   else
+--     return statModList_ref()
+--   end
+-- end
 
 local dynaModList_ref = SMODS.GUI.dynamicModListContent
 SMODS.GUI.dynamicModListContent = function(page, ...)

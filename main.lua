@@ -14,13 +14,13 @@ local load_dir, load_folders = assert(SMODS.load_file("src/loader.lua"))()
 
 -- Load directories
 for _, path in ipairs {
-  "src/functions",
+  "functions",
+  "ui",
   "api",
   "src/collection",
   "src/mods_page",
-  "src/reroller",
 } do
-  load_dir(path)
+  load_dir(path, "src/")
 end
 
 -- Load mod folders

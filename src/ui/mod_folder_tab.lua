@@ -23,13 +23,13 @@ function Troubadour.UIDEF.statModFolderPage()
             }),
           }},
           T.Col { nodes = {
-            Troubadour.UIDEF.modlist_header_icon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
+            Troubadour.UIDEF.modHeaderIcon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
           }},
           T.Col { nodes = {
-            Troubadour.UIDEF.modlist_header_icon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
+            Troubadour.UIDEF.modHeaderIcon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
           }},
           T.Col { nodes = {
-            Troubadour.UIDEF.modlist_header_icon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'Troubadour.config')
+            Troubadour.UIDEF.modHeaderIcon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'Troubadour.config')
           }},
         }},
         -- add some empty rows for spacing

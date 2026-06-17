@@ -1,4 +1,4 @@
--- UI FUNCTIONS
+-- UI HELPER FUNCTIONS
 Troubadour.UI.mod_colours = {
   buttons = mix_colours(G.C.GREEN, G.C.GREY, 0.8),
   active = mix_colours(G.C.FILTER, G.C.RED, 0.5),
@@ -62,31 +62,7 @@ function Troubadour.UI.create_text_node(args)
   }
 end
 
--- Number input node wrapper
-function Troubadour.UI.create_number_node(args)
-  return Troubadour.UI.create_num_input({
-    id = args.id,
-    colour = args.colour,
-    hooked_colour = args.hooked_colour,
-    w = 2, h = 1,
-    prompt_text = "",
-    ref_table = args.ref_table or Troubadour.config,
-    ref_value = args.ref_value,
-    extended_corpus = true,
-    keyboard_offset = 1,
-    callback = args.callback
-  })
-end
-
-
-
-
-
-
-
-
--- I am VERY BLATANTLY ripping these straight from Cartomancer
-
+-- I am VERY BLATANTLY ripping this straight from Cartomancer
 function Troubadour.UI.create_UIBox_generic_options_custom(args)
   args = args or {}
   local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
@@ -106,6 +82,17 @@ function Troubadour.UI.create_UIBox_generic_options_custom(args)
   }
 end
 
+-- Create shorthands for UI Helper Functions
+SMODS.merge_defaults(Troubadour.UI, {
+  ['Row'] = Troubadour.UI.create_row,
+  ['Col'] = Troubadour.UI.create_column,
+  ['Text'] = Troubadour.UI.create_text_node,
+  ['Root'] = Troubadour.UI.create_root_node,
+  ['UIBox'] = Troubadour.UI.create_UIBox_generic_options_custom,
+  ['C'] = Troubadour.UI.mod_colours,
+})
+
+-- I am VERY BLATANTLY ripping this straight from Cartomancer
 function Troubadour.UI.create_column_tabs(args)
   args = args or {}
   args.colour = args.colour or G.C.CLEAR
@@ -159,16 +146,11 @@ function Troubadour.UI.create_column_tabs(args)
 end
 
 -- Stole this from Handy
-function Troubadour.UI.rerender(def, silent, set)
-  local result = set and { definition = def(SMODS.ConsumableTypes[set]) } or { definition = def() }
+function Troubadour.UI.rerender(def, silent)
+  local result = { definition = def() }
   if silent then
     G.ROOM.jiggle = G.ROOM.jiggle - 1
-    result.config = {
-      offset = {
-        x = 0,
-        y = 0,
-      },
-    }
+    result.config = { offset = { x = 0, y = 0 } }
   end
   G.FUNCS.overlay_menu(result)
   G.OVERLAY_MENU:recalculate()
@@ -189,22 +171,3 @@ function Troubadour.UI.cleanup_dead_elements(ref_table, ref_key)
 	ref_table[ref_key] = new_values
 	return new_values
 end
-
-function Troubadour.UI.reset_ui_states()
-  Troubadour.in_collection = false
-  Troubadour.config_from_collection = nil
-  Troubadour.UI.targets.added_target = ''
-  Troubadour.UI.get_page_num = true
-end
-
-
--- Create shorthands for UI Helper Functions
-SMODS.merge_defaults(Troubadour.UI, {
-  ['Row'] = Troubadour.UI.create_row,
-  ['Col'] = Troubadour.UI.create_column,
-  ['Text'] = Troubadour.UI.create_text_node,
-  ['Num'] = Troubadour.UI.create_number_node,
-  ['Root'] = Troubadour.UI.create_root_node,
-  ['UIBox'] = Troubadour.UI.create_UIBox_generic_options_custom,
-  ['C'] = Troubadour.UI.mod_colours,
-})

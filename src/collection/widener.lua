@@ -80,3 +80,12 @@ Troubadour.FUNCS.widen_collection = function()
     })
   end
 end
+
+
+-- HOOKS FOR WIDER COLLECTION
+for _, func in pairs{
+  {G.FUNCS, 'your_collection'},
+  {_G, 'buildAdditionsTab'}
+} do
+  Troubadour.hook_before_function(func[1], func[2], Troubadour.FUNCS.widen_collection)
+end

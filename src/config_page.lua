@@ -45,7 +45,6 @@ end
 -- Load Config Tabs
 assert(SMODS.load_file("src/settings/tab_collection.lua"))()
 assert(SMODS.load_file("src/settings/tab_modlist.lua"))()
-assert(SMODS.load_file("src/settings/tab_reroll.lua"))()
 
 function SMODS.current_mod.extra_tabs()
 	return {
@@ -57,17 +56,11 @@ function SMODS.current_mod.extra_tabs()
 			label = 'Mods List',
 			tab_definition_function = Troubadour.UIDEF.mod_list_tab
 		},
-    {
-			label = 'Reroller',
-			tab_definition_function = Troubadour.UIDEF.reroll_tab
-		}
 	}
 end
 
 function Troubadour.UI.update_config()
-  if Troubadour.collection_from_button then
-    Troubadour.UI.rerender(Troubadour.UI.config_from_collection, true)
-  elseif Troubadour.config_from_modslist then
+  if Troubadour.config_from_modslist then
     Troubadour.UI.rerender(Troubadour.UI.config_from_modlist, true)
   else
     G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]

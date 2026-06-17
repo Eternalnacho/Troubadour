@@ -97,6 +97,22 @@ function containsString(str, substring)
 	return string.find(lowerStr, lowerSubstring, 1, true) ~= nil
 end
 
+
+-- mod functions
+function Troubadour.toggleMod(mod)
+  if not mod.should_enable then
+    NFS.write(mod.path .. '.lovelyignore', '')
+  else
+    NFS.remove(mod.path .. '.lovelyignore')
+  end
+  local toChange = 1
+  if mod.should_enable == not mod.disabled then
+    toChange = -1
+  end
+  SMODS.full_restart = SMODS.full_restart + toChange
+end
+
+
 -- table functions
 table.unpack = table.unpack or unpack
 
@@ -110,7 +126,6 @@ function Troubadour.utils.tableToString(tbl, sep)
 end
 
 -- meta functions
-
 function Troubadour.hook_before_function(table, funcname, hook)
   if not table[funcname] then
     table[funcname] = hook

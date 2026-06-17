@@ -33,7 +33,6 @@ function Troubadour.UIDEF.dark_tooltip(tooltip)
 end
 
 
-
 -- UI ELEMENT HOOKS FOR DARK TOOLTIP
 -- Troubadour.hook_after_function(UIElement, 'set_values', function(self)
 --   if self.config.TRO_dark_tooltip then
