@@ -36,10 +36,19 @@ local function load_folders()
     for _, path in pairs(folder_dir) do
       if SMODS.NFS.newFileData(Troubadour.path_to_folders()..'/'..path):getExtension() == 'json' then
         local folder_table = assert(JSON.decode(SMODS.NFS.read(Troubadour.path_to_folders()..'/'..path)))
-        Troubadour.Folder(folder_table.name, folder_table.items)
+        Troubadour.Folder({
+          name = folder_table.name,
+          id = folder_table.id,
+          items = folder_table.items
+        })
+        print("Registered Folder: '"..folder_table.name.."'")
       end
     end
   end
+
+  table.sort(Troubadour.FolderIndex, function(a, b) return a.id < b.id end)
+  for k, v in ipairs(Troubadour.FolderIndex) do v.id = k end
+  print(Troubadour.FolderIndex)
 end
 
 return load_directory, load_folders

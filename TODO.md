@@ -4,12 +4,8 @@
 - Mod UI
   - Config page
     - Adjust Tabs to fit under larger "config" tab so as to ease potential confusion
-    - Alternatively, move wider collection config to an extra tab so it *isn't* labelled "config"
 - Features
-  - Reroller Keybind
-    - Update control scheme for the reroller
-    - Potentially allow for customization of said Keybind a la Handy?
-- Bugs
   - Reroller
-    - Reroller does not fully account for objects using context.reroll_shop to create jokers without returning anything
-      - unsure how to go about this one as of yet
+    - Migrate Troubadour Reroller to new mod "Reroll Surplus", remove reroller code from Troubadour
+  - Folders
+    - Adjust Folder indexing and/or saving so they load in proper order on startup

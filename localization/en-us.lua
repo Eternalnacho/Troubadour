@@ -59,6 +59,7 @@ return {
       b_tro_no_mod_folders = "No Mod Folders",
       b_tro_create_folder = "Create Folder",
       b_tro_create_mod_folder = "Create Mod Folder",
+      b_tro_delete_mod_folder = "Delete Mod Folders",
       b_tro_enter_mod_folder_name = "Enter Name...",
     },
   },

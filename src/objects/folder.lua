@@ -7,25 +7,24 @@ Troubadour.Folders = {}
 Troubadour.FolderIndex = {}
 Troubadour.Folder = Object:extend()
 
----@param name string
----@param items table
-function Troubadour.Folder:init(name, items)
-  if self:handle_errors(name) then return end
+---@param args table
+function Troubadour.Folder:init(args)
+  if self:handle_errors(args.name) then return end
 
-  self.name = name
-  self.id = #Troubadour.FolderIndex + 1
+  self.name = args.name
+  self.id = args.id or #Troubadour.FolderIndex + 1
   self.should_enable_all = true
   self.items = {}
   self.item_index = {}
 
-  if items and next(items) then
-    for _, item in ipairs(items) do self:add_item(SMODS.Mods[item]) end
+  if args.items and next(args.items) then
+    for _, item in ipairs(args.items) do self:add_item(SMODS.Mods[item]) end
   end
 
-  Troubadour.Folders[name] = self
+  Troubadour.Folders[args.name] = self
   Troubadour.FolderIndex[#Troubadour.FolderIndex + 1] = self
-  G.FUNCS["Troubadour_open_folder_"..self.name] = function() self:open() end
 
+  G.FUNCS["Troubadour_open_folder_"..self.name] = function() self:open() end
   self:save()
 end
 
@@ -48,6 +47,7 @@ end
 function Troubadour.Folder:save()
   local save_table = {
     ['name'] = self.name,
+    ['id'] = self.id,
     ['items'] = self.items,
   }
   SMODS.NFS.write(Troubadour.path_to_folders()..self.name..'.json', JSON.encode(save_table))
@@ -62,9 +62,11 @@ function Troubadour.Folder:close()
 end
 
 function Troubadour.Folder:delete()
-  SMODS.NFS.remove(Troubadour.path_to_folders()..self.name..'.lua')
+  SMODS.NFS.remove(Troubadour.path_to_folders()..self.name..'.json')
   Troubadour.Folders[self.name] = nil
-  table.remove(Troubadour.FolderIndex, self.id)
+  for k, v in ipairs(Troubadour.FolderIndex) do
+    if v == self then table.remove(Troubadour.FolderIndex, k); break end
+  end
 end
 
 function Troubadour.Folder:render()

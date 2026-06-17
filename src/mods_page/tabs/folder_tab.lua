@@ -48,10 +48,23 @@ function Troubadour.UIDEF.statModFolderPage()
         -- does not appear when list of mods is empty
         T.Row { padding = 0.5, nodes = {
           -- Spacer Column
-          T.Col { padding = 0, minw = 3 },
+          T.Col ({ padding = 0, minw = 3 },
+            {
+              UIBox_button({
+                label = { localize('b_tro_delete_mod_folder') },
+                shadow = true,
+                scale = 0.4,
+                colour = darken(G.C.MULT, 0.1),
+                button = "Troubadour_delete_mod_folder_window",
+                minh = 0.7,
+                minw = 3,
+              })
+            }
+          ),
           -- Page Selector
           showingList and T.Col { nodes = {
             SMODS.GUI.createOptionSelector({
+              colour = T.C.active,
               scale = 0.8,
               options = pageOptions,
               opt_callback = 'Troubadour_update_mod_folder_list',
