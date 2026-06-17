@@ -47,8 +47,7 @@ local function load_folders()
   end
 
   table.sort(Troubadour.FolderIndex, function(a, b) return a.id < b.id end)
-  for k, v in ipairs(Troubadour.FolderIndex) do v.id = k end
-  print(Troubadour.FolderIndex)
+  Troubadour.reindexFolders()
 end
 
 return load_directory, load_folders

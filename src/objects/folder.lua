@@ -64,9 +64,8 @@ end
 function Troubadour.Folder:delete()
   SMODS.NFS.remove(Troubadour.path_to_folders()..self.name..'.json')
   Troubadour.Folders[self.name] = nil
-  for k, v in ipairs(Troubadour.FolderIndex) do
-    if v == self then table.remove(Troubadour.FolderIndex, k); break end
-  end
+  table.remove(Troubadour.FolderIndex, self.id)
+  Troubadour.reindexFolders()
 end
 
 function Troubadour.Folder:render()
@@ -154,5 +153,12 @@ function Troubadour.Folder:handle_errors(name)
   elseif Troubadour.Folders[name] then
     sendWarnMessage(('Detected duplicate folder name, not creating folder'))
     return true
+  end
+end
+
+function Troubadour.reindexFolders()
+  for i, Folder in ipairs(Troubadour.FolderIndex) do
+    Folder.id = i
+    Folder:save()
   end
 end

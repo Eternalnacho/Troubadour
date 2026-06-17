@@ -8,7 +8,7 @@ function G.FUNCS.Troubadour_new_mod_folder()
 end
 
 function G.FUNCS.Troubadour_delete_folders()
-  for _, Folder in ipairs(Troubadour.FolderIndex) do
+  for _, Folder in pairs(Troubadour.Folders) do
     if Folder.delete_pending then Folder:delete() end
   end
   G.FUNCS.mods_button()
