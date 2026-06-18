@@ -226,19 +226,35 @@ Troubadour.UIDEF.modNodes = {
   authors = function(mod, nodes, args)
     if not mod.lovely_only then
       local tx = m.concatAuthors(mod.author)
-      local authorDynatext = DynaText{
+      local authorBox = SMODS.UIScrollBox({
+        content = DynaText({
           string = tx,
           scale = args.scale,
-          colours = {args.colour},
+          colours = { args.colour },
           shadow = true,
-          maxw = 2.4,
-          marquee = true,
-      }
+        }),
+        container = { config = { can_collide = false } },
+        overflow = {
+          node_config = { no_overflow = "h", w = 3 },
+          config = { can_collide = false }
+        },
+        sync_mode = "progress",
+        scroll_move = function(_self, dt)
+          _self.real_progress = ((_self.real_progress or 0) + G.real_dt / 8) % 1
+          if _self.real_progress < 0.25 then
+            _self.scroll_progress.x = 0
+          elseif _self.real_progress > 0.75 then
+            _self.scroll_progress.x = 1
+          else
+            _self.scroll_progress.x = (_self.real_progress - 0.25) / 0.5
+          end
+        end,
+      })
       table.insert(nodes,
         T.Row { padding = 0, align = "lc", maxw = 4.5, maxh = 1.5, nodes =
             {
               { n = G.UIT.T, config = { text= localize('b_by'), scale = args.scale, colour = args.colour } },
-              { n = G.UIT.O, config = {object = authorDynatext} }
+              { n = G.UIT.O, config = {object = authorBox} }
             }
         })
     end
