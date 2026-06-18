@@ -7,25 +7,12 @@ Troubadour.hook_before_function(SMODS.GUI, 'staticModListContent', function()
     return Troubadour.UIDEF.statModList()
   end
 end)
--- local statModList_ref = SMODS.GUI.staticModListContent
--- SMODS.GUI.staticModListContent = function()
---   if Troubadour.mod_folder_view then
---     return Troubadour.UIDEF.statModFolderPage()
---   elseif Troubadour.config.mod_icons_only then
---     return Troubadour.UIDEF.statModList()
---   else
---     return statModList_ref()
---   end
--- end
 
-local dynaModList_ref = SMODS.GUI.dynamicModListContent
-SMODS.GUI.dynamicModListContent = function(page, ...)
+Troubadour.hook_before_function(SMODS.GUI, 'dynamicModListContent', function(page)
   if Troubadour.config.mod_icons_only then
     return Troubadour.UIDEF.dynaModList(page)
-  else
-    return dynaModList_ref(page, ...)
   end
-end
+end)
 
 
 
@@ -87,20 +74,11 @@ end
 
 G.FUNCS.Troubadour_modlist_config = function(e)
   G.SETTINGS.paused = true
-  Troubadour.config_from_modslist = true
-  G.FUNCS.overlay_menu{ definition = Troubadour.UI.config_from_modlist() }
+  local function def()
+    G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
+    SMODS.LAST_SELECTED_MOD_TAB = 'Troubadour_2'
+    return create_UIBox_mods()
+  end
+  G.FUNCS.overlay_menu { definition = def() }
   G.OVERLAY_MENU:recalculate()
-end
-
-function Troubadour.UI.config_from_modlist()
-  return create_UIBox_generic_options({
-    colour = G.C.BLACK,
-    back_func = "Troubadour_exit_modlist_config",
-    contents = SMODS.Mods["Troubadour"].extra_tabs()[2].tab_definition_function().nodes})
-end
-
-function G.FUNCS.Troubadour_exit_modlist_config(e)
-  Troubadour.config_from_modslist = nil
-  SMODS.save_mod_config(Troubadour)
-  G.FUNCS.mods_button()
 end

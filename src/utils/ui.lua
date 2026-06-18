@@ -83,17 +83,16 @@ function Troubadour.UI.create_UIBox_generic_options_custom(args)
 end
 
 -- Create shorthands for UI Helper Functions
-SMODS.merge_defaults(Troubadour.UI, {
-  ['Row'] = Troubadour.UI.create_row,
-  ['Col'] = Troubadour.UI.create_column,
-  ['Text'] = Troubadour.UI.create_text_node,
-  ['Root'] = Troubadour.UI.create_root_node,
-  ['UIBox'] = Troubadour.UI.create_UIBox_generic_options_custom,
-  ['C'] = Troubadour.UI.mod_colours,
-})
+local T = Troubadour.UI
+T['Row'] = Troubadour.UI.create_row
+T['Col'] = Troubadour.UI.create_column
+T['Text'] = Troubadour.UI.create_text_node
+T['Root'] = Troubadour.UI.create_root_node
+T['UIBox'] = Troubadour.UI.create_UIBox_generic_options_custom
+T['C'] = Troubadour.UI.mod_colours
 
 -- I am VERY BLATANTLY ripping this straight from Cartomancer
-function Troubadour.UI.create_column_tabs(args)
+function T.create_column_tabs(args)
   args = args or {}
   args.colour = args.colour or G.C.CLEAR
   args.tab_alignment = args.tab_alignment or 'cl'

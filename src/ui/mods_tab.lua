@@ -7,11 +7,11 @@ function Troubadour.UIDEF.statModList()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
 
-  return T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
+  return T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, colour = G.C.BLACK, nodes = {
     -- row container
     T.Col { nodes = {
       -- column container
-      T.Col { minw = 5, r = 0.1, colour = G.C.CLEAR, nodes = {
+      T.Col { minw = 5, r = 0.1, nodes = {
         -- title row
         T.Row { nodes = {
           T.Col { nodes = {
@@ -25,6 +25,7 @@ function Troubadour.UIDEF.statModList()
               minw = 4.5
             }),
           }},
+          T.Col {},
           T.Col { nodes = {
             Troubadour.UIDEF.modHeaderIcon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
           }},
@@ -36,11 +37,11 @@ function Troubadour.UIDEF.statModList()
           }},
         }},
         -- add some empty rows for spacing
-        T.Row { padding = 0.05 },
-        T.Row { padding = 0.05 },
+        T.Row {},
+        T.Row {},
         -- dynamic content rendered in this row container
         -- list of 4 x 4 mods on the current page
-        T.Row { padding = 0.05, minh = dminh + 1, minw = dminw + 1,
+        T.Row { minh = dminh + 1, minw = dminw + 1,
           nodes = {
             { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
           }

@@ -2,12 +2,13 @@
 local T = Troubadour.UI
 
 Troubadour.UIDEF.mod_list_tab = function()
-  return T.UIBox({ minw = 7, padding = 0.15, emboss = 0.05, bg_colour = G.C.BLACK,
+  return T.UIBox({ minw = 0, padding = 0.2, emboss = 0.05, bg_colour = G.C.BLACK,
     contents = {
-      T.Col ({ padding = 0.2 }, {
-        T.Row ({ padding = 0.1, r = 0.1, outline = 1, outline_colour = T.C.outline_colour}, {
+      T.Col ({ padding = 0 }, {
+        T.Row ({ minw = 8, padding = 0.1, r = 0.1, outline = 1, outline_colour = T.C.outline_colour}, {
           T.Text { align = "tm", text = "Condense Mods Page", scale = 0.7 }
         }),
+        T.Row { padding = 0.2 },
         T.Row { nodes = {
           T.Col ({ r = 0.2, padding = 0.1, colour = T.C.colour }, {
             T.Row ({ minh = 0.65, align = 'cr', TRO_dark_tooltip = 'TRO_icons_only' }, {

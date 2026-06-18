@@ -1,5 +1,5 @@
 local dir_index = {
-  ['functions'] = {
+  ['utils'] = {
     "utils.lua",
     "ui.lua",
     "inputmanager.lua"

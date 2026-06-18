@@ -43,8 +43,8 @@ G.FUNCS.TRO_settings_change_tab = function(e)
 end
 
 -- Load Config Tabs
-assert(SMODS.load_file("src/settings/tab_collection.lua"))()
-assert(SMODS.load_file("src/settings/tab_modlist.lua"))()
+assert(SMODS.load_file("src/ui/config/collection.lua"))()
+assert(SMODS.load_file("src/ui/config/modlist.lua"))()
 
 function SMODS.current_mod.extra_tabs()
 	return {
@@ -60,10 +60,6 @@ function SMODS.current_mod.extra_tabs()
 end
 
 function Troubadour.UI.update_config()
-  if Troubadour.config_from_modslist then
-    Troubadour.UI.rerender(Troubadour.UI.config_from_modlist, true)
-  else
-    G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
-    Troubadour.UI.rerender(create_UIBox_mods, true)
-  end
+  G.ACTIVE_MOD_UI = SMODS.Mods["Troubadour"]
+  Troubadour.UI.rerender(create_UIBox_mods, true)
 end
