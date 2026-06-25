@@ -35,7 +35,6 @@ for _, mod in pairs(SMODS.Mods) do
       local full_path = mod.path .. 'assets/' .. G.SETTINGS.GRAPHICS.texture_scaling .. 'x/' .. file_path .. '.png'
       local file_data, error = NFS.newFileData(full_path)
       if not error then
-        print("Mod Icon location found: "..full_path)
         local image_data = assert(love.image.newImageData(file_data),
                 ('Failed to initialize image data for Atlas %s'):format(file_path))
         local px, py = image_data:getDimensions()

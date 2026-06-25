@@ -54,7 +54,8 @@ function Troubadour.Folder:save()
 end
 
 function Troubadour.Folder:open()
-  -- Something something overlay menu
+  G.FUNCS.overlay_menu{ definition = Troubadour.UIDEF.modFolderWindow(self) }
+  G.OVERLAY_MENU:recalculate()
 end
 
 function Troubadour.Folder:close()
@@ -77,18 +78,23 @@ function Troubadour.Folder:render()
   local label_node = self:get_label()
 
   return T.Col { nodes = {
-    T.Col {
-      colour = bg_colour, emboss = 0.05, r = 0.1, minw = 1.5, minh = 1, shadow = true, shadow_height = 0.25, hover = true,
-      nodes = {
-        T.Col {
-          padding = 0.1, align = "lc", minw = 4.5, minh = 1, maxh = 1.4, emboss = 0.05, r = 0.1,
-          colour = colour,
-          button = "Troubadour_open_folder_" .. self.name,
-          nodes = {
+    T.Col (
+      { -- config
+        colour = bg_colour, emboss = 0.05, r = 0.1, minw = 1.5, minh = 1,
+        shadow = true, shadow_height = 0.25, hover = true
+      },
+      { -- nodes
+        T.Col (
+          { -- config
+            padding = 0.1, align = "lc", minw = 4.5, minh = 1, maxh = 1.4,
+            emboss = 0.05, r = 0.1, colour = colour,
+            button = "Troubadour_open_folder_" .. self.name
+          },
+          { -- nodes
             T.Col { nodes = { folder_tab } },
             T.Col { align = "lc", nodes = { label_node } },
           }
-        },
+        ),
         T.Col { nodes = {
           T.Row { nodes = {
             create_toggle({
@@ -100,14 +106,14 @@ function Troubadour.Folder:render()
               callback = (function(_set_toggle)
                 -- THIS IS WHAT WILL MASS ENABLE/DISABLE MODS IN FOLDER
                 if next(self.items) then
- 
+
                 end
               end)
             })
           }}
         }}
       }
-    }
+    )
   }}
 end
 

@@ -14,7 +14,8 @@ local dir_index = {
   ['ui'] = {
     "dark_tooltip.lua",
     "mods_tab.lua",
-    "mod_folder_tab.lua"
+    "mod_folder_tab.lua",
+    "mod_folders.lua"
   }
 }
 
@@ -28,14 +29,14 @@ local function load_directory(path, prefix)
   if dir_index[path] then
     load_directory_from_index(path, prefix)
   else
-    local files = NFS.getDirectoryItems(SMODS.current_mod.path .. path)
+    local files = NFS.getDirectoryItems(SMODS.current_mod.path .. prefix .. path)
     for _, file_path in ipairs(files) do
-      local file_type = NFS.getInfo(SMODS.current_mod.path .. path .. '/' .. file_path).type
+      local file_type = NFS.getInfo(SMODS.current_mod.path .. prefix .. path .. '/' .. file_path).type
 
       if file_type == "directory" then
         load_directory(path .. '/' .. file_path, prefix)
       elseif file_type ~= "symlink" then
-        assert(SMODS.load_file(path .. '/' .. file_path))()
+        assert(SMODS.load_file(prefix .. path .. '/' .. file_path))()
       end
     end
   end

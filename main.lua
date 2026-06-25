@@ -17,8 +17,8 @@ for _, path in ipairs {
   "utils",
   "ui",
   "api",
-  "src/collection",
-  "src/mods_page",
+  "collection",
+  "mods_page",
 } do
   load_dir(path, "src/")
 end
@@ -31,6 +31,3 @@ assert(SMODS.load_file("src/config_page.lua"))()
 
 -- Load atlases
 assert(SMODS.load_file("atlases.lua"))()
-
--- functions to execute after load
-Troubadour.defer(Troubadour.FUNCS.widen_collection)
