@@ -7,11 +7,13 @@ local modpage_helper = {
   end,
 
   recalculateModsList = function(page)
-    local w = Troubadour.config.mod_page_width * 10 % 10 < 5 and math.floor(Troubadour.config.mod_page_width) or math.ceil(Troubadour.config.mod_page_width)
-    local h = Troubadour.config.mod_page_height * 10 % 10 < 5 and math.floor(Troubadour.config.mod_page_height) or math.ceil(Troubadour.config.mod_page_height)
+    local w = math.round(Troubadour.config.mod_page_width)
+    local h = math.round(Troubadour.config.mod_page_height)
 
     page = page or 1
     SMODS.LAST_VIEWED_MODS_PAGE = page
+
+    math.round(Troubadour.config.mod_page_width)
 
     local modsColPerRow = w
     local modsRowPerPage = math.min( math.ceil(#SMODS.mod_list / w), h )
@@ -49,6 +51,27 @@ local modpage_helper = {
     local showingList = #Troubadour.FolderIndex > 0
 
     return currentPage, pageOptions, showingList, startIndex, endIndex, foldersRowPerPage, foldersColPerRow
+  end,
+
+  recalculateModFolder = function(Folder, page)
+    page = page or 1
+    Folder.LAST_VIEWED_MODS_PAGE = page
+
+    local modsColPerRow = 4
+    local modsRowPerPage = math.min( math.ceil(#Folder.items / 4), 3 )
+    local startIndex = (page - 1) * modsRowPerPage * modsColPerRow + 1
+    local endIndex = startIndex + modsRowPerPage * modsColPerRow - 1
+
+    local totalPages = math.ceil(#Folder.items / (modsRowPerPage * modsColPerRow))
+    local currentPage = localize('k_page') .. ' ' .. page .. "/" .. totalPages
+
+    local pageOptions = {}
+    for i = 1, totalPages do
+        table.insert(pageOptions, (localize('k_page') .. ' ' .. tostring(i) .. "/" .. totalPages))
+    end
+    local showingList = #Folder.items > 0
+
+    return currentPage, pageOptions, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow
   end,
 
   TextColumn = function(text, scale, colour, node)

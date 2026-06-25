@@ -54,6 +54,7 @@ function Troubadour.Folder:save()
 end
 
 function Troubadour.Folder:open()
+  Troubadour.ACTIVE_FOLDER = self
   G.FUNCS.overlay_menu{ definition = Troubadour.UIDEF.modFolderWindow(self) }
   G.OVERLAY_MENU:recalculate()
 end
@@ -117,7 +118,7 @@ function Troubadour.Folder:render()
   }}
 end
 
-function Troubadour.Folder:get_label()
+function Troubadour.Folder:get_label(minw)
   local _, _, text_colour = Troubadour.UIDEF.get_mod_popup_colours()
   return T.Row {
     nodes = {{
@@ -132,7 +133,7 @@ function Troubadour.Folder:get_label()
           }),
           container = { config = { can_collide = false } },
           overflow = {
-            node_config = { no_overflow = "h", w = 3 },
+            node_config = { no_overflow = "h", w = minw or 3 },
             config = { can_collide = false }
           },
           sync_mode = "progress",
