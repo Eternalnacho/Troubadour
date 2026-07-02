@@ -12,7 +12,7 @@ Troubadour.UIDEF.modFolderWindow = function(Folder)
   return create_UIBox_generic_options({
     colour = G.C.BLACK,
     outline_colour = T.C.outline_colour,
-    back_func = "mods_button",
+    back_func = "Troubadour_close_folder_" .. Folder.name,
     contents = { -- nodes
       T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, colour = G.C.BLACK, nodes = {
         -- row container
@@ -67,7 +67,7 @@ Troubadour.UIDEF.modFolderWindow = function(Folder)
                     shadow = true,
                     scale = 0.4,
                     colour = G.C.BOOSTER,
-                    button = "Troubadour_create_mod_folder_window", -- [[REPLACE WITH ADD MOD BUTTON FUNC]]
+                    button = "Troubadour_add_item_to_blargle", -- [[REPLACE WITH ADD MOD BUTTON FUNC]]
                     minh = 0.7,
                     minw = 2,
                   })
@@ -182,29 +182,20 @@ end
 Troubadour.UIDEF.deleteModFolderWindow = function()
   local get_folder_node = function(Folder)
     Troubadour.defer(function() Folder.delete_pending = false end)
-    return T.Col(
-      { align = 'cr', r = 0.1, colour = T.C.inactive, outline = 1, outline_colour = T.C.bg_colour, emboss = 0.05 },
+    return T.Col({},
       {
-        T.Col({ align = "cl" }, { Folder:get_label(1.5) }),
-        T.Col({ minw = 0.5 }),
-        T.Col({ align = "cr" }, {
-          create_toggle({
-            label = '',
-            ref_table = Folder,
-            ref_value = 'delete_pending',
-            col = true, hide_label = true,
-            w = 0, h = 0.2, scale = 1,
-            callback = (function(_set_toggle)
-              if not Folder.delete_pending then
-                Folder.delete_pending = nil
-              end
-            end)
-          })
-        }),
+        Troubadour.Tile({
+          ref_table = Folder,
+          ref_value = 'delete_pending',
+          object = Folder.UI.label(Folder, 1.5).config.object,
+          object_args = { w = 1.5, h = nil, colour = G.C.BLUE },
+          colour_override = {
+            enabled = darken(G.C.MULT, 0.5)
+          },
+        }):render(),
       }
     )
   end
-
   local get_row = function(row)
     local ret = T.Row({align = 'cl', minw = 1, padding = 0.1}, {})
     for i = 1, 4 do
@@ -214,27 +205,31 @@ Troubadour.UIDEF.deleteModFolderWindow = function()
     end
     return ret
   end
-
-  local row = T.Row({}, {})
+  
+  local folderRows = {}
   for i = 1, 4 do
-    table.insert(row.nodes, get_row(i))
+    table.insert(folderRows, get_row(i))
   end
-  local result_ui = T.Col ({ padding = 0.15, r = 0.2, colour = T.C.inactive, minw = 10 }, {row})
-  table.insert(result_ui.nodes,
-    T.Row ({}, {
-      UIBox_button({
-        label = { localize("b_tro_delete_mod_folder") },
-        col = true,
-        colour = T.C.active,
-        scale = 1,
-        minh = 0.6,
-        maxh = 0.6,
-        minw = 3,
-        maxw = 2,
-        button = "Troubadour_delete_folders",
-      }),
+
+  local result_ui = T.Col(
+    {
+      padding = 0.15, r = 0.2, colour = T.C.inactive, minw = 10
+    },
+    {
+      T.Row ({}, folderRows),
+      T.Row ({}, {
+        UIBox_button({
+          label = { localize("b_tro_delete_mod_folder") },
+          shadow = true,
+          scale = 0.4,
+          colour = darken(G.C.MULT, 0.1),
+          button = "Troubadour_delete_folders",
+          minh = 0.7,
+          minw = 3,
+        }),
+      })
     }
-  ))
+  )
 
 	return create_UIBox_generic_options({
     colour = G.C.BLACK,

@@ -108,7 +108,7 @@ function Troubadour.UIDEF.modFolderList(page)
       if folderCount >= foldersRowPerPage * foldersColPerRow then break end
       id = id + 1
       if id >= startIndex and id <= endIndex then
-        table.insert(current_row, Folder:render())
+        table.insert(current_row, Folder.UI.render(Folder))
         folderCount = folderCount + 1
         if math.fmod(folderCount, foldersColPerRow) == 0 then
           table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })

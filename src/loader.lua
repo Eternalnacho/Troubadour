@@ -55,7 +55,8 @@ local function load_folders()
         Troubadour.Folder({
           name = folder_table.name,
           id = folder_table.id,
-          items = folder_table.items
+          items = folder_table.items,
+          enabled = folder_table.enabled
         })
         print("Registered Folder: '"..folder_table.name.."'")
       end

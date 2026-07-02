@@ -145,7 +145,7 @@ function Troubadour.UIDEF.modHeaderIcon(atlas, pos, button_func, tooltip_key)
     TRO_mod_tile = true,
     TRO_dark_tooltip = tooltip_key,
     no_outline = true,
-    colour_override = {colour = T.C.outline_colour},
+    colour_override = { outline_disabled = T.C.outline_colour },
     button_func = button_func,
     shadow = true, shadow_height = 0.25, hovering = true,
   })

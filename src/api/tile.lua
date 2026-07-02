@@ -23,11 +23,11 @@ function G.FUNCS.TRO_toggle_tile(e)
   local enabled = e.config.ref_table[e.config.ref_value]
   if e.config.callback then e.config.callback(enabled) end
 
-  e.config.colour = enabled and tile_colour.backdrop_enabled or tile_colour.backdrop_disabled
-  e.config.outline_colour = e.config.outline and (enabled and tile_colour.outline_enabled or tile_colour.outline_disabled)
+  e.config.colour = enabled and e.config.colours.backdrop_enabled or e.config.colours.backdrop_disabled
+  e.config.outline_colour = e.config.outline and (enabled and e.config.colours.outline_enabled or e.config.colours.outline_disabled)
 
   -- change tile colour
-  e.children[1].config.colour = enabled and tile_colour.enabled or tile_colour.disabled
+  e.children[1].config.colour = enabled and e.config.colours.enabled or e.config.colours.disabled
 end
 
 function Troubadour.Tile:init(args)
@@ -48,6 +48,8 @@ function Troubadour.Tile:init(args)
   self.hovering = args.hovering
 
   self.click_timeout = 0.3
+
+  self.colours = SMODS.merge_defaults(args.colour_override, tile_colour)
 end
 
 function Troubadour.Tile:render()
@@ -58,9 +60,10 @@ function Troubadour.Tile:render()
       r = 0.1,
       padding = 0.05,
       emboss = 0.05,
-      colour = enabled and tile_colour.backdrop_enabled or tile_colour.backdrop_disabled,
+      colours = self.colours,
+      colour = enabled and self.colours.backdrop_enabled or self.colours.backdrop_disabled,
       outline = not self.no_outline and 1,
-      outline_colour = not self.no_outline and (enabled and tile_colour.outline_enabled or tile_colour.outline_disabled),
+      outline_colour = not self.no_outline and (enabled and self.colours.outline_enabled or self.colours.outline_disabled),
       button = self.button_func or "TRO_toggle_tile",
       ref_table = self.ref_table,
       ref_value = self.ref_value,
@@ -73,10 +76,6 @@ function Troubadour.Tile:render()
     }
   }
 
-  if self.colour_override then for k, _ in pairs(self.colour_override) do
-    tile_node.config[k] = self.colour_override[k] end
-  end
-
   tile_node.nodes = {
     {
       n = G.UIT.R,
@@ -85,7 +84,7 @@ function Troubadour.Tile:render()
         r = 0.1,
         padding = 0.1,
         emboss = 0.02,
-        colour = enabled and tile_colour.enabled or tile_colour.disabled,
+        colour = enabled and self.colours.enabled or self.colours.disabled,
         minw = self.minw,
         minh = self.minh,
       },
