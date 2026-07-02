@@ -34,32 +34,21 @@ end
 
 
 -- UI ELEMENT HOOKS FOR DARK TOOLTIP
--- Troubadour.hook_after_function(UIElement, 'set_values', function(self)
---   if self.config.TRO_dark_tooltip then
---     self.states.collide.can = true
---   end
--- end, true)
-local uieSV = UIElement.set_values
-function UIElement:set_values(...)
-  uieSV(self, ...)
+Troubadour.Hook('after', UIElement, 'set_values', function(self)
   if self.config.TRO_dark_tooltip then
     self.states.collide.can = true
   end
-end
+end)
 
-local uiehover = UIElement.hover
-function UIElement:hover()
+Troubadour.Hook('before', UIElement, 'hover', function(self)
   if self.config and self.config.TRO_dark_tooltip then
     self.config.h_popup = Troubadour.UIDEF.dark_tooltip(self.config.TRO_dark_tooltip)
     self.config.h_popup_config = { align = "tm", offset = { x = 0, y = -0.1 }, parent = self }
   end
-  uiehover(self)
-end
+end)
 
-local uiestophover = UIElement.stop_hover
-function UIElement:stop_hover()
+Troubadour.Hook('before', UIElement, 'stop_hover', function(self)
   if self.config and self.config.TRO_dark_tooltip then
     self.config.h_popup = nil
   end
-  uiestophover(self)
-end
+end)
