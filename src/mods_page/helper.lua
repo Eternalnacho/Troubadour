@@ -57,8 +57,8 @@ local modpage_helper = {
     page = page or 1
     Folder.LAST_VIEWED_MODS_PAGE = page
 
-    local modsColPerRow = 4
-    local modsRowPerPage = math.min( math.ceil(#Folder.items / 4), 3 )
+    local modsColPerRow = 6
+    local modsRowPerPage = math.min( math.ceil(#Folder.items / 6), 3 )
     local startIndex = (page - 1) * modsRowPerPage * modsColPerRow + 1
     local endIndex = startIndex + modsRowPerPage * modsColPerRow - 1
 

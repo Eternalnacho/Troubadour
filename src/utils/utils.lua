@@ -148,6 +148,9 @@ local hooks = {
 }
 
 ---@param hook_type string
+---| "before" # Pre-Call processing
+---| "after"  # Post-Call processing
+---| "around" # Pre-or-Post-Call processing (requires orig in hook)
 ---@param table any
 ---@param funcname string
 ---@param hook function

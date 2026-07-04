@@ -1,5 +1,6 @@
 ---@diagnostic disable: undefined-field
 local T = Troubadour.UI
+local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
 
 -- FOLDER OBJECT
 
@@ -13,12 +14,12 @@ function Troubadour.Folder:init(args)
 
   self.name = args.name
   self.id = args.id or #Troubadour.FolderIndex + 1
-  self.should_enable_all = args.enabled or true
+  self.should_enable_all = args.enabled
   self.items = {}
   self.item_index = {}
 
   if args.items and next(args.items) then
-    for _, item in ipairs(args.items) do self:add_item(SMODS.Mods[item]) end
+    for _, item in ipairs(args.items) do self:add_item(SMODS.Mods[item.id]) end
   end
 
   Troubadour.Folders[args.name] = self
@@ -32,14 +33,14 @@ end
 ---@param item Mod
 function Troubadour.Folder:add_item(item)
   if not self.ErrorHandler['item'](self, item) then
-    self.items[#self.items+1] = item.id
+    self.items[#self.items+1] = {id = item.id, enabled = not item.disabled}
     self.item_index[item.id] = #self.items
   end
   self:save()
 end
 
 function Troubadour.Folder:remove_item(item)
-  if self.items[item.id] then
+  if self.item_index[item.id] then
     table.remove(self.items, self.item_index[item.id])
     self.item_index[item.id] = nil
   end
@@ -63,8 +64,8 @@ function Troubadour.Folder:save()
 end
 
 function Troubadour.Folder:toggle_all()
-  for _, mod_id in pairs(self.items) do
-    local mod = SMODS.Mods[mod_id]
+  for _, item in pairs(self.items) do
+    local mod = SMODS.Mods[item.id]
     mod.should_enable = self.should_enable_all
     if not mod.should_enable then
       SMODS.NFS.write(mod.path .. '.lovelyignore', '')
@@ -72,13 +73,14 @@ function Troubadour.Folder:toggle_all()
       SMODS.NFS.remove(mod.path .. '.lovelyignore')
     end
   end
+  self:save()
 end
 
 function Troubadour.Folder:check_items()
   local changes = false
-  for _, mod_id in pairs(self.items) do
-    local mod = SMODS.Mods[mod_id]
-    if mod.should_enable == not mod.disabled then
+  for _, item in pairs(self.items) do
+    local mod = SMODS.Mods[item.id]
+    if mod.should_enable ~= item.enabled then
       changes = true
     end
   end
@@ -87,7 +89,7 @@ end
 
 function Troubadour.Folder:open()
   Troubadour.ACTIVE_FOLDER = self
-  G.FUNCS.overlay_menu{ definition = Troubadour.UIDEF.modFolderWindow(self) }
+  G.FUNCS.overlay_menu{ definition = self.UI.window(self) }
   G.OVERLAY_MENU:recalculate()
 end
 
@@ -122,7 +124,7 @@ Troubadour.Folder.ErrorHandler = {
   end,
 
   item = function(Folder, item)
-    if not (item or SMODS.Mods[item.id]) then
+    if not item or not SMODS.Mods[item.id] then
       sendWarnMessage(('Item not found'))
       return true
     end
@@ -155,8 +157,7 @@ Troubadour.Folder.UI = {
               -- Folder Icon
               T.Col ({},
                 {
-                  T.Col (
-                    { padding = 0.1, r = 0.1, colour = T.C.colour, outline = 1, outline_colour = bg_colour },
+                  T.Col ( { padding = 0.1, r = 0.1, colour = T.C.colour, outline = 1, outline_colour = bg_colour },
                     {
                       {
                         n = G.UIT.O,
@@ -224,10 +225,93 @@ Troubadour.Folder.UI = {
       w = 0, h = 0.2, scale = 1,
       callback = function(_set_toggle)
         Folder:toggle_all()
-        local toChange = Folder:check_items() and 1 or 0
+        local toChange = Folder:check_items() and 1 or -1
         SMODS.full_restart = SMODS.full_restart + toChange
       end
     })
+    if not Folder.should_enable_all then
+      Troubadour.defer(function() G.FUNCS.toggle(t) end)
+    end
     return t
-  end
+  end,
+
+  window = function(Folder)
+    local scale = 0.75
+    local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModFolder(Folder)
+
+    Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_items({cycle_config = {}}) end)
+
+    return create_UIBox_generic_options({
+      colour = G.C.BLACK,
+      outline_colour = T.C.outline_colour,
+      back_func = "Troubadour_close_folder_" .. Folder.name,
+      contents = { -- nodes
+        T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, colour = G.C.BLACK, nodes = {
+          -- row container
+          T.Col { nodes = {
+            -- column container
+            T.Col { r = 0.1, nodes = {
+              -- title row
+              T.Row ({ padding = 0 }, {
+                T.Col ({ padding = 0.1, minw = dminw, outline = 1, r = 0.1}, {
+                  T.Text { text = Folder.name, shadow = true, scale = scale, colour = G.C.UI.TEXT_LIGHT },
+                })
+              }),
+              -- dynamic content rendered in this row container
+              -- list of 4 x 3 mods on the current page
+              T.Row { minh = dminh + 1, minw = dminw + 1,
+                nodes = {
+                  { n = G.UIT.O, config = { align = "cm", id = 'TroubadourFolderItems', object = Moveable() } },
+                }
+              },
+              -- another empty row for spacing
+              T.Row { padding = 0.8 },
+              -- folder controls
+              T.Row { padding = 0.5, nodes = {
+                -- remove mod button
+                showingList and T.Col ({ padding = 0 },
+                  {
+                    UIBox_button({
+                      label = { localize('b_tro_remove_item') },
+                      shadow = true,
+                      scale = 0.4,
+                      colour = darken(G.C.MULT, 0.1),
+                      button = "Troubadour_delete_mod_folder_window", -- [[REPLACE WITH REMOVE MOD BUTTON FUNC]]
+                      minh = 0.7,
+                      minw = 2,
+                    })
+                  }
+                ) or nil,
+                -- Page Selector
+                showingList and T.Col { nodes = {
+                  SMODS.GUI.createOptionSelector({
+                    colour = T.C.active,
+                    scale = 0.8,
+                    options = pageOptions,
+                    opt_callback = 'Troubadour_update_folder_items',
+                    no_pips = true,
+                    current_option = ( currentPage )
+                  })
+                }} or nil,
+                -- Add Mod Button
+                T.Col ({ padding = 0 },
+                  {
+                    UIBox_button({
+                      label = { localize('b_tro_add_item') },
+                      shadow = true,
+                      scale = 0.4,
+                      colour = G.C.BOOSTER,
+                      button = "Troubadour_add_item_to_blargle", -- [[REPLACE WITH ADD MOD BUTTON FUNC]]
+                      minh = 0.7,
+                      minw = 2,
+                    })
+                  }
+                ),
+              }},
+            }}
+          }}
+        }}
+      }
+    })
+  end,
 }

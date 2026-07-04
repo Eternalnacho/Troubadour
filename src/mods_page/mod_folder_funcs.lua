@@ -31,3 +31,12 @@ function G.FUNCS.Troubadour_add_item_to_folder(e)
   G.FUNCS.overlay_menu{ definition = Troubadour.UIDEF.addItemWindow() }
   G.OVERLAY_MENU:recalculate()
 end
+
+function G.FUNCS.Troubadour_add_item_to_blargle(e)
+  Troubadour.Folders['blargle']:add_item(SMODS.Mods['Pokermon'])
+  Troubadour.Folders['blargle']:add_item(SMODS.Mods['NachosPokermonDip'])
+  Troubadour.Folders['blargle']:add_item(SMODS.Mods['GemPokermon'])
+  Troubadour.Folders['blargle']:add_item(SMODS.Mods['SonfivesPokermonPlus'])
+  Troubadour.Folders['blargle']:add_item(SMODS.Mods['PokermonMaelmc'])
+  Troubadour.Folders['blargle']:add_item(SMODS.Mods['Agarmons'])
+end

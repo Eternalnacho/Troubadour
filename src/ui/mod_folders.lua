@@ -3,84 +3,6 @@ local T = Troubadour.UI
 
 -- MOD FOLDER POPUP WINDOWS
 
-Troubadour.UIDEF.modFolderWindow = function(Folder)
-  local scale = 0.75
-  local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModFolder(Folder)
-
-  Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_items({cycle_config = {}}) end)
-
-  return create_UIBox_generic_options({
-    colour = G.C.BLACK,
-    outline_colour = T.C.outline_colour,
-    back_func = "Troubadour_close_folder_" .. Folder.name,
-    contents = { -- nodes
-      T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, colour = G.C.BLACK, nodes = {
-        -- row container
-        T.Col { nodes = {
-          -- column container
-          T.Col { minw = 5, r = 0.1, nodes = {
-            -- title row
-            T.Row { padding = 0.1, outline = 1, r = 0.1, nodes = {
-              T.Text { text = Folder.name, shadow = true, scale = scale, colour = G.C.UI.TEXT_LIGHT },
-            }},
-            -- dynamic content rendered in this row container
-            -- list of 4 x 3 mods on the current page
-            T.Row { minh = dminh + 1, minw = dminw + 1,
-              nodes = {
-                { n = G.UIT.O, config = { align = "cm", id = 'TroubadourFolderItems', object = Moveable() } },
-              }
-            },
-            -- another empty row for spacing
-            T.Row { padding = 0.8 },
-            -- folder controls
-            T.Row { padding = 0.5, nodes = {
-              -- remove mod button
-              showingList and T.Col ({ padding = 0 },
-                {
-                  UIBox_button({
-                    label = { localize('b_tro_remove_item') },
-                    shadow = true,
-                    scale = 0.4,
-                    colour = darken(G.C.MULT, 0.1),
-                    button = "Troubadour_delete_mod_folder_window", -- [[REPLACE WITH REMOVE MOD BUTTON FUNC]]
-                    minh = 0.7,
-                    minw = 2,
-                  })
-                }
-              ) or nil,
-              -- Page Selector
-              showingList and T.Col { nodes = {
-                SMODS.GUI.createOptionSelector({
-                  colour = T.C.active,
-                  scale = 0.8,
-                  options = pageOptions,
-                  opt_callback = 'Troubadour_update_folder_items',
-                  no_pips = true,
-                  current_option = ( currentPage )
-                })
-              }} or nil,
-              -- Add Mod Button
-              T.Col ({ padding = 0 },
-                {
-                  UIBox_button({
-                    label = { localize('b_tro_add_item') },
-                    shadow = true,
-                    scale = 0.4,
-                    colour = G.C.BOOSTER,
-                    button = "Troubadour_add_item_to_blargle", -- [[REPLACE WITH ADD MOD BUTTON FUNC]]
-                    minh = 0.7,
-                    minw = 2,
-                  })
-                }
-              ),
-            }},
-          }}
-        }}
-      }}
-    }
-  })
-end
-
 function Troubadour.UIDEF.modFolderDynamicList(Folder, page)
   local scale = 0.75
   local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = m.recalculateModFolder(Folder, page)
@@ -102,12 +24,12 @@ function Troubadour.UIDEF.modFolderDynamicList(Folder, page)
       function(mod) return mod.can_load and not mod.config_tab end,
       function(mod) return mod.disabled end,
     }) do
-      for _, mod_id in ipairs(Folder.items) do
+      for _, item in ipairs(Folder.items) do
         if modCount >= modsRowPerPage * modsColPerRow then break end
-        if condition(SMODS.Mods[mod_id]) then
+        if condition(SMODS.Mods[item.id]) then
           id = id + 1
           if id >= startIndex and id <= endIndex then
-            table.insert(current_row, Troubadour.UIDEF.modListIcon(SMODS.Mods[mod_id]))
+            table.insert(current_row, Troubadour.UIDEF.modListIcon(SMODS.Mods[item.id]))
             modCount = modCount + 1
             if math.fmod(modCount, modsColPerRow) == 0 then
               table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
@@ -129,6 +51,15 @@ function Troubadour.UIDEF.modFolderDynamicList(Folder, page)
   }}
 end
 
+Troubadour.UIDEF.addItemWindow = function(Folder)
+  local result_ui
+
+  return create_UIBox_generic_options({
+    colour = G.C.BLACK,
+    back_func = Folder and "Troubadour_open_folder_" .. Folder.name or 'mods_button',
+    contents = {result_ui}
+  })
+end
 
 Troubadour.UIDEF.createModFolderWindow = function()
   Troubadour.new_folder_name = ''
