@@ -208,7 +208,6 @@ end
 
 
 -- NODES FOR MOD TILE POPUP
-
 Troubadour.UIDEF.modNodes = {
   name = function(mod, nodes, args)
     local modname_split = SMODS.smart_line_splitter(mod.name, 18, true)

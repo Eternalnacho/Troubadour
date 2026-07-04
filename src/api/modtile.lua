@@ -58,17 +58,15 @@ function Troubadour.ModTile:get_popup(mod, scale)
 end
 
 
---- UI ELEMENT HOOKS FOR MOD TILE
-local uieSV = UIElement.set_values
-function UIElement:set_values(...)
-  uieSV(self, ...)
+-- UI ELEMENT HOOKS FOR MOD TILE
+
+Troubadour.Hook('after', UIElement, 'set_values', function(self)
   if self.config.TRO_mod_tile then
     self.states.collide.can = true
   end
-end
+end)
 
-local uiehover = UIElement.hover
-function UIElement:hover()
+Troubadour.Hook('before', UIElement, 'hover', function(self)
   if self.config and self.config.TRO_mod_tile then
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite then
@@ -78,16 +76,13 @@ function UIElement:hover()
       play_sound('tarot2', math.random() * 0.1 + 0.55, 0.09)
     end
   end
-  uiehover(self)
-end
+end)
 
-local uiestophover = UIElement.stop_hover
-function UIElement:stop_hover()
-  uiestophover(self)
+Troubadour.Hook('before', UIElement, 'stop_hover', function(self)
   if self.config and self.config.TRO_mod_tile then
     local tag_sprite = self.children[1] and self.children[1].children and self.children[1].children[1].config.object
     if tag_sprite then
       tag_sprite.hover_tilt = 0
     end
   end
-end
+end)
