@@ -12,8 +12,10 @@ end
 
 function G.FUNCS.Troubadour_update_folder_items(args)
   if not args or not args.cycle_config then return end
+  if not Troubadour.ACTIVE_FOLDER then return end
+  local Folder = Troubadour.ACTIVE_FOLDER
   SMODS.GUI.DynamicUIManager.updateDynamicAreas({
-      ["TroubadourFolderItems"] = Troubadour.UIDEF.modFolderDynamicList(Troubadour.ACTIVE_FOLDER, args.cycle_config.current_option)
+      ["TroubadourFolderItems"] = Folder.UI.modList(Folder, args.cycle_config.current_option)
   })
 end
 
@@ -28,7 +30,9 @@ function G.FUNCS.Troubadour_delete_mod_folder_window(e)
 end
 
 function G.FUNCS.Troubadour_add_item_to_folder(e)
-  G.FUNCS.overlay_menu{ definition = Troubadour.UIDEF.addItemWindow() }
+  if not Troubadour.ACTIVE_FOLDER then return end
+  local Folder = Troubadour.ACTIVE_FOLDER
+  G.FUNCS.overlay_menu{ definition = Folder.UI.addItemWindow(Folder) }
   G.OVERLAY_MENU:recalculate()
 end
 

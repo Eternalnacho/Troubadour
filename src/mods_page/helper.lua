@@ -6,72 +6,31 @@ local modpage_helper = {
     return authors or localize('b_unknown')
   end,
 
-  recalculateModsList = function(page)
-    local w = math.round(Troubadour.config.mod_page_width)
-    local h = math.round(Troubadour.config.mod_page_height)
-
+  ---@param list table
+  ---@param page integer
+  ---@param width integer
+  ---@param height integer
+  recalculateList = function(list, page, width, height)
     page = page or 1
-    SMODS.LAST_VIEWED_MODS_PAGE = page
+    width = width or 3
+    height = height or 4
 
-    math.round(Troubadour.config.mod_page_width)
+    local cols = width
+    local rows = math.min( math.ceil( #list / cols ), ( height ) )
 
-    local modsColPerRow = w
-    local modsRowPerPage = math.min( math.ceil(#SMODS.mod_list / w), h )
-    local startIndex = (page - 1) * modsRowPerPage * modsColPerRow + 1
-    local endIndex = startIndex + modsRowPerPage * modsColPerRow - 1
+    local startIndex = ( page - 1 ) * rows * cols + 1
+    local endIndex = startIndex + rows * cols - 1
 
-    local totalPages = math.ceil(#SMODS.mod_list / (modsRowPerPage * modsColPerRow))
-    local currentPage = localize('k_page') .. ' ' .. page .. "/" .. totalPages
-
-    local pageOptions = {}
-    for i = 1, totalPages do
-        table.insert(pageOptions, (localize('k_page') .. ' ' .. tostring(i) .. "/" .. totalPages))
-    end
-    local showingList = #SMODS.mod_list > 0
-
-    return currentPage, pageOptions, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow
-  end,
-
-  recalculateModFoldersList = function(page)
-    page = page or Troubadour.LAST_VIEWED_FOLDER_PAGE or 1
-    Troubadour.LAST_VIEWED_FOLDER_PAGE = page
-
-    local foldersRowPerPage = math.min( math.ceil(#Troubadour.FolderIndex / 2), 4 )
-    local foldersColPerRow = 2
-    local startIndex = (page - 1) * foldersRowPerPage * foldersColPerRow + 1
-    local endIndex = startIndex + foldersRowPerPage * foldersColPerRow - 1
-
-    local totalPages = math.ceil(#Troubadour.FolderIndex / (foldersRowPerPage * foldersColPerRow))
+    local totalPages = math.ceil( #list / ( rows * cols ) )
     local currentPage = localize('k_page') .. ' ' .. page .. "/" .. totalPages
 
     local pageOptions = {}
     for i = 1, totalPages do
       table.insert(pageOptions, (localize('k_page') .. ' ' .. tostring(i) .. "/" .. totalPages))
     end
-    local showingList = #Troubadour.FolderIndex > 0
+    local showingList = #list > 0
 
-    return currentPage, pageOptions, showingList, startIndex, endIndex, foldersRowPerPage, foldersColPerRow
-  end,
-
-  recalculateModFolder = function(Folder, page)
-    page = page or 1
-    Folder.LAST_VIEWED_MODS_PAGE = page
-
-    local modsColPerRow = 6
-    local modsRowPerPage = math.min( math.ceil(#Folder.items / 6), 3 )
-    local startIndex = (page - 1) * modsRowPerPage * modsColPerRow + 1
-    local endIndex = startIndex + modsRowPerPage * modsColPerRow - 1
-
-    local totalPages = math.ceil(#Folder.items / (modsRowPerPage * modsColPerRow))
-    local currentPage = localize('k_page') .. ' ' .. page .. "/" .. totalPages
-
-    local pageOptions = {}
-    for i = 1, totalPages do
-        table.insert(pageOptions, (localize('k_page') .. ' ' .. tostring(i) .. "/" .. totalPages))
-    end
-    local showingList = #Folder.items > 0
-
-    return currentPage, pageOptions, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow
+    return currentPage, pageOptions, showingList, startIndex, endIndex, rows, cols
   end,
 
   TextColumn = function(text, scale, colour, node)
@@ -82,5 +41,27 @@ local modpage_helper = {
     }
   end,
 }
+
+modpage_helper.recalculateModsList = function(page)
+  local w = math.round(Troubadour.config.mod_page_width)
+  local h = math.round(Troubadour.config.mod_page_height)
+
+  -- we don't use SMODS.LAST_VIEWED_MODS_PAGE here
+  -- because the number of pages differs between the types of mod menu
+  page = page or 1
+  SMODS.LAST_VIEWED_MODS_PAGE = page
+
+  return modpage_helper.recalculateList(SMODS.mod_list, page, w, h)
+end
+
+modpage_helper.recalculateModFoldersList = function(page)
+  local w = 2
+  local h = 4
+
+  page = page or Troubadour.LAST_VIEWED_FOLDER_PAGE or 1
+  Troubadour.LAST_VIEWED_FOLDER_PAGE = page
+
+  return modpage_helper.recalculateList(Troubadour.FolderIndex, page, w, h)
+end
 
 return modpage_helper

@@ -15,7 +15,6 @@ local dir_index = {
     "dark_tooltip.lua",
     "mods_tab.lua",
     "mod_folder_tab.lua",
-    "mod_folders.lua"
   }
 }
 

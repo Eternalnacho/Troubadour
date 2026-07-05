@@ -61,6 +61,7 @@ return {
       b_tro_create_mod_folder = "Create Mod Folder",
       b_tro_delete_mod_folder = "Delete Mod Folders",
       b_tro_enter_mod_folder_name = "Enter Name...",
+      b_tro_search_placeholder = "Search...",
       b_tro_add_item = "Add Mod",
       b_tro_remove_item = "Remove Mod",
     },
