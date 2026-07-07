@@ -111,11 +111,17 @@ local helper_funcs = {
     })
   end,
 
-  recalculateList = function(Folder, page)
+  recalculateList = function(list, page)
     page = page or 1
     local w = 6
     local h = 3
-    return m.recalculateList(Folder.items, page, w, h)
+    return m.recalculateList(list, page, w, h)
+  end,
+
+  modList = function(Folder, page)
+    return m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
+      return Troubadour.UIDEF.modListIcon(SMODS.Mods[item.id])
+    end)
   end,
 }
 

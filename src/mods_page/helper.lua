@@ -1,9 +1,19 @@
+local T = Troubadour.UI
+
 local modpage_helper = {
   concatAuthors = function(authors)
     if type(authors) == "table" then
         return table.concat(authors, ", ")
     end
     return authors or localize('b_unknown')
+  end,
+
+  TextColumn = function(text, scale, colour, node)
+    return { n = node or G.UIT.R, config = { padding = 0, align = "lc", maxw = 2.8, maxh = 1.5, },
+      nodes = {
+        { n = G.UIT.T, config = { text = text, colour = colour or G.C.UI.TEXT_LIGHT, scale = scale * 0.7 } },
+      }
+    }
   end,
 
   ---@param list table
@@ -16,7 +26,7 @@ local modpage_helper = {
     height = height or 4
 
     local cols = width
-    local rows = math.min( math.ceil( #list / cols ), ( height ) )
+    local rows = height or math.min( math.ceil( #list / cols ), ( height ) )
 
     local startIndex = ( page - 1 ) * rows * cols + 1
     local endIndex = startIndex + rows * cols - 1
@@ -33,12 +43,56 @@ local modpage_helper = {
     return currentPage, pageOptions, showingList, startIndex, endIndex, rows, cols
   end,
 
-  TextColumn = function(text, scale, colour, node)
-    return { n = node or G.UIT.R, config = { padding = 0, align = "lc", maxw = 2.8, maxh = 1.5, },
-      nodes = {
-        { n = G.UIT.T, config = { text = text, colour = colour or G.C.UI.TEXT_LIGHT, scale = scale * 0.7 } },
-      }
-    }
+  renderModList = function(list, page, calc_func, item_func)
+    local scale = 0.75
+    local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = calc_func(list, page)
+
+    local modNodes = {}
+    -- If no mods are loaded, show a default message
+    if showingList == false then
+      table.insert(modNodes, T.Row { padding = 0, nodes = {
+          T.Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
+        }})
+    else
+      local modCount = 0
+      local id = 0
+      local current_row = {}
+
+      for _, condition in ipairs({
+        function(mod) return not mod.can_load and not mod.disabled end,
+        function(mod) return mod.can_load end,
+        function(mod) return mod.disabled end,
+      }) do
+        for _, item in ipairs(list) do
+          if modCount >= modsRowPerPage * modsColPerRow then break end
+          if condition(SMODS.Mods[item.id]) then
+            id = id + 1
+            if id >= startIndex and id <= endIndex then
+              table.insert(current_row,
+              T.Col ({},
+                {
+                  T.Col ({ padding = 0.0, minw = 1, minh = 1 }, { item_func(item) })
+                }
+              ))
+              modCount = modCount + 1
+              if math.fmod(modCount, modsColPerRow) == 0 then
+                table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
+                current_row = {}
+              end
+            end
+          end
+        end
+      end
+      if #current_row > 0 then
+        table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
+      end
+    end
+
+    return T.Col { nodes = {
+      T.Row { nodes = {
+        T.Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
+      }}
+    }}
   end,
 }
 

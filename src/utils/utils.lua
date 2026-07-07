@@ -156,5 +156,6 @@ local hooks = {
 ---@param hook function
 ---@param prevent_run boolean?
 Troubadour.Hook = function(hook_type, table, funcname, hook, prevent_run)
+  if not hook then return end
   if hooks[hook_type] then hooks[hook_type](table, funcname, hook, hook_type == 'after' and prevent_run) end
 end

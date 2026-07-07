@@ -20,20 +20,24 @@ function Troubadour.UI.UIE_config_args(args)
 end
 
 -- Column node wrapper
-function Troubadour.UI.create_column(args, nodes)
+---@param config table
+---@param nodes table?
+function Troubadour.UI.create_column(config, nodes)
   return {
     n = G.UIT.C,
-    config = Troubadour.UI.UIE_config_args(args),
-    nodes = nodes or args.nodes or {}
+    config = Troubadour.UI.UIE_config_args(config),
+    nodes = nodes or config.nodes or {}
   }
 end
 
 -- Row node wrapper
-function Troubadour.UI.create_row(args, nodes)
+---@param config table
+---@param nodes table?
+function Troubadour.UI.create_row(config, nodes)
   return {
     n = G.UIT.R,
-    config = Troubadour.UI.UIE_config_args(args),
-    nodes = nodes or args.nodes or {}
+    config = Troubadour.UI.UIE_config_args(config),
+    nodes = nodes or config.nodes or {}
   }
 end
 
@@ -84,12 +88,12 @@ end
 
 -- Create shorthands for UI Helper Functions
 local T = Troubadour.UI
-T['Row'] = Troubadour.UI.create_row
-T['Col'] = Troubadour.UI.create_column
-T['Text'] = Troubadour.UI.create_text_node
-T['Root'] = Troubadour.UI.create_root_node
-T['UIBox'] = Troubadour.UI.create_UIBox_generic_options_custom
-T['C'] = Troubadour.UI.mod_colours
+T.Row = Troubadour.UI.create_row
+T.Col = Troubadour.UI.create_column
+T.Text = Troubadour.UI.create_text_node
+T.Root = Troubadour.UI.create_root_node
+T.UIBox = Troubadour.UI.create_UIBox_generic_options_custom
+T.C = Troubadour.UI.mod_colours
 
 -- I am VERY BLATANTLY ripping this straight from Cartomancer
 function T.create_column_tabs(args)

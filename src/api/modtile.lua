@@ -7,8 +7,8 @@ Troubadour.ModTile = Tile:extend()
 function Troubadour.ModTile:init(args)
   Tile.init(self, args)
   self.TRO_mod_tile = true
-  self.ref_table = args.mod
-  self.ref_value = 'should_enable'
+  self.ref_table = args.ref_table or args.mod
+  self.ref_value = args.ref_value or 'should_enable'
   self.object = Troubadour.UIDEF.modTagSprite(args.mod)
   self.object_args = {
     w = SMODS.pixels_to_unit(34) * 2,
@@ -17,7 +17,7 @@ function Troubadour.ModTile:init(args)
   }
   self.TRO_dark_tooltip = function() return self:get_popup(args.mod, 0.75) end
   self.button_func = args.button_func or 'TRO_check_tile_ctrls'
-  self.callback = function(_set_toggle) Troubadour.toggleMod(args.mod) end
+  self.callback = args.callback or function(_set_toggle) Troubadour.toggleMod(args.mod) end
 end
 
 function Troubadour.ModTile:render()

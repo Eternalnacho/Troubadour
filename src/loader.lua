@@ -9,6 +9,7 @@ local dir_index = {
     "folder.lua",
     "tile.lua",
     "modtile.lua",
+    "searcher.lua",
   },
 
   ['ui'] = {

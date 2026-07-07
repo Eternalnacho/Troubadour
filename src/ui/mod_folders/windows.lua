@@ -4,7 +4,7 @@ local T = Troubadour.UI
 local window_funcs = {
   mainWindow = function(Folder)
     local scale = 0.75
-    local currentPage, pageOptions, showingList, _, _, dminh, dminw = Folder.UI.recalculateList(Folder)
+    local currentPage, pageOptions, showingList, _, _, dminh, dminw = Folder.UI.recalculateList(Folder.items)
     Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_items({cycle_config = {}}) end)
 
     return create_UIBox_generic_options({
@@ -46,7 +46,7 @@ local window_funcs = {
                   })
                 }} or nil,
                 -- Add Mod Button
-                Folder.UI.button('b_tro_add_item', G.C.BOOSTER, "Troubadour_add_item_to_blargle"),
+                Folder.UI.button('b_tro_add_item', G.C.BOOSTER, 'Troubadour_add_item_to_folder'),
               }},
             }}
           }}
@@ -55,63 +55,57 @@ local window_funcs = {
     })
   end,
 
-  modList = function(Folder, page)
-    local scale = 0.75
-    local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = Folder.UI.recalculateList(Folder, page)
-
-    local modNodes = {}
-    -- If no mods are loaded, show a default message
-    if showingList == false then
-      table.insert(modNodes, T.Row { padding = 0, nodes = {
-          T.Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
-        }})
-    else
-      local modCount = 0
-      local id = 0
-      local current_row = {}
-
-      for _, condition in ipairs({
-        function(mod) return not mod.can_load and not mod.disabled end,
-        function(mod) return mod.can_load and mod.config_tab end,
-        function(mod) return mod.can_load and not mod.config_tab end,
-        function(mod) return mod.disabled end,
-      }) do
-        for _, item in ipairs(Folder.items) do
-          if modCount >= modsRowPerPage * modsColPerRow then break end
-          if condition(SMODS.Mods[item.id]) then
-            id = id + 1
-            if id >= startIndex and id <= endIndex then
-              table.insert(current_row, Troubadour.UIDEF.modListIcon(SMODS.Mods[item.id]))
-              modCount = modCount + 1
-              if math.fmod(modCount, modsColPerRow) == 0 then
-                table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
-                current_row = {}
-              end
-            end
-          end
-        end
-      end
-      if #current_row > 0 then
-        table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
-      end
-    end
-
-    return T.Col { nodes = {
-      T.Row { nodes = {
-        T.Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
-      }}
-    }}
-  end,
-
   addItemWindow = function(Folder)
-    local result_ui
-
+    local Searcher = Troubadour.Searcher()
+    local addQueue = UIBox({ definition = Searcher:to_add(), config = {type = "cm"} })
+    local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(Searcher:get_list(), 1)
+    Troubadour.defer(function() Searcher:update_list() end)
     return create_UIBox_generic_options({
       colour = G.C.BLACK,
       back_func = Folder and "Troubadour_open_folder_" .. Folder.name or 'mods_button',
-      contents = {result_ui}
+      contents = {
+        T.Row ({}, {
+          -- Search Field
+          T.Col ({ padding = 0.2, minh = 7.5, minw = 14 }, {
+            T.Col ({}, {
+              T.Row ({ padding = 0.1 }, {
+                T.Col ({} , { Searcher:get_text_input() })
+              }),
+              T.Row ({ padding = 0.1 }),
+              T.Row ({ minh = 5, minw = 9 }, {
+                T.Col ({} , { { n = G.UIT.O, config = { align = "cm", id = 'TroubadourSearchResult', object = Moveable() } } })
+              }),
+              -- empty row for spacing
+              T.Row ({ padding = 0.6 }),
+              -- folder controls
+              T.Row ({}, {
+                -- Page Selector (only appears if mods found)
+                showingList and T.Col { nodes = {
+                  SMODS.GUI.createOptionSelector({
+                    colour = T.C.active,
+                    scale = 0.8,
+                    options = pageOptions,
+                    opt_callback = 'Troubadour_update_search',
+                    no_pips = true,
+                    id = 'Troubadour_search_page_opts',
+                    current_option = ( currentPage )
+                  })
+                }} or nil
+              })
+            }),
+            -- Spacer Column
+            T.Col ({ padding = 0.2 }),
+            -- "To-Add" queue
+            T.Col ({}, {
+              T.Row ({ padding = 0.1, r = 0.2}, { { n = G.UIT.O, config = { id = 'Troubadour_addQueue', object = addQueue } } }),
+              T.Row ({ padding = 0.1 }),
+              UIBox_button({ button = 'Troubadour_add_items', label = {"Add Items"}, colour = G.C.FILTER, minw = 3, minh = 0.7 }),
+            }),
+          }),
+        })
+      }
     })
-  end
+  end,
 }
 
 return window_funcs

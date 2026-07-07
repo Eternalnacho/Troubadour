@@ -102,6 +102,7 @@ function Troubadour.Folder:delete()
   Troubadour.reindexFolders()
 end
 
+-- Folder Error Handling: Usually related to duplicate or nil values
 Troubadour.Folder.ErrorHandler = {
   name = function(name)
     if not name or name == '' then
@@ -128,9 +129,7 @@ Troubadour.Folder.ErrorHandler = {
 -- Folder UI Functions
 local helper_funcs = assert(SMODS.load_file("src/ui/mod_folders/helper.lua"))()
 local window_funcs = assert(SMODS.load_file("src/ui/mod_folders/windows.lua"))()
-
-Troubadour.Folder.UI = SMODS.merge_defaults(helper_funcs, window_funcs)
-print(Troubadour.Folder.UI)
+Troubadour.Folder.UI = SMODS.merge_defaults(helper_funcs, window_funcs) or {}
 
 function Troubadour.reindexFolders()
   for i, Folder in ipairs(Troubadour.FolderIndex) do

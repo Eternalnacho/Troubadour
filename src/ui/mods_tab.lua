@@ -210,6 +210,7 @@ end
 -- NODES FOR MOD TILE POPUP
 Troubadour.UIDEF.modNodes = {
   name = function(mod, nodes, args)
+    if not mod.name then return end
     local modname_split = SMODS.smart_line_splitter(mod.name, 18, true)
     for _,v in ipairs(modname_split) do
       table.insert(nodes, m.TextColumn(v, args.scale, args.colour))
