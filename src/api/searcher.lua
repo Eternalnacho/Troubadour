@@ -77,23 +77,9 @@ end)
 
 -- UI
 
--- Text Input Field
-Troubadour.Searcher.get_text_input = function(self)
-  local args = {
-    ref_table = self,
-    ref_value = 'query',
-    id = "troubadour_searcher_text_input",
-    prompt_text = localize('b_tro_search_placeholder'),
-    current_prompt_text = '',
-  }
-
-  local ret = create_text_input(args)
-  return ret
-end
-
 -- Dynamic Mod List
 Troubadour.Searcher.render_list = function(self, Folder, page)
-  return m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
+  local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
     return Troubadour.ModTile({
       mod = SMODS.Mods[item.id],
       ref_table = self.targets,
@@ -107,6 +93,22 @@ Troubadour.Searcher.render_list = function(self, Folder, page)
       },
     }):render()
   end)
+  return T.UIBox({ minw = 9, minh = 5, bg_colour = G.C.CLEAR, contents = {render} })
+end
+
+-- Text Input Field
+Troubadour.Searcher.get_text_input = function(self)
+  local args = {
+    ref_table = self,
+    ref_value = 'query',
+    id = "troubadour_searcher_text_input",
+    prompt_text = localize('b_tro_search_placeholder'),
+    current_prompt_text = '',
+    extended_corpus = true,
+  }
+
+  local ret = create_text_input(args)
+  return ret
 end
 
 -- Target list update function

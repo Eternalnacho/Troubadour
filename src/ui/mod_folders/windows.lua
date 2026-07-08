@@ -59,39 +59,39 @@ local window_funcs = {
     local Searcher = Troubadour.Searcher()
     local addQueue = UIBox({ definition = Searcher:to_add(), config = {type = "cm"} })
     local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(Searcher:get_list(), 1)
-    Troubadour.defer(function() Searcher:update_list() end)
+
+    Troubadour.defer(function() Searcher:update_list(); G.OVERLAY_MENU:recalculate() end)
     return create_UIBox_generic_options({
       colour = G.C.BLACK,
       back_func = Folder and "Troubadour_open_folder_" .. Folder.name or 'mods_button',
       contents = {
-        T.Row ({}, {
-          -- Search Field
-          T.Col ({ padding = 0.2, minh = 7.5, minw = 14 }, {
-            T.Col ({}, {
-              T.Row ({ padding = 0.1 }, {
-                T.Col ({} , { Searcher:get_text_input() })
-              }),
-              T.Row ({ padding = 0.1 }),
-              T.Row ({ minh = 5, minw = 9 }, {
-                T.Col ({} , { { n = G.UIT.O, config = { align = "cm", id = 'TroubadourSearchResult', object = Moveable() } } })
-              }),
+        T.Row ({ minh = 7.5, minw = 14 }, {
+          -- row container
+          T.Col ({}, {
+            -- column container
+            T.Col ({ r = 0.1 }, {
+              -- Search Field
+              T.Row { nodes = {
+                T.Col ({}, {
+                  T.Row ({}, { Searcher:get_text_input() })
+                }),
+              }},
               -- empty row for spacing
-              T.Row ({ padding = 0.6 }),
-              -- folder controls
-              T.Row ({}, {
-                -- Page Selector (only appears if mods found)
-                showingList and T.Col { nodes = {
-                  SMODS.GUI.createOptionSelector({
-                    colour = T.C.active,
-                    scale = 0.8,
-                    options = pageOptions,
-                    opt_callback = 'Troubadour_update_search',
-                    no_pips = true,
-                    id = 'Troubadour_search_page_opts',
-                    current_option = ( currentPage )
-                  })
-                }} or nil
-              })
+              T.Row {},
+              -- dynamic content rendered in this row container
+              T.Row ({ minh = 4.5, minw = 9 }, { { n = G.UIT.O, config = { id = 'TroubadourSearchResult', object = Moveable() } } }),
+              -- another empty row for spacing
+              T.Row { padding = 0.8 },
+              -- Page Selector (only appears if mods found)
+              showingList and SMODS.GUI.createOptionSelector({
+                colour = T.C.active,
+                scale = 0.8,
+                options = pageOptions,
+                opt_callback = 'Troubadour_update_search',
+                no_pips = true,
+                id = 'Troubadour_search_page_opts',
+                current_option = ( currentPage )
+              }) or nil
             }),
             -- Spacer Column
             T.Col ({ padding = 0.2 }),
@@ -101,7 +101,7 @@ local window_funcs = {
               T.Row ({ padding = 0.1 }),
               UIBox_button({ button = 'Troubadour_add_items', label = {"Add Items"}, colour = G.C.FILTER, minw = 3, minh = 0.7 }),
             }),
-          }),
+          })
         })
       }
     })

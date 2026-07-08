@@ -11,7 +11,7 @@ function Troubadour.Folder:init(args)
 
   self.name = args.name
   self.id = args.id or #Troubadour.FolderIndex + 1
-  self.should_enable_all = args.enabled
+  self.should_enable_all = args.enabled or (args.enabled == nil and true)
   self.items = {}
   self.item_index = {}
 

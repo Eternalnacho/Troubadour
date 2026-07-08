@@ -36,11 +36,12 @@ function G.FUNCS.Troubadour_add_item_to_folder(e)
   G.OVERLAY_MENU:recalculate()
 end
 
-function G.FUNCS.Troubadour_add_item_to_blargle(e)
-  Troubadour.Folders['blargle']:add_item(SMODS.Mods['Pokermon'])
-  Troubadour.Folders['blargle']:add_item(SMODS.Mods['NachosPokermonDip'])
-  Troubadour.Folders['blargle']:add_item(SMODS.Mods['GemPokermon'])
-  Troubadour.Folders['blargle']:add_item(SMODS.Mods['SonfivesPokermonPlus'])
-  Troubadour.Folders['blargle']:add_item(SMODS.Mods['PokermonMaelmc'])
-  Troubadour.Folders['blargle']:add_item(SMODS.Mods['Agarmons'])
+function G.FUNCS.Troubadour_add_items(e)
+  if not Troubadour.ACTIVE_SEARCH or not Troubadour.ACTIVE_FOLDER then return end
+  local Folder = Troubadour.ACTIVE_FOLDER
+  for id, to_add in pairs(Troubadour.ACTIVE_SEARCH.targets) do
+    if to_add then Folder:add_item(SMODS.Mods[id]) end
+  end
+  Troubadour.ACTIVE_SEARCH = nil
+  Folder:open()
 end

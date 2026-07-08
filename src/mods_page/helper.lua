@@ -26,7 +26,7 @@ local modpage_helper = {
     height = height or 4
 
     local cols = width
-    local rows = height or math.min( math.ceil( #list / cols ), ( height ) )
+    local rows = math.min( math.ceil( #list / cols ), ( height ) )
 
     local startIndex = ( page - 1 ) * rows * cols + 1
     local endIndex = startIndex + rows * cols - 1
@@ -76,7 +76,7 @@ local modpage_helper = {
               ))
               modCount = modCount + 1
               if math.fmod(modCount, modsColPerRow) == 0 then
-                table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
+                table.insert(modNodes, T.Row { padding = 0, align = "cl", nodes = current_row })
                 current_row = {}
               end
             end
@@ -84,7 +84,7 @@ local modpage_helper = {
         end
       end
       if #current_row > 0 then
-        table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
+        table.insert(modNodes, T.Row { padding = 0, align = "cl", nodes = current_row })
       end
     end
 
