@@ -92,6 +92,7 @@ end
 
 function Troubadour.Folder:close()
   -- Something something overlay menu back func
+  Troubadour.ACTIVE_FOLDER = nil
   G.FUNCS.mods_button()
 end
 
@@ -137,3 +138,10 @@ function Troubadour.reindexFolders()
     Folder:save()
   end
 end
+
+Troubadour.Hook('before', love, 'keypressed', function(key)
+  if key == "escape" and Troubadour.ACTIVE_FOLDER and not Troubadour.ACTIVE_SEARCH then
+    Troubadour.ACTIVE_FOLDER:close()
+    return
+  end
+end)

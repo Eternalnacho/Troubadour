@@ -1,4 +1,5 @@
 local T = Troubadour.UI
+--
 
 -- Folder Window UI Definitions
 local window_funcs = {
@@ -66,9 +67,7 @@ local window_funcs = {
       back_func = Folder and "Troubadour_open_folder_" .. Folder.name or 'mods_button',
       contents = {
         T.Row ({ minh = 7.5, minw = 14 }, {
-          -- row container
           T.Col ({}, {
-            -- column container
             T.Col ({ r = 0.1 }, {
               -- Search Field
               T.Row { nodes = {
@@ -76,11 +75,11 @@ local window_funcs = {
                   T.Row ({}, { Searcher:get_text_input() })
                 }),
               }},
-              -- empty row for spacing
+              -- Spacer Row
               T.Row {},
-              -- dynamic content rendered in this row container
+              -- Search Result List
               T.Row ({ minh = 4.5, minw = 9 }, { { n = G.UIT.O, config = { id = 'TroubadourSearchResult', object = Moveable() } } }),
-              -- another empty row for spacing
+              -- Spacer Row
               T.Row { padding = 0.8 },
               -- Page Selector (only appears if mods found)
               showingList and SMODS.GUI.createOptionSelector({

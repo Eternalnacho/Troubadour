@@ -37,6 +37,56 @@ local function choose_tab(tab)
   Troubadour.LAST_OPEN_TAB = tab
 end
 
+-- I am VERY BLATANTLY ripping this straight from Cartomancer
+function T.create_column_tabs(args)
+  args = args or {}
+  args.colour = args.colour or G.C.CLEAR
+  args.tab_alignment = args.tab_alignment or 'cl'
+  args.opt_callback = args.opt_callback or nil
+  args.scale = args.scale or 1
+  args.tab_w = args.tab_w or 0
+  args.tab_h = args.tab_h or 0
+  args.text_scale = (args.text_scale or 0.5)
+
+  local tab_buttons = {}
+
+  for k, v in ipairs(args.tabs) do
+    if v.chosen then args.current = {k = k, v = v} end
+    local id = 'tab_but_'..(v.label or '')
+    tab_buttons[#tab_buttons+1] = { n = G.UIT.R, config = { align = "tm" }, nodes={
+      UIBox_button({
+        id = id, ref_table = v, button = 'TRO_settings_change_tab', label = {v.label}, colour = darken(Troubadour.UI.mod_colours.buttons, 0.2),
+        minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale,
+        chosen = v.chosen and 'vert', func = v.func, focus_args = { snap_to = args.snap_to_nav, nav = 'wide' },
+      })
+    }}
+  end
+
+  -- Tabs + Contents
+  return T.Row ({ padding = 0.0, align = "cl", colour = args.colour },
+    {
+      -- Tabs
+      T.Col({ align = "cl", padding = 0.15, focus_args = { button = 'x', type = 'none' }}, tab_buttons),
+      -- Tab contents
+      T.Col({ align = args.tab_alignment, padding = args.padding or 0.1, no_fill = true, minh = args.tab_h, minw = args.tab_w },
+        {
+          {
+            n = G.UIT.O,
+            config = {
+              id = 'TRO_settings_tab_contents',
+              old_chosen = tab_buttons[1].nodes[1].nodes[1],
+              object = UIBox{
+                definition = args.current.v.tab_definition_function(args.current.v.tab_definition_function_args),
+                config = { offset = { x = 0, y = 0 } }
+              }
+            }
+          }
+        }
+      ),
+    }
+  )
+end
+
 function Troubadour.UIDEF.collection_tab()
   local vertical_tabs = {}
   choose_tab "Jokers"
@@ -74,7 +124,7 @@ function Troubadour.UIDEF.collection_tab()
         nodes = { T.Text{ align = "tm", text = "Widen Collections", scale = 0.7 } } },
       T.Row { padding = 0, align = "tl",
         nodes = {
-          Troubadour.UI.create_column_tabs({
+          T.create_column_tabs({
             tab_alignment = 'tl',
             text_scale = 0.4,
             snap_to_nav = true,

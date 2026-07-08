@@ -177,7 +177,7 @@ Troubadour.UIDEF.deleteModFolderWindow = function()
         Troubadour.Tile({
           ref_table = Folder,
           ref_value = 'delete_pending',
-          object = Folder.UI.label(Folder, 1.5).config.object,
+          object = Folder.UI.label(Folder.name, 1.5).config.object,
           object_args = { w = 1.5, h = nil, colour = G.C.BLUE },
           colour_override = {
             enabled = darken(G.C.MULT, 0.5)

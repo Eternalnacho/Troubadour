@@ -16,7 +16,7 @@ function Troubadour.UI.UIE_config_args(args)
     ['colour'] = G.C.CLEAR,
   }
   local new_args = SMODS.merge_defaults(args, default_values)
-  return new_args
+  return type(new_args) == 'table' and new_args or args
 end
 
 -- Column node wrapper
@@ -42,11 +42,13 @@ function Troubadour.UI.create_row(config, nodes)
 end
 
 -- Root node wrapper
-function Troubadour.UI.create_root_node(args, nodes)
+---@param config table
+---@param nodes table?
+function Troubadour.UI.create_root_node(config, nodes)
   return {
     n = G.UIT.ROOT,
-    config = Troubadour.UI.UIE_config_args(args),
-    nodes = nodes or args.nodes or {}
+    config = Troubadour.UI.UIE_config_args(config),
+    nodes = nodes or config.nodes or {}
   }
 end
 
@@ -95,57 +97,18 @@ T.Root = Troubadour.UI.create_root_node
 T.UIBox = Troubadour.UI.create_UIBox_generic_options_custom
 T.C = Troubadour.UI.mod_colours
 
--- I am VERY BLATANTLY ripping this straight from Cartomancer
-function T.create_column_tabs(args)
-  args = args or {}
-  args.colour = args.colour or G.C.CLEAR
-  args.tab_alignment = args.tab_alignment or 'cl'
-  args.opt_callback = args.opt_callback or nil
-  args.scale = args.scale or 1
-  args.tab_w = args.tab_w or 0
-  args.tab_h = args.tab_h or 0
-  args.text_scale = (args.text_scale or 0.5)
-
-  local tab_buttons = {}
-
-  for k, v in ipairs(args.tabs) do
-    if v.chosen then args.current = {k = k, v = v} end
-    local id = 'tab_but_'..(v.label or '')
-    tab_buttons[#tab_buttons+1] = { n = G.UIT.R, config = { align = "tm" }, nodes={
-      UIBox_button({
-        id = id, ref_table = v, button = 'TRO_settings_change_tab', label = {v.label}, colour = darken(Troubadour.UI.mod_colours.buttons, 0.2),
-        minh = 0.8 * args.scale, minw = 2.5 * args.scale, col = true, choice = true, scale = args.text_scale,
-        chosen = v.chosen and 'vert', func = v.func, focus_args = { snap_to = args.snap_to_nav, nav = 'wide' },
-      })
-    }}
+-- UIBox refresh function
+---@param id string
+Troubadour.UI.updateObject = function(id, definition)
+  local object = G.OVERLAY_MENU:get_UIE_by_ID(id)
+  if object and definition then
+    object.config.object:remove()
+    object.config.object = UIBox({
+      definition = definition,
+      config = {type = "cm", parent = object}
+    })
+    object.UIBox:recalculate()
   end
-
-  -- Tabs + Contents
-  return {
-    n = G.UIT.R,
-    config = { padding = 0.0, align = "cl", colour = args.colour },
-    nodes = {
-      -- Tabs
-      Troubadour.UI.create_column({ align = "cl", padding = 0.15, colour = G.C.CLEAR, focus_args = { button = 'x', type = 'none' }, nodes = tab_buttons }),
-      -- Tab contents
-      {
-        n = G.UIT.C, config = { align = args.tab_alignment, padding = args.padding or 0.1, no_fill = true, minh = args.tab_h, minw = args.tab_w },
-        nodes = {
-          {
-            n = G.UIT.O,
-            config = {
-              id = 'TRO_settings_tab_contents',
-              old_chosen = tab_buttons[1].nodes[1].nodes[1],
-              object = UIBox{
-                definition = args.current.v.tab_definition_function(args.current.v.tab_definition_function_args),
-                config = { offset = { x = 0, y = 0 } }
-              }
-            }
-          }
-        }
-      },
-    }
-  }
 end
 
 -- Stole this from Handy
@@ -160,12 +123,11 @@ function Troubadour.UI.rerender(def, silent)
   Troubadour.UI.cleanup_dead_elements(G, "MOVEABLES")
 end
 
+-- Stole this from Handy
 function Troubadour.UI.cleanup_dead_elements(ref_table, ref_key)
 	local new_values = {}
 	local target = ref_table[ref_key]
-	if not target then
-		return
-	end
+	if not target then return end
 	for _, v in pairs(target) do
 		if not v.REMOVED and not v.removed then
 			new_values[#new_values + 1] = v

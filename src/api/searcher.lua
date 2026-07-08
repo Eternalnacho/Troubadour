@@ -1,5 +1,6 @@
 local T = Troubadour.UI
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
+--
 
 -- SEARCH FIELD FUNCS (ADAPTED FROM TMJ AND IMM)
 Troubadour.Searcher = Object:extend()
@@ -57,9 +58,7 @@ end
 Troubadour.Searcher.update_list = function(self, page)
   local list = self:get_list()
   local fake_folder = { items = list, UI = self.folder.UI }
-  SMODS.GUI.DynamicUIManager.updateDynamicAreas({
-    ["TroubadourSearchResult"] = self:render_list(fake_folder, page or 1)
-  })
+  T.updateObject('TroubadourSearchResult', self:render_list(fake_folder, page or 1))
 end
 
 G.FUNCS.Troubadour_update_search = function(args)
@@ -70,31 +69,20 @@ end
 
 Troubadour.Hook('after', G.FUNCS, 'text_input_key', function()
   local hook_config = G.CONTROLLER.text_input_hook and G.CONTROLLER.text_input_hook.config.ref_table
-  if Troubadour.ACTIVE_SEARCH and hook_config and hook_config.ref_value == 'query' then
+  if Troubadour.ACTIVE_SEARCH and hook_config and hook_config.ref_table == Troubadour.ACTIVE_SEARCH and hook_config.ref_value == 'query' then
     Troubadour.ACTIVE_SEARCH:update_list()
   end
 end)
 
--- UI
+Troubadour.Hook('before', love, 'keypressed', function(key)
+  if key == "escape" and Troubadour.ACTIVE_SEARCH and not G.CONTROLLER.text_input_hook then
+    Troubadour.ACTIVE_SEARCH = nil
+    G.FUNCS["Troubadour_open_folder_"..Troubadour.ACTIVE_FOLDER.name]()
+    return
+  end
+end)
 
--- Dynamic Mod List
-Troubadour.Searcher.render_list = function(self, Folder, page)
-  local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
-    return Troubadour.ModTile({
-      mod = SMODS.Mods[item.id],
-      ref_table = self.targets,
-      ref_value = item.id,
-      button_func = 'TRO_toggle_tile',
-      callback = function()
-        Troubadour.ACTIVE_SEARCH:update_targets(G.OVERLAY_MENU:get_UIE_by_ID('Troubadour_addQueue'))
-      end,
-      colour_override = {
-        enabled = G.C.BOOSTER
-      },
-    }):render()
-  end)
-  return T.UIBox({ minw = 9, minh = 5, bg_colour = G.C.CLEAR, contents = {render} })
-end
+-- UI
 
 -- Text Input Field
 Troubadour.Searcher.get_text_input = function(self)
@@ -111,31 +99,48 @@ Troubadour.Searcher.get_text_input = function(self)
   return ret
 end
 
--- Target list update function
-Troubadour.Searcher.update_targets = function(self, object)
-  if object then
-    object.config.object:remove()
-    object.config.object = UIBox({ definition = self:to_add(), config = {type = "cm", parent = object}})
-    object.UIBox:recalculate()
-  end
+-- Dynamic Mod List
+Troubadour.Searcher.render_list = function(self, Folder, page)
+  local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
+    return Troubadour.ModTile({
+      mod = SMODS.Mods[item.id],
+      ref_table = self.targets,
+      ref_value = item.id,
+      button_func = 'TRO_toggle_tile',
+      callback = function()
+        T.updateObject('Troubadour_addQueue', self:to_add())
+      end,
+      colour_override = {
+        enabled = G.C.BOOSTER
+      },
+    }):render()
+  end)
+  return T.UIBox({ minw = 9, minh = 5, bg_colour = G.C.CLEAR, contents = {render} })
 end
 
+-- "To Add" List
 Troubadour.Searcher.to_add = function(self)
+  local title_row = T.Row ( { minh = 0.5 }, { T.Text ({ text = "To Add:", colour = G.C.UI.TEXT_LIGHT, scale = 0.5 }) })
   local display_list = self:get_targets()
-  table.insert(display_list.nodes, 1, T.Row { minh = 0.7, nodes = { T.Text { text = "To Add:", colour = G.C.UI.TEXT_LIGHT, scale = 0.5 } } })
-  return T.UIBox{ minh = 0.0, minw = 0.0, bg_colour = T.C.inactive, contents = { T.Row { r = 0.2, padding = 0.15, nodes = display_list.nodes } } }
+
+  return T.UIBox({ minh = 0.0, minw = 2, bg_colour = T.C.inactive, contents = {
+    T.Row ({ r = 0.2, padding = 0.15 }, { title_row, display_list } )
+  }})
 end
 
 Troubadour.Searcher.get_targets = function(self)
-  local display_list = T.Col ({ colour = G.C.GREY }, { T.Row ({}, { T.Col ({ colour = G.C.GREY, r = 0.2 }, {}) }) })
-  local nodes = display_list.nodes[1].nodes[1].nodes
+  local result_ui = T.Row ({ --[[config]] }, {
+    T.Col ({ colour = G.C.GREY, r = 0.2 }, { --[[target_list]] })
+  })
+  local target_list = result_ui.nodes[1].nodes
 
   for id, v in pairs(self.targets) do
     local target = v and SMODS.Mods[id] and SMODS.Mods[id].name
-    table.insert(nodes, target and T.Row ({ r = 0.2, minw = 3}, { T.Text { text = target, colour = G.C.WHITE, scale = 0.4 } }) or nil)
+    target_list[#target_list+1] = target and T.Row ({ r = 0.2, minw = 3.75 }, { self.folder.UI.label(target, 3.5, G.C.WHITE) })
+    or nil
   end
+  local default = T.Row ({ r = 0.2, minw = 3.75 }, { T.Text { text = '', colour = G.C.WHITE, scale = 0.4 } })
+  if not next(target_list) then table.insert(target_list, default) end
 
-  local default = T.Row ({ r = 0.2, minw = 3 }, { T.Text { text = '', colour = G.C.WHITE, scale = 0.4 } })
-  if not next(nodes) then table.insert(nodes, default) end
-  return display_list
+  return result_ui
 end

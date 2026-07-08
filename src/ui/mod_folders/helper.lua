@@ -41,7 +41,7 @@ local helper_funcs = {
                 }
               ),
               -- Folder Label
-              T.Col ({ align = "lc"}, { T.Row({}, { Folder.UI.label(Folder, nil, text_colour) }) }),
+              T.Col ({ align = "lc"}, { T.Row({}, { Folder.UI.label(Folder.name, nil, text_colour) }) }),
             }
           ),
           -- Enable All / Disable All toggle
@@ -51,13 +51,13 @@ local helper_funcs = {
     }}
   end,
 
-  label = function(Folder, minw, text_colour)
+  label = function(name, minw, text_colour)
     return {
       n = G.UIT.O,
       config = {
         object = SMODS.UIScrollBox({
           content = DynaText({
-            string = Folder.name,
+            string = name,
             colours = { text_colour or G.C.UI.TEXT_LIGHT },
             shadow = true,
             scale = 0.375,
