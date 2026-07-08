@@ -17,23 +17,30 @@ function Troubadour.UIDEF.dark_tooltip(tooltip)
     table.insert(nodes, { n = G.UIT.R, config = {align = 'cm'}, nodes = v })
   end
 
-  return T.UIBox{
-    r = 0.2, padding = 0.1, emboss = 0.1, minw = 0, minh = 0,
-    outline = 1, outline_colour = T.C.outline_colour,
-    bg_colour = mix_colours({0.5, 0.5, 0.5, 1}, T.C.colour, 0.5),
-    contents =
-    {
-      T.Col { padding = 0.05, colour = G.C.CLEAR, nodes = {
-        T.Row { r = 0.2, padding = 0.05, emboss = 0.05, colour = T.C.colour, nodes = {
-          T.Col { r = 0.2, padding = 0.05, nodes = nodes }
-        }}
-      }}
+  return T.UIBox (
+    { -- Config
+      minw = 0,
+      minh = 0,
+      r = 0.2,
+      padding = 0.1,
+      emboss = 0.1,
+      outline = 1,
+      outline_colour = T.C.outline_colour,
+      bg_colour = mix_colours({0.5, 0.5, 0.5, 1}, T.C.colour, 0.5)
+    },
+    { -- Contents
+      T.Col ({ --[[config]] }, { --[[contents]]
+        T.Row (
+          { r = 0.2, emboss = 0.05, colour = T.C.colour },
+          { T.Col ({ r = 0.2 }, nodes) }
+        )
+      })
     }
-  }
+  )
 end
 
-
 -- UI ELEMENT HOOKS FOR DARK TOOLTIP
+
 Troubadour.Hook('after', UIElement, 'set_values', function(self)
   if self.config.TRO_dark_tooltip then
     self.states.collide.can = true

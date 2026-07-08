@@ -1,9 +1,8 @@
 local T = Troubadour.UI
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
 
---
-
 -- Folder UI helper functions
+
 local helper_funcs = {
   render = function(Folder)
     local colour, bg_colour, text_colour = Troubadour.UIDEF.get_mod_popup_colours()
@@ -53,7 +52,7 @@ local helper_funcs = {
     }}
   end,
 
-  label = function(name, minw, text_colour)
+  label = function(name, minw, text_colour, no_motion)
     return {
       n = G.UIT.O,
       config = {

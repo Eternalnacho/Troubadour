@@ -1,7 +1,7 @@
 local T = Troubadour.UI
---
 
 -- Folder Window UI Definitions
+
 local window_funcs = {
   mainWindow = function(Folder)
     local scale = 0.75
