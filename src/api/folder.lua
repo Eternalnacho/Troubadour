@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-field
 -- FOLDER OBJECT
 
 Troubadour.Folders = {}

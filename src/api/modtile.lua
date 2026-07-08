@@ -1,7 +1,8 @@
 local T = Troubadour.UI
 local Tile = Troubadour.Tile
 
--- SUBCLASS OF TILE
+-- TILE SUBCLASS FOR MODS
+
 Troubadour.ModTile = Tile:extend()
 
 function Troubadour.ModTile:init(args)

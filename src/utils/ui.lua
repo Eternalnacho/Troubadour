@@ -69,22 +69,24 @@ function Troubadour.UI.create_text_node(args)
 end
 
 -- I am VERY BLATANTLY ripping this straight from Cartomancer
-function Troubadour.UI.create_UIBox_generic_options_custom(args)
-  args = args or {}
+---@param config table
+---@param contents table?
+function Troubadour.UI.create_UIBox_generic_options_custom(config, contents)
+  config = config or {}
   local translucent_grey = copy_table(G.C.GREY); translucent_grey[4] = 0.7
   return {
     n = G.UIT.ROOT,
     config = {
       align = "cm",
-      minw = args.minw or G.ROOM.T.w * 0.6,
-      emboss = args.emboss,
-      padding = args.padding or 0.0,
-      outline = args.outline,
-      outline_colour = args.outline and args.outline_colour,
+      minw = config.minw or G.ROOM.T.w * 0.6,
+      emboss = config.emboss,
+      padding = config.padding or 0.0,
+      outline = config.outline,
+      outline_colour = config.outline and config.outline_colour,
       r = 0.1,
-      colour = args.bg_colour or translucent_grey
+      colour = config.bg_colour or translucent_grey
     },
-    nodes = { Troubadour.UI.create_column({ padding = 0.0, minh = args.minh or 3, nodes = args.contents }) }
+    nodes = { Troubadour.UI.create_column({ padding = 0.0, minh = config.minh or 3, nodes = contents or config.contents }) }
   }
 end
 

@@ -1,8 +1,8 @@
 local T = Troubadour.UI
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
---
 
--- SEARCH FIELD FUNCS (ADAPTED FROM TMJ AND IMM)
+-- SEARCH FUNCTIONALITY (ADAPTED FROM TMJ AND IMM)
+
 Troubadour.Searcher = Object:extend()
 
 Troubadour.Searcher.init = function(self)
@@ -94,7 +94,6 @@ Troubadour.Searcher.get_text_input = function(self)
     current_prompt_text = '',
     extended_corpus = true,
   }
-
   local ret = create_text_input(args)
   return ret
 end
@@ -115,32 +114,44 @@ Troubadour.Searcher.render_list = function(self, Folder, page)
       },
     }):render()
   end)
-  return T.UIBox({ minw = 9, minh = 5, bg_colour = G.C.CLEAR, contents = {render} })
+  return T.UIBox ({ minw = 9, minh = 5, bg_colour = G.C.CLEAR }, {render})
 end
 
 -- "To Add" List
 Troubadour.Searcher.to_add = function(self)
-  local title_row = T.Row ( { minh = 0.5 }, { T.Text ({ text = "To Add:", colour = G.C.UI.TEXT_LIGHT, scale = 0.5 }) })
+  local title_row = T.Row ({ minh = 0.5 }, { T.Text ({ text = "To Add:", colour = G.C.UI.TEXT_LIGHT, scale = 0.5 }) })
   local display_list = self:get_targets()
+  local render = T.Row ({ r = 0.2, padding = 0.15 }, { title_row, display_list })
 
-  return T.UIBox({ minh = 0.0, minw = 2, bg_colour = T.C.inactive, contents = {
-    T.Row ({ r = 0.2, padding = 0.15 }, { title_row, display_list } )
-  }})
+  return T.UIBox ({ minh = 0, minw = 2, bg_colour = T.C.inactive }, {render})
 end
 
 Troubadour.Searcher.get_targets = function(self)
-  local result_ui = T.Row ({ --[[config]] }, {
-    T.Col ({ colour = G.C.GREY, r = 0.2 }, { --[[target_list]] })
-  })
-  local target_list = result_ui.nodes[1].nodes
+  local target_list = {}
 
-  for id, v in pairs(self.targets) do
-    local target = v and SMODS.Mods[id] and SMODS.Mods[id].name
-    target_list[#target_list+1] = target and T.Row ({ r = 0.2, minw = 3.75 }, { self.folder.UI.label(target, 3.5, G.C.WHITE) })
-    or nil
+  -- Local function for list nodes
+  local label_node = function(label)
+    return T.Row (
+      { r = 0.2, minw = 3.75 },
+      { self.folder.UI.label(label, 3.5, G.C.WHITE) }
+    )
   end
-  local default = T.Row ({ r = 0.2, minw = 3.75 }, { T.Text { text = '', colour = G.C.WHITE, scale = 0.4 } })
-  if not next(target_list) then table.insert(target_list, default) end
 
+  -- Add a label node to target_list for each viable target
+  for id, is_target in pairs(self.targets) do
+    local target = is_target and SMODS.Mods[id] and SMODS.Mods[id].name
+    target_list[#target_list+1] = target and label_node(target) or nil
+  end
+
+  -- Default case when the list is empty
+  if not next(target_list) then target_list = { label_node('') } end
+
+  -- Final list UI
+  local result_ui = T.Row (
+    { --[[config]] },
+    {
+      T.Col ({ colour = G.C.GREY, r = 0.2 }, target_list)
+    }
+  )
   return result_ui
 end

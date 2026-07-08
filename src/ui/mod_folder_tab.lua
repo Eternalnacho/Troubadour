@@ -1,6 +1,8 @@
 local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
 local T = Troubadour.UI
 
+--
+
 function Troubadour.UIDEF.statModFolderPage()
   local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModFoldersList()

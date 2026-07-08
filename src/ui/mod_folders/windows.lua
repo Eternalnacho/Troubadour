@@ -31,7 +31,7 @@ local window_funcs = {
               -- empty row for spacing
               T.Row { padding = 0.8 },
               -- folder controls
-              T.Row { padding = 0.5, nodes = {
+              T.Row { nodes = {
                 -- Remove Mod button (only appears if mods found)
                 showingList and Folder.UI.button('b_tro_remove_item', darken(G.C.MULT, 0.1), "Troubadour_delete_mod_folder_window")
                   or nil,
@@ -80,7 +80,7 @@ local window_funcs = {
               -- Search Result List
               T.Row ({ minh = 4.5, minw = 9 }, { { n = G.UIT.O, config = { id = 'TroubadourSearchResult', object = Moveable() } } }),
               -- Spacer Row
-              T.Row { padding = 0.8 },
+              T.Row {},
               -- Page Selector (only appears if mods found)
               showingList and SMODS.GUI.createOptionSelector({
                 colour = T.C.active,
