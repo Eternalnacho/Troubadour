@@ -3,7 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# patching uibox_mods
+## Rerouting Static Mod List Content for Folder View
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS _ "src/ui.lua"]'''
