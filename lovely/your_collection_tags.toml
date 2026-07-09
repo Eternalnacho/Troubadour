@@ -1,0 +1,20 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+## Tag collection page widening
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+pattern = "local tag_tab = SMODS.collection_pool(G.P_TAGS)"
+position = "before"
+payload = '''
+-- Widening the window (Troubadour)
+if Troubadour.config.gallery_width_t > 6 or Troubadour.config.gallery_height_t > 4 then
+  rows = Troubadour.config.gallery_height_t
+  cols = Troubadour.config.gallery_width_t
+end
+
+'''
+match_indent = true

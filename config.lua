@@ -15,6 +15,9 @@ return {
   ["gallery_width_b"] = 6, -- Boosters
   ["gallery_height_b"] = 2,
 
+  ["gallery_width_t"] = 6, -- Tags
+  ["gallery_height_t"] = 4,
+
   -- Reroller
   ["enable_auto_reroll"] = true,
   ["skip_reroll_anims"] = true,

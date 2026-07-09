@@ -149,9 +149,7 @@ Troubadour.Searcher.get_targets = function(self)
   -- Final list UI
   local result_ui = T.Row (
     { --[[config]] },
-    {
-      T.Col ({ colour = G.C.GREY, r = 0.2 }, target_list)
-    }
+    { T.Col ({ colour = G.C.GREY, r = 0.2 }, target_list) }
   )
   return result_ui
 end

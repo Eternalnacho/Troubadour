@@ -11,9 +11,20 @@ local modpage_helper = {
   end,
 
   TextColumn = function(text, scale, colour, node)
-    return { n = node or G.UIT.R, config = { padding = 0, align = "lc", maxw = 2.8, maxh = 1.5, },
+    return {
+      n = node or G.UIT.R,
+      config = {
+        padding = 0,
+        align = "lc",
+        maxw = 2.8,
+        maxh = 1.5
+      },
       nodes = {
-        { n = G.UIT.T, config = { text = text, colour = colour or G.C.UI.TEXT_LIGHT, scale = scale * 0.7 } },
+        T.Text ({
+          text = text,
+          colour = colour or G.C.UI.TEXT_LIGHT,
+          scale = scale * 0.7
+        }),
       }
     }
   end,
@@ -71,14 +82,14 @@ local modpage_helper = {
             id = id + 1
             if id >= startIndex and id <= endIndex then
               table.insert(current_row,
-              T.Col ({},
-                {
-                  T.Col ({ padding = 0.0, minw = 1, minh = 1 }, { item_func(item) })
-                }
-              ))
+                T.Col (
+                  { --[[config]] },
+                  { T.Col ({ padding = 0.0, minw = 1, minh = 1 }, { item_func(item) }) }
+                )
+              )
               modCount = modCount + 1
               if math.fmod(modCount, modsColPerRow) == 0 then
-                table.insert(modNodes, T.Row { padding = 0, align = "cl", nodes = current_row })
+                table.insert(modNodes, T.Row ({ padding = 0, align = "cl"}, current_row ))
                 current_row = {}
               end
             end
@@ -86,15 +97,14 @@ local modpage_helper = {
         end
       end
       if #current_row > 0 then
-        table.insert(modNodes, T.Row { padding = 0, align = "cl", nodes = current_row })
+        table.insert(modNodes, T.Row ({ padding = 0, align = "cl" }, current_row ))
       end
     end
 
-    return T.Col { nodes = {
-      T.Row { nodes = {
-        T.Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
-      }}
-    }}
+    return T.Col (
+      { --[[config]] },
+      { T.Row ({}, { T.Col ({ r = 0.1, padding = 0, minw = 1.4 * modsColPerRow }, modNodes) }) }
+    )
   end,
 }
 

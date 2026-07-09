@@ -79,8 +79,9 @@ Troubadour.FUNCS.widen_collection = function()
         card_scale = 1.27 - (h / 50),
     })
   end
-end
 
+  -- Tags: We're gonna have to do this via patch, rewriting the function doesn't really help much.
+end
 
 -- HOOKS FOR WIDER COLLECTION
 Troubadour.Hook('before', G.FUNCS, 'your_collection', Troubadour.FUNCS.widen_collection)

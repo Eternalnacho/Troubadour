@@ -29,6 +29,11 @@ local pages = {
     ref_value_w = "gallery_width_b", minw = 4, maxw = 8,
     ref_value_h = "gallery_height_b", minh = 2, maxh = 5,
   },
+  {
+    label = "Tag",
+    ref_value_w = "gallery_width_t", minw = 6, maxw = 12,
+    ref_value_h = "gallery_height_t", minh = 4, maxh = 7,
+  },
 }
 
 local function is_chosen(tab)
