@@ -24,7 +24,7 @@ function G.FUNCS.TRO_open_mod(e)
   G.FUNCS["openModUI_" .. e.config.ref_table.id](e)
 end
 
-tro_input_manager:add_listener({ 'right_click', 'right_stick', 'x' }, function(target)
+Troubadour.input_manager:add_listener({ 'right_click', 'right_stick', 'x' }, function(target)
   if target and target.config and target.config.TRO_mod_tile then
     Troubadour.config.invert_tile_controls = not Troubadour.config.invert_tile_controls -- we do this essentially to treat a right-click like a left-click temporarily
     target:click() -- calling the click function rather than just the button function so we get that sweet VFX + SFX
