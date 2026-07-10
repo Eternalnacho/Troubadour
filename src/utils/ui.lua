@@ -101,13 +101,13 @@ T.C = Troubadour.UI.mod_colours
 
 -- UIBox refresh function
 ---@param id string
-Troubadour.UI.updateObject = function(id, definition)
+Troubadour.UI.updateObject = function(id, definition, offset)
   local object = G.OVERLAY_MENU:get_UIE_by_ID(id)
   if object and definition then
     object.config.object:remove()
     object.config.object = UIBox({
       definition = definition,
-      config = {type = "cm", parent = object}
+      config = {type = "cm", parent = object, offset = offset}
     })
     object.UIBox:recalculate()
   end

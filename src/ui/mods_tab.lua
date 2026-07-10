@@ -104,11 +104,12 @@ function Troubadour.UIDEF.dynaModList(page)
     end
   end
 
-  return T.Col { nodes = {
-    T.Row { nodes = {
+  local render = T.Col ({}, {
+    T.Row ({ nodes = {
       T.Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
-    }}
-  }}
+    }})
+  })
+  return T.UIBox ({ minw = 0, minh = 0, bg_colour = G.C.CLEAR }, {render})
 end
 
 

@@ -7,11 +7,8 @@ Troubadour.Searcher = Object:extend()
 
 Troubadour.Searcher.init = function(self)
   Troubadour.ACTIVE_SEARCH = self
-  self.folder = Troubadour.ACTIVE_FOLDER
   self.targets = {}
-
   self.query = ''
-  self.searchWidth = 8
 end
 
 Troubadour.Searcher.SEARCH_FUNCS = {
@@ -49,7 +46,7 @@ Troubadour.Searcher.filter_query = function(self, list)
 end
 
 Troubadour.Searcher.get_list = function(self)
-  local result = SMODS.shallow_copy(SMODS.Mods)
+  local result = SMODS.shallow_copy(SMODS.mod_list)
   result = self:filter_invalid(result)
   result = self:filter_query(result)
   return result
@@ -57,8 +54,8 @@ end
 
 Troubadour.Searcher.update_list = function(self, page)
   local list = self:get_list()
-  local fake_folder = { items = list, UI = self.folder.UI }
-  T.updateObject('TroubadourSearchResult', self:render_list(fake_folder, page or 1))
+  local fake_folder = { items = list, UI = Troubadour.Folder.UI }
+  T.updateObject('TroubadourSearchResult', self.render_list(fake_folder, page or 1))
 end
 
 G.FUNCS.Troubadour_update_search = function(args)
@@ -71,14 +68,6 @@ Troubadour.Hook('after', G.FUNCS, 'text_input_key', function()
   local hook_config = G.CONTROLLER.text_input_hook and G.CONTROLLER.text_input_hook.config.ref_table
   if Troubadour.ACTIVE_SEARCH and hook_config and hook_config.ref_table == Troubadour.ACTIVE_SEARCH and hook_config.ref_value == 'query' then
     Troubadour.ACTIVE_SEARCH:update_list()
-  end
-end)
-
-Troubadour.Hook('before', love, 'keypressed', function(key)
-  if key == "escape" and Troubadour.ACTIVE_SEARCH and not G.CONTROLLER.text_input_hook then
-    Troubadour.ACTIVE_SEARCH = nil
-    G.FUNCS["Troubadour_open_folder_"..Troubadour.ACTIVE_FOLDER.name]()
-    return
   end
 end)
 
@@ -99,46 +88,30 @@ Troubadour.Searcher.get_text_input = function(self)
 end
 
 -- Dynamic Mod List
-Troubadour.Searcher.render_list = function(self, Folder, page)
-  local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
-    return Troubadour.ModTile({
-      mod = SMODS.Mods[item.id],
-      ref_table = self.targets,
-      ref_value = item.id,
-      button_func = 'TRO_toggle_tile',
-      callback = function()
-        T.updateObject('Troubadour_addQueue', self:to_add())
-      end,
-      colour_override = {
-        enabled = G.C.BOOSTER
-      },
-    }):render()
-  end)
-  return T.UIBox ({ minw = 9, minh = 5, bg_colour = G.C.CLEAR }, {render})
-end
+Troubadour.Searcher.render_list = function(Folder, page) end
 
 -- "To Add" List
 Troubadour.Searcher.to_add = function(self)
   local title_row = T.Row ({ minh = 0.5 }, { T.Text ({ text = "To Add:", colour = G.C.UI.TEXT_LIGHT, scale = 0.5 }) })
-  local display_list = self:get_targets()
+  local display_list = self.get_targets()
   local render = T.Row ({ r = 0.2, padding = 0.15 }, { title_row, display_list })
 
   return T.UIBox ({ minh = 0, minw = 2, bg_colour = T.C.inactive }, {render})
 end
 
-Troubadour.Searcher.get_targets = function(self)
+Troubadour.Searcher.get_targets = function()
   local target_list = {}
 
   -- Local function for list nodes
   local label_node = function(label)
     return T.Row (
       { r = 0.2, minw = 3.75 },
-      { self.folder.UI.label(label, 3.5, G.C.WHITE) }
+      { Troubadour.Folder.UI.label(label, 3.5, G.C.WHITE) }
     )
   end
 
   -- Add a label node to target_list for each viable target
-  for id, is_target in pairs(self.targets) do
+  for id, is_target in pairs(Troubadour.ACTIVE_FOLDER.to_add) do
     local target = is_target and SMODS.Mods[id] and SMODS.Mods[id].name
     target_list[#target_list+1] = target and label_node(target) or nil
   end

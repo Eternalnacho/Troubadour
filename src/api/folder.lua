@@ -40,7 +40,14 @@ function Troubadour.Folder:remove_item(item)
     table.remove(self.items, self.item_index[item.id])
     self.item_index[item.id] = nil
   end
+  self:reindex_items()
   self:save()
+end
+
+function Troubadour.Folder:reindex_items()
+  for i, item in ipairs(self.items) do
+    self.item_index[item.id] = i
+  end
 end
 
 function Troubadour.Folder:contains(item)
@@ -139,8 +146,19 @@ function Troubadour.reindexFolders()
 end
 
 Troubadour.Hook('before', love, 'keypressed', function(key)
-  if key == "escape" and Troubadour.ACTIVE_FOLDER and not Troubadour.ACTIVE_SEARCH then
-    Troubadour.ACTIVE_FOLDER:close()
-    return
+  if key == "escape" and Troubadour.ACTIVE_FOLDER then
+    local Folder = Troubadour.ACTIVE_FOLDER
+    if Folder.to_remove then
+      Folder.to_remove = nil
+      Folder:open()
+      return
+    elseif Troubadour.ACTIVE_SEARCH then
+      Troubadour.ACTIVE_SEARCH = nil
+      Folder:open()
+      return
+    elseif not Troubadour.ACTIVE_SEARCH and not Troubadour.ACTIVE_FOLDER.to_remove then
+      Troubadour.ACTIVE_FOLDER:close()
+      return
+    end
   end
 end)
