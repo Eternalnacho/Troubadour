@@ -11,7 +11,8 @@ local elements = {
     return T.UIBox ({ minw = 0, minh = 0, bg_colour = G.C.CLEAR }, {render})
   end,
 
-  addList = function(Folder, page)
+  addList = function(list, page)
+    local Folder = { items = list, UI = Troubadour.Folder.UI }
     local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
       return Troubadour.ModTile({
         mod = SMODS.Mods[item.id],

@@ -58,7 +58,11 @@ local window_funcs = {
   end,
 
   addItemWindow = function(Folder)
-    local Searcher = Troubadour.Searcher()
+    local Searcher = Troubadour.Searcher({
+      list = SMODS.mod_list,
+      search_funcs = Folder.UI.search_funcs,
+      exclude_funcs = Folder.UI.exclude_funcs,
+    })
     Searcher.render_list = Folder.UI.addList
     local addQueue = UIBox({ definition = Folder.UI.addQueueUIBox(Folder), config = {type = "cm"} })
     local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(Searcher:get_list(), 1)

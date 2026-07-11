@@ -1,79 +1,54 @@
-local T = Troubadour.UI
+-- SEARCH FUNCTIONALITY (INSPIRED BY / ADAPTED FROM TMJ AND IMM)
 
--- SEARCH FUNCTIONALITY (ADAPTED FROM TMJ AND IMM)
+---@class Searcher
+---@field query string
+---@field list any
+---@field id string
+---@field SEARCH_FUNCS function[]
+---@field EXCLUDE_FUNCS function[]
+local Searcher = Object:extend()
 
-Troubadour.Searcher = Object:extend()
-
-Troubadour.Searcher.init = function(self)
+Searcher.init = function(self, args)
   Troubadour.ACTIVE_SEARCH = self
-  self.targets = {}
   self.query = ''
+  self.list = args.list or {}
+  self.id = args.id or 'TroubadourSearchResult'
+
+  self.SEARCH_FUNCS = args.search_funcs or {}
+  self.EXCLUDE_FUNCS = args.exclude_funcs or {}
 end
 
-Troubadour.Searcher.SEARCH_FUNCS = {
-  id_contains_string = function(mod)
-    local Search = Troubadour.ACTIVE_SEARCH
-    return Search.query == '' or mod.id:lower():find(Search.query:lower(), 1, true)
-  end,
-  name_contains_string = function(mod)
-    local Search = Troubadour.ACTIVE_SEARCH
-    return Search.query == '' or mod.name and mod.name:lower():find(Search.query:lower(), 1, true)
-  end,
-}
-
-Troubadour.Searcher.INVALID_FUNCS = {
-  in_folder = function(mod)
-    return not Troubadour.ACTIVE_FOLDER:contains(mod)
-  end,
-  meta_mod = function(mod)
-    return not mod.meta_mod
-  end,
-}
-
-Troubadour.Searcher.filter_invalid = function(self, list)
-  for _, func in pairs(self.INVALID_FUNCS) do
+Searcher.filter_invalid = function(self, list)
+  for _, func in pairs(self.EXCLUDE_FUNCS) do
     list = Troubadour.utils.filter(list, func)
   end
   return list
 end
 
-Troubadour.Searcher.filter_query = function(self, list)
-  for _, func in pairs(self.SEARCH_FUNCS) do
-    list = Troubadour.utils.filter(list, func)
-  end
-  return list
+Searcher.filter_query = function(self, list)
+  local res = {}
+  Troubadour.utils.for_each(list, function(item)
+    for _, func in pairs(self.SEARCH_FUNCS) do
+      if func(item) then res[#res+1] = item ; return end
+    end
+  end)
+  return res
 end
 
-Troubadour.Searcher.get_list = function(self)
-  local result = SMODS.shallow_copy(SMODS.mod_list)
+Searcher.get_list = function(self)
+  local result = SMODS.shallow_copy(self.list)
   result = self:filter_invalid(result)
   result = self:filter_query(result)
   return result
 end
 
-Troubadour.Searcher.update_list = function(self, page, id)
+Searcher.update_list = function(self, page)
   local list = self:get_list()
-  local fake_folder = { items = list, UI = Troubadour.Folder.UI }
-  T.updateObject(id or 'TroubadourSearchResult', self.render_list(fake_folder, page or 1))
+  Troubadour.UI.updateObject(self.id, self.render_list(list, page or 1))
 end
-
-G.FUNCS.Troubadour_update_search = function(args)
-  if not args or not args.cycle_config then return end
-  if not Troubadour.ACTIVE_SEARCH then return end
-  Troubadour.ACTIVE_SEARCH:update_list(args.cycle_config.current_option)
-end
-
-Troubadour.Hook('after', G.FUNCS, 'text_input_key', function()
-  local hook_config = G.CONTROLLER.text_input_hook and G.CONTROLLER.text_input_hook.config.ref_table
-  if Troubadour.ACTIVE_SEARCH and hook_config and hook_config.ref_table == Troubadour.ACTIVE_SEARCH and hook_config.ref_value == 'query' then
-    Troubadour.ACTIVE_SEARCH:update_list()
-  end
-end)
-
--- UI
 
 -- Text Input Field
-Troubadour.Searcher.get_text_input = function(self)
+Searcher.get_text_input = function(self)
   local args = {
     ref_table = self,
     ref_value = 'query',
@@ -86,5 +61,31 @@ Troubadour.Searcher.get_text_input = function(self)
   return ret
 end
 
--- Dynamic Mod List
-Troubadour.Searcher.render_list = function(Folder, page) end
+-- Result render needs to be defined elsewhere
+Searcher.render_list = function(list, page) end
+
+-- Option Selector requires a G.FUNCS entry
+G.FUNCS.Troubadour_update_search = function(args)
+  local Search = Troubadour.ACTIVE_SEARCH
+  if not args or not args.cycle_config or not Search then return end
+  Search:update_list(args.cycle_config.current_option)
+end
+
+-- Hooking the end of G.FUNCS.text_input_key for search-specific live updates
+Troubadour.Hook('after', G.FUNCS, 'text_input_key', function()
+  local hook_config = G.CONTROLLER.text_input_hook
+      and G.CONTROLLER.text_input_hook.config.ref_table
+  if Troubadour.ACTIVE_SEARCH and hook_config
+      and hook_config.ref_table == Troubadour.ACTIVE_SEARCH
+      and hook_config.ref_value == 'query' then
+    Troubadour.ACTIVE_SEARCH:update_list()
+  end
+end)
+
+Troubadour.Hook('before', love, 'keypressed', function(key)
+  if key == "escape" and type(G.OVERLAY_MENU) == 'table' and Troubadour.ACTIVE_SEARCH then
+    Troubadour.ACTIVE_SEARCH = nil
+  end
+end)
+
+Troubadour.Searcher = Searcher

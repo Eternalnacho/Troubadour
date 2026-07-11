@@ -154,17 +154,11 @@ end
 Troubadour.Hook('before', love, 'keypressed', function(key)
   if key == "escape" and Troubadour.ACTIVE_FOLDER then
     local Folder = Troubadour.ACTIVE_FOLDER
-    if Folder.to_remove then
+    if Folder.to_remove or Folder.to_add then
       Folder.to_remove = nil
+      Folder.to_add = nil
       Folder:open()
       return
-    elseif Troubadour.ACTIVE_SEARCH then
-      Troubadour.ACTIVE_SEARCH = nil
-      Folder:open()
-      return
-    elseif not Troubadour.ACTIVE_SEARCH and not Troubadour.ACTIVE_FOLDER.to_remove then
-      Troubadour.ACTIVE_FOLDER:close()
-      return
-    end
+    else Folder:close(); return end
   end
 end)
