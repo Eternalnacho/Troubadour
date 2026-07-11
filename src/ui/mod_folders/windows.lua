@@ -60,10 +60,10 @@ local window_funcs = {
   addItemWindow = function(Folder)
     local Searcher = Troubadour.Searcher()
     Searcher.render_list = Folder.UI.addList
-    local addQueue = UIBox({ definition = Searcher:to_add(), config = {type = "cm"} })
+    local addQueue = UIBox({ definition = Folder.UI.addQueueUIBox(Folder), config = {type = "cm"} })
     local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(Searcher:get_list(), 1)
 
-    Troubadour.defer(function() Searcher:update_list(); G.OVERLAY_MENU:recalculate() end)
+    Troubadour.defer(function() Searcher:update_list() end)
     return create_UIBox_generic_options({
       colour = G.C.BLACK,
       back_func = Folder and "Troubadour_open_folder_" .. Folder.name or 'mods_button',

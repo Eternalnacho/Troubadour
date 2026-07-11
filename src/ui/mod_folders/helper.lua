@@ -118,45 +118,6 @@ local helper_funcs = {
     local h = 3
     return m.recalculateList(list, page, w, h)
   end,
-
-  modList = function(Folder, page)
-    local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
-      return Troubadour.UIDEF.modListIcon(SMODS.Mods[item.id])
-    end)
-    return T.UIBox ({ minw = 0, minh = 0, bg_colour = G.C.CLEAR }, {render})
-  end,
-
-  addList = function(Folder, page)
-    local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
-      return Troubadour.ModTile({
-        mod = SMODS.Mods[item.id],
-        ref_table = Troubadour.ACTIVE_FOLDER.to_add,
-        ref_value = item.id,
-        button_func = 'TRO_toggle_tile',
-        callback = function() T.updateObject('Troubadour_addQueue', Troubadour.ACTIVE_SEARCH:to_add()) end,
-        colour_override = {
-          enabled = G.C.BOOSTER
-        },
-      }):render()
-    end)
-    return T.UIBox ({ minw = 9, minh = 5, bg_colour = G.C.CLEAR }, {render})
-  end,
-
-  deleteList = function(Folder, page)
-    local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
-      return Troubadour.ModTile({
-        mod = SMODS.Mods[item.id],
-        ref_table = Folder.to_remove,
-        ref_value = item.id,
-        button_func = 'TRO_toggle_tile',
-        callback = function() end, -- this needs to be an empty function because the default for mod tiles is the restart check
-        colour_override = {
-          enabled = darken(G.C.MULT, 0.5)
-        },
-      }):render()
-    end)
-    return T.UIBox ({ minw = 0, minh = 0, bg_colour = G.C.CLEAR }, {render})
-  end,
 }
 
 return helper_funcs

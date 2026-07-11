@@ -136,7 +136,13 @@ Troubadour.Folder.ErrorHandler = {
 -- Folder UI Functions
 local helper_funcs = assert(SMODS.load_file("src/ui/mod_folders/helper.lua"))()
 local window_funcs = assert(SMODS.load_file("src/ui/mod_folders/windows.lua"))()
-Troubadour.Folder.UI = SMODS.merge_defaults(helper_funcs, window_funcs) or {}
+local inner_funcs = assert(SMODS.load_file("src/ui/mod_folders/content.lua"))()
+Troubadour.Folder.UI = {}
+for _, funcs in pairs({ helper_funcs, window_funcs, inner_funcs }) do
+  for k, func in pairs(funcs) do
+    Troubadour.Folder.UI[k] = func
+  end
+end
 
 function Troubadour.reindexFolders()
   for i, Folder in ipairs(Troubadour.FolderIndex) do
