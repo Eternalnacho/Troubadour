@@ -2,7 +2,7 @@
 	"id": "Troubadour",
 	"name": "Troubadour",
 	"author": ["Eternalnacho"],
-	"description": "A Quality of Life mod for easier collection and shop navigation.",
+	"description": "A Quality of Life mod for easier collection and mod page navigation.",
 	"prefix": "tro",
 	"main_file": "main.lua",
 	"priority": 1,
