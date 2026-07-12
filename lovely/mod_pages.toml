@@ -3,7 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-## Rerouting Static Mod List Content for Folder View
+## Rerouting Static Mod List Content
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS _ "src/ui.lua"]'''
@@ -30,6 +30,8 @@ end
 '''
 match_indent = true
 
+
+## Adding Troubadour Header Row Buttons to Regular Mod Page
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS _ "src/ui.lua"]'''
