@@ -1,5 +1,3 @@
-local T = Troubadour.UI
-
 function G.FUNCS.Troubadour_new_mod_folder()
   Troubadour.Folder({ name = Troubadour.new_folder_name })
   G.FUNCS.mods_button()
@@ -11,12 +9,18 @@ function G.FUNCS.Troubadour_delete_folders()
 end
 
 function G.FUNCS.Troubadour_update_folder_items(args)
-  if not args or not args.cycle_config then return end
-  if not Troubadour.ACTIVE_FOLDER then return end
   local Folder = Troubadour.ACTIVE_FOLDER
-  local def = Folder.to_remove and Folder.UI.deleteList or Folder.UI.modList
+  if not args or not args.cycle_config or not Folder then return end
   SMODS.GUI.DynamicUIManager.updateDynamicAreas({
-      ["TroubadourFolderItems"] = def(Folder, args.cycle_config.current_option)
+      ["TroubadourFolderItems"] = Folder.UI.modList(Folder, args.cycle_config.current_option)
+  })
+end
+
+function G.FUNCS.Troubadour_update_folder_delete_queue(args)
+  local Folder = Troubadour.ACTIVE_FOLDER
+  if not args or not args.cycle_config or not Folder then return end
+  SMODS.GUI.DynamicUIManager.updateDynamicAreas({
+      ["TroubadourFolderDeleteQueue"] = Folder.UI.deleteList(Folder, args.cycle_config.current_option)
   })
 end
 
@@ -31,16 +35,16 @@ function G.FUNCS.Troubadour_delete_mod_folder_window(e)
 end
 
 function G.FUNCS.Troubadour_add_item_to_folder(e)
-  if not Troubadour.ACTIVE_FOLDER then return end
   local Folder = Troubadour.ACTIVE_FOLDER
+  if not Folder then return end
   Folder.to_add = Folder.to_add or {}
   G.FUNCS.overlay_menu{ definition = Folder.UI.addItemWindow(Folder) }
   G.OVERLAY_MENU:recalculate()
 end
 
 function G.FUNCS.Troubadour_delete_item_from_folder(e)
-  if not Troubadour.ACTIVE_FOLDER then return end
   local Folder = Troubadour.ACTIVE_FOLDER
+  if not Folder then return end
   Folder.to_remove = Folder.to_remove or {}
   G.FUNCS.overlay_menu{ definition = Folder.UI.removeItemWindow(Folder) }
   G.OVERLAY_MENU:recalculate()
@@ -52,7 +56,6 @@ function G.FUNCS.Troubadour_add_folder_items(e)
   for id, to_add in pairs(Folder.to_add) do
     if to_add then Folder:add_item(SMODS.Mods[id]) end
   end
-  Folder.to_add = nil
   Troubadour.ACTIVE_SEARCH = nil
   Folder:open()
 end
@@ -63,6 +66,5 @@ function G.FUNCS.Troubadour_delete_folder_items(e)
   for id, to_remove in pairs(Folder.to_remove) do
     if to_remove then Folder:remove_item(SMODS.Mods[id]) end
   end
-  Folder.to_remove = nil
   Folder:open()
 end

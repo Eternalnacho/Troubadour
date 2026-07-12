@@ -35,6 +35,7 @@ function Troubadour.Folder:add_item(item)
   self:save()
 end
 
+---@param item Mod
 function Troubadour.Folder:remove_item(item)
   if self.item_index[item.id] then
     table.remove(self.items, self.item_index[item.id])
@@ -92,12 +93,14 @@ end
 
 function Troubadour.Folder:open()
   Troubadour.ACTIVE_FOLDER = self
+  if self.to_add then self.to_add = nil end
+  if self.to_remove then self.to_remove = nil end
   G.FUNCS.overlay_menu{ definition = self.UI.mainWindow(self) }
   G.OVERLAY_MENU:recalculate()
 end
 
+-- Something something overlay menu back func
 function Troubadour.Folder:close()
-  -- Something something overlay menu back func
   Troubadour.ACTIVE_FOLDER = nil
   G.FUNCS.mods_button()
 end
@@ -134,9 +137,11 @@ Troubadour.Folder.ErrorHandler = {
 }
 
 -- Folder UI Functions
+
 local helper_funcs = assert(SMODS.load_file("src/ui/mod_folders/helper.lua"))()
 local window_funcs = assert(SMODS.load_file("src/ui/mod_folders/windows.lua"))()
 local inner_funcs = assert(SMODS.load_file("src/ui/mod_folders/content.lua"))()
+
 Troubadour.Folder.UI = {}
 for _, funcs in pairs({ helper_funcs, window_funcs, inner_funcs }) do
   for k, func in pairs(funcs) do
@@ -155,10 +160,9 @@ Troubadour.Hook('before', love, 'keypressed', function(key)
   if key == "escape" and Troubadour.ACTIVE_FOLDER then
     local Folder = Troubadour.ACTIVE_FOLDER
     if Folder.to_remove or Folder.to_add then
-      Folder.to_remove = nil
-      Folder.to_add = nil
-      Folder:open()
-      return
-    else Folder:close(); return end
+      Folder:open(); return
+    else
+      Folder:close(); return
+    end
   end
 end)

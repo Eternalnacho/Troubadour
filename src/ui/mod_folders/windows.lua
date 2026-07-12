@@ -66,8 +66,8 @@ local window_funcs = {
     Searcher.render_list = Folder.UI.addList
     local addQueue = UIBox({ definition = Folder.UI.addQueueUIBox(Folder), config = {type = "cm"} })
     local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(Searcher:get_list(), 1)
-
     Troubadour.defer(function() Searcher:update_list() end)
+
     return create_UIBox_generic_options({
       colour = G.C.BLACK,
       back_func = Folder and "Troubadour_open_folder_" .. Folder.name or 'mods_button',
@@ -115,7 +115,7 @@ local window_funcs = {
   removeItemWindow = function(Folder)
     Folder.to_remove = Folder.to_remove or {}
     local currentPage, pageOptions, _, _, _, dminh, dminw = Folder.UI.recalculateList(Folder.items)
-    Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_items({cycle_config = {}}) end)
+    Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_delete_queue({cycle_config = {}}) end)
 
     return create_UIBox_generic_options({
       colour = G.C.BLACK,
@@ -139,7 +139,7 @@ local window_funcs = {
               -- dynamic content rendered in this row container
               T.Row { minh = dminh + 1, minw = dminw + 1,
                 nodes = {
-                  { n = G.UIT.O, config = { align = "cm", id = 'TroubadourFolderItems', object = Moveable() } },
+                  { n = G.UIT.O, config = { align = "cm", id = 'TroubadourFolderDeleteQueue', object = Moveable() } },
                 }
               },
               -- empty row for spacing
