@@ -4,114 +4,94 @@ local T = Troubadour.UI
 -- SMALLER MODLIST
 
 function Troubadour.UIDEF.statModList()
-  local scale = 0.75
   local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
-
-  return T.Row { minh = 1.5 * dminh + 1, minw = 1.5 * dminw + 1, r = 0.1, colour = G.C.BLACK, nodes = {
-    -- row container
-    T.Col { nodes = {
-      -- column container
-      T.Col { minw = 5, r = 0.1, nodes = {
-        -- title row
-        T.Row { nodes = {
-          T.Col { nodes = {
-            UIBox_button({
-              label = { localize('b_mod_list') },
-              shadow = true,
-              scale = scale * 0.85,
-              colour = G.C.BOOSTER,
-              button = "openModsDirectory",
-              minh = scale,
-              minw = 4.5
-            }),
-          }},
-          T.Col {},
-          T.Col { nodes = {
-            Troubadour.UIDEF.modHeaderIcon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
-          }},
-          T.Col { nodes = {
-            Troubadour.UIDEF.modHeaderIcon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
-          }},
-          T.Col { nodes = {
-            Troubadour.UIDEF.modHeaderIcon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_mod_page_config')
-          }},
-        }},
-        -- add some empty rows for spacing
-        T.Row {},
-        T.Row {},
-        -- dynamic content rendered in this row container
-        -- list of 4 x 4 mods on the current page
-        T.Row { minh = dminh + 1, minw = dminw + 1,
-          nodes = {
-            { n = G.UIT.O, config = { align = "cm", id = 'modsList', object = Moveable() } },
-          }
-        },
-        -- another empty row for spacing
-        T.Row { padding = 0.8 },
-        -- page selector
-        -- does not appear when list of mods is empty
-        showingList and SMODS.GUI.createOptionSelector({
-          label = "",
-          scale = 0.8,
-          options = pageOptions,
-          opt_callback = 'update_mod_list',
-          no_pips = true,
-          current_option = ( currentPage )
-        })
-      }}
-    }}
-  }}
-end
-
-function Troubadour.UIDEF.dynaModList(page)
-  local scale = 0.75
-  local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = m.recalculateModsList(page)
-
-  local modNodes = {}
-  -- If no mods are loaded, show a default message
-  if showingList == false then
-    table.insert(modNodes, T.Row { padding = 0, nodes = {
-        T.Text { text = localize('b_no_mods'), shadow = true, scale = scale * 0.5, colour = G.C.UI.TEXT_DARK }
-      }})
-  else
-    local modCount = 0
-    local id = 0
-    local current_row = {}
-
-    for _, condition in ipairs({
-      function(mod) return not mod.can_load and not mod.disabled end,
-      function(mod) return mod.can_load and mod.config_tab end,
-      function(mod) return mod.can_load and not mod.config_tab end,
-      function(mod) return mod.disabled end,
-    }) do
-      for _, modInfo in ipairs(SMODS.mod_list) do
-        if modCount >= modsRowPerPage * modsColPerRow then break end
-        if condition(modInfo) then
-          id = id + 1
-          if id >= startIndex and id <= endIndex then
-            table.insert(current_row, Troubadour.UIDEF.modListIcon(modInfo))
-            modCount = modCount + 1
-            if math.fmod(modCount, modsColPerRow) == 0 then
-              table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
-              current_row = {}
-            end
-          end
-        end
-      end
-    end
-    if #current_row > 0 then
-      table.insert(modNodes, T.Row { padding = 0, align = "lc", nodes = current_row })
-    end
-  end
-
-  local render = T.Col ({}, {
-    T.Row ({ nodes = {
-      T.Col { r = 0.1, padding = 0, minw = 1.4 * modsColPerRow, nodes = modNodes },
-    }})
+  local Searcher = Troubadour.Searcher({
+    width = 4.5,
+    id = 'modsList',
+    list = SMODS.mod_list,
+    search_funcs = Troubadour.Folder.UI.search_funcs,
   })
-  return T.UIBox ({ minw = 0, minh = 0, bg_colour = G.C.CLEAR }, {render})
+  Searcher.render_list = Troubadour.UIDEF.dynaModList
+  local modsList = UIBox({
+    definition = Troubadour.UIDEF.dynaModList(SMODS.mod_list, 1),
+    config = { type = "cm" }
+  })
+
+  local contents = T.Row (
+    {
+      minh = 1.5 * dminh + 1,
+      minw = 1.5 * dminw + 1,
+      r = 0.1,
+      colour = G.C.BLACK,
+    },
+    {
+      T.Col ({}, {
+        T.Col ({ r = 0.1 }, {
+          -- Title Row
+          T.Row ({}, {
+            T.Col ({}, {
+              UIBox_button({
+                label = { localize('b_mod_list') },
+                shadow = true,
+                scale = 0.75 * 0.85,
+                colour = G.C.BOOSTER,
+                button = "openModsDirectory",
+                minh = 0.75,
+                minw = 4.5
+              }),
+            }),
+            T.Col {},
+            T.Col { nodes = {
+              Troubadour.UIDEF.modHeaderIcon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
+            }},
+            T.Col { nodes = {
+              Troubadour.UIDEF.modHeaderIcon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
+            }},
+            T.Col { nodes = {
+              Troubadour.UIDEF.modHeaderIcon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_mod_page_config')
+            }},
+            showingList and T.Col ({}, { Searcher:get_text_input() }),
+          }),
+          -- Spacer Row
+          T.Row ({}, { T.Col({ colour = G.C.GREY, minw = dminw * 1.2 }) }),
+          -- Dynamic Content : Mod List
+          T.Row ({},
+            {{
+              n = G.UIT.O,
+              config = {
+                align = "cm",
+                id = 'modsList',
+                object = modsList
+              }
+            }}
+          ),
+          -- Page Selector (does not appear when mod list is empty)
+          showingList and SMODS.GUI.createOptionSelector({
+            scale = 0.8,
+            options = pageOptions,
+            opt_callback = 'Troubadour_update_mod_list',
+            no_pips = true,
+            current_option = ( currentPage )
+          }),
+        })
+      })
+    })
+  return T.UIBox ({
+    emboss = 0.05,
+    minh = 6,
+    minw = 8,
+    r = 0.1,
+    bg_colour = G.C.BLACK,
+    contents = { contents }
+  })
 end
 
+function Troubadour.UIDEF.dynaModList(list, page)
+  if not list then list = SMODS.mod_list end
+  local _, _, _, _, _, dminh, dminw = m.recalculateModsList()
+  local render = m.renderModList(list, page, m.recalculateModsList, Troubadour.UIDEF.modListIcon)
+  return T.UIBox ({ minw = dminw * 1.5 + 0.5, minh = dminh * 1.5 + 0.5, bg_colour = G.C.CLEAR }, {render})
+end
 
 -- MOD-ICON COLOURS
 
@@ -132,8 +112,6 @@ function Troubadour.UIDEF.get_mod_popup_colours(mod)
   bg_col = mix_colours({0.5, 0.5, 0.5, 1}, col, 0.5)
   return col, bg_col, text_col
 end
-
-
 
 -- ICON UI DEFINITIONS
 
@@ -160,12 +138,7 @@ end
 function Troubadour.UIDEF.modListIcon(modInfo)
   if modInfo.should_enable == nil then modInfo.should_enable = not modInfo.disabled end
   if SMODS.full_restart == nil then SMODS.full_restart = 0 end
-
-  return T.Col ({},
-    {
-      T.Col ({ padding = 0.0, minw = 1, minh = 1 }, { Troubadour.ModTile({mod = modInfo}):render() })
-    }
-  )
+  return Troubadour.ModTile({mod = modInfo}):render()
 end
 
 function Troubadour.UIDEF.getModTagInfo(mod)
@@ -206,9 +179,8 @@ function Troubadour.UIDEF.modTagSprite(mod)
   return tag_sprite
 end
 
-
-
 -- NODES FOR MOD TILE POPUP
+
 Troubadour.UIDEF.modNodes = {
   name = function(mod, nodes, args)
     if not mod.name then return end

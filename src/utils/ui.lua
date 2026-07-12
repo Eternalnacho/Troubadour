@@ -77,7 +77,7 @@ function Troubadour.UI.create_UIBox_generic_options_custom(config, contents)
   return {
     n = G.UIT.ROOT,
     config = {
-      align = "cm",
+      align = config.align or "cm",
       minw = config.minw or G.ROOM.T.w * 0.6,
       emboss = config.emboss,
       padding = config.padding or 0.0,

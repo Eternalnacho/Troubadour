@@ -1,20 +1,16 @@
--- HOOKS FOR TAB POINTERS
-
-Troubadour.Hook('before', SMODS.GUI, 'staticModListContent', function()
-  if Troubadour.mod_folder_view then
-    return Troubadour.UIDEF.statModFolderPage()
-  elseif Troubadour.config.mod_icons_only then
-    return Troubadour.UIDEF.statModList()
-  end
-end)
+-- FUNCTIONS FOR TAB POINTERS
 
 Troubadour.Hook('before', SMODS.GUI, 'dynamicModListContent', function(page)
   if Troubadour.config.mod_icons_only then
-    return Troubadour.UIDEF.dynaModList(page)
+    return Troubadour.UIDEF.dynaModList(SMODS.mod_list, page)
   end
 end)
 
-
+G.FUNCS.Troubadour_update_mod_list = function(e)
+  if not e or not e.cycle_config then return end
+  local list = Troubadour.ACTIVE_SEARCH and Troubadour.ACTIVE_SEARCH:get_list() or SMODS.mod_list
+  Troubadour.UI.updateObject('modsList', Troubadour.UIDEF.dynaModList(list, e.cycle_config.current_option))
+end
 
 -- CONTROL SCHEME FUNCS FOR MOD TILES
 
@@ -48,9 +44,6 @@ end
 G.FUNCS.Troubadour_modlist_button = function(e)
   Troubadour.mod_folder_view = nil
   Troubadour.UI.rerender(create_UIBox_mods_button, true)
-  SMODS.GUI.DynamicUIManager.updateDynamicAreas({
-    ["modsList"] = SMODS.GUI.dynamicModListContent(1)
-  })
 end
 
 G.FUNCS.Troubadour_mod_folder_button = function(e)
@@ -67,7 +60,6 @@ function G.FUNCS.Troubadour_update_mod_folder_list(args)
     ["modFolderList"] = Troubadour.UIDEF.modFolderList(args.cycle_config.current_option)
   })
 end
-
 
 
 -- SEPARATE DEFINITION FOR SPECIFICALLY THE MOD LIST CONFIG

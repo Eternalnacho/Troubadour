@@ -24,6 +24,63 @@ if Troubadour.mod_folder_view then
     },
     staticPageDefinition = Troubadour.UIDEF.statModFolderPage()
   })
+elseif Troubadour.config.mod_icons_only then
+  return Troubadour.UIDEF.statModList()
 end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/ui.lua"]'''
+pattern = '''
+UIBox_button({
+    label = { localize('b_mod_list') },
+    shadow = true,
+    scale = scale*0.85,
+    colour = G.C.BOOSTER,
+    button = "openModsDirectory",
+    minh = scale,
+    minw = 9
+}),
+'''
+position = "at"
+payload = '''
+{
+  n = G.UIT.C,
+  config = { align = "cm", padding = 0.05 },
+  nodes = {
+    UIBox_button({
+      label = { localize('b_mod_list') },
+      shadow = true,
+      scale = scale*0.85,
+      colour = G.C.BOOSTER,
+      button = "openModsDirectory",
+      minh = scale,
+      minw = 7
+    }),
+  }
+},
+{
+  n = G.UIT.C,
+  config = { align = "cm", padding = 0.05 },
+  nodes = {
+    Troubadour.UIDEF.modHeaderIcon('tro_list', {x = 0, y = 0}, 'Troubadour_modlist_button', 'TRO_mod_list')
+  },
+},
+{
+  n = G.UIT.C,
+  config = { align = "cm", padding = 0.05 },
+  nodes = {
+    Troubadour.UIDEF.modHeaderIcon('tro_folder', {x = 0, y = 0}, 'Troubadour_mod_folder_button', 'TRO_mod_folder_page')
+  }
+},
+{
+  n = G.UIT.C,
+  config = { align = "cm", padding = 0.05 },
+  nodes = {
+    Troubadour.UIDEF.modHeaderIcon('mod_tags', {x = 2, y = 0}, 'Troubadour_modlist_config', 'TRO_mod_page_config')
+  }
+},
 '''
 match_indent = true

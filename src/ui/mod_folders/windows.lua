@@ -4,7 +4,7 @@ local T = Troubadour.UI
 
 local window_funcs = {
   mainWindow = function(Folder)
-    local currentPage, pageOptions, showingList, _, _, dminh, dminw = Folder.UI.recalculateList(Folder.items)
+    local currentPage, pageOptions, showingList, _, _, dminh, dminw = Folder.UI.recalculateList(1, Folder.items)
     Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_items({cycle_config = {}}) end)
 
     return create_UIBox_generic_options({
@@ -65,7 +65,7 @@ local window_funcs = {
     })
     Searcher.render_list = Folder.UI.addList
     local addQueue = UIBox({ definition = Folder.UI.addQueueUIBox(Folder), config = {type = "cm"} })
-    local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(Searcher:get_list(), 1)
+    local currentPage, pageOptions, showingList, _, _, _, _ = Folder.UI.recalculateList(1, Searcher:get_list())
     Troubadour.defer(function() Searcher:update_list() end)
 
     return create_UIBox_generic_options({
@@ -114,7 +114,7 @@ local window_funcs = {
 
   removeItemWindow = function(Folder)
     Folder.to_remove = Folder.to_remove or {}
-    local currentPage, pageOptions, _, _, _, dminh, dminw = Folder.UI.recalculateList(Folder.items)
+    local currentPage, pageOptions, _, _, _, dminh, dminw = Folder.UI.recalculateList(1, Folder.items)
     Troubadour.defer(function() G.FUNCS.Troubadour_update_folder_delete_queue({cycle_config = {}}) end)
 
     return create_UIBox_generic_options({

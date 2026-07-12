@@ -4,6 +4,7 @@
 ---@field query string
 ---@field list any
 ---@field id string
+---@field searchWidth number
 ---@field SEARCH_FUNCS function[]
 ---@field EXCLUDE_FUNCS function[]
 local Searcher = Object:extend()
@@ -13,6 +14,7 @@ Searcher.init = function(self, args)
   self.query = ''
   self.list = args.list or {}
   self.id = args.id or 'TroubadourSearchResult'
+  self.searchWidth = args.width
 
   self.SEARCH_FUNCS = args.search_funcs or {}
   self.EXCLUDE_FUNCS = args.exclude_funcs or {}
@@ -56,6 +58,7 @@ Searcher.get_text_input = function(self)
     prompt_text = localize('b_tro_search_placeholder'),
     current_prompt_text = '',
     extended_corpus = true,
+    w = self.searchWidth,
   }
   local ret = create_text_input(args)
   return ret
@@ -83,7 +86,10 @@ Troubadour.Hook('after', G.FUNCS, 'text_input_key', function()
 end)
 
 Troubadour.Hook('before', love, 'keypressed', function(key)
-  if key == "escape" and type(G.OVERLAY_MENU) == 'table' and Troubadour.ACTIVE_SEARCH then
+  if key == "escape"
+  and type(G.OVERLAY_MENU) == 'table'
+  and Troubadour.ACTIVE_SEARCH
+  and not G.CONTROLLER.text_input_hook then
     Troubadour.ACTIVE_SEARCH = nil
   end
 end)

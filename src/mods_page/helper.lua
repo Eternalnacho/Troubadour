@@ -58,7 +58,7 @@ local modpage_helper = {
 
   renderModList = function(list, page, calc_func, item_func)
     local scale = 0.75
-    local _, __, showingList, startIndex, endIndex, modsRowPerPage, modsColPerRow = calc_func(list, page)
+    local _, _, showingList, startIndex, endIndex, totalRows, totalCols = calc_func(page, list)
 
     local modNodes = {}
     -- If no mods are loaded, show a default message
@@ -77,33 +77,33 @@ local modpage_helper = {
         function(mod) return mod.disabled end,
       }) do
         for _, item in ipairs(list) do
-          if modCount >= modsRowPerPage * modsColPerRow then break end
+          if modCount >= totalRows * totalCols then break end
           if condition(SMODS.Mods[item.id]) then
             id = id + 1
             if id >= startIndex and id <= endIndex then
               table.insert(current_row,
                 T.Col (
-                  { --[[config]] },
+                  { align = "tm" },
                   { T.Col ({ padding = 0.0, minw = 1, minh = 1 }, { item_func(item) }) }
                 )
               )
               modCount = modCount + 1
-              if math.fmod(modCount, modsColPerRow) == 0 then
-                table.insert(modNodes, T.Row ({ padding = 0, align = "cl"}, current_row ))
+              if math.fmod(modCount, totalCols) == 0 then
+                table.insert(modNodes, T.Row ({ padding = 0, align = "tl" }, current_row ))
                 current_row = {}
               end
             end
           end
         end
       end
-      if #current_row > 0 then
-        table.insert(modNodes, T.Row ({ padding = 0, align = "cl" }, current_row ))
+      if next(current_row) then
+        table.insert(modNodes, T.Row ({ padding = 0, align = "tl" }, current_row ))
       end
     end
 
     return T.Col (
-      { --[[config]] },
-      { T.Row ({}, { T.Col ({ r = 0.1, padding = 0, minw = 1.4 * modsColPerRow }, modNodes) }) }
+      { align = "tm" },
+      { T.Row ({ align = "tm" }, { T.Col ({ r = 0.1, padding = 0, align = "tm", minw = 1.4 * totalCols }, modNodes) }) }
     )
   end,
 }
