@@ -1,7 +1,0 @@
-- Mod UI
-  - Config page
-    - Adjust Tabs to fit under larger "config" tab so as to ease potential confusion *optional*
-- Features
-  - Folders
-    - Finish the Add and Remove Item windows
-      - (Add Menu UIBoxes are going to break me)
