@@ -70,11 +70,9 @@ end
 function Troubadour.Folder:toggle_all()
   for _, item in pairs(self.items) do
     local mod = SMODS.Mods[item.id]
-    mod.should_enable = self.should_enable_all
-    if not mod.should_enable then
-      SMODS.NFS.write(mod.path .. '.lovelyignore', '')
-    else
-      SMODS.NFS.remove(mod.path .. '.lovelyignore')
+    if mod.should_enable ~= self.should_enable_all then
+      mod.should_enable = self.should_enable_all
+      Troubadour.toggleMod(mod)
     end
   end
   self:save()
@@ -159,10 +157,15 @@ end
 Troubadour.Hook('before', love, 'keypressed', function(key)
   if key == "escape" and Troubadour.ACTIVE_FOLDER then
     local Folder = Troubadour.ACTIVE_FOLDER
-    if Folder.to_remove or Folder.to_add then
-      Folder:open(); return
-    else
-      Folder:close(); return
-    end
+    if Folder.to_remove or Folder.to_add or G.ACTIVE_MOD_UI then Folder:open(); return
+    else Folder:close(); return end
   end
+end)
+
+Troubadour.Hook('around', _G, 'create_UIBox_mods', function(orig, args)
+  local ret = orig(args)
+  if Troubadour.ACTIVE_FOLDER then
+    ret.nodes[1].nodes[1].nodes[2].config.button = 'Troubadour_open_folder_'..Troubadour.ACTIVE_FOLDER.name
+  end
+  return ret
 end)

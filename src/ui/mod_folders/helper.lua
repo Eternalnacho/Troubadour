@@ -93,8 +93,6 @@ local helper_funcs = {
       w = 0, h = 0.2, scale = 1,
       callback = function()
         Folder:toggle_all()
-        local toChange = Folder:check_items()
-        SMODS.full_restart = SMODS.full_restart + toChange
       end
     })
     if not Folder.should_enable_all then
