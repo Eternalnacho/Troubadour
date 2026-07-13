@@ -35,11 +35,6 @@ function Troubadour.utils.map_list(list, func)
   return new_list
 end
 
-function Troubadour.utils.append(t1, t2, use_keys)
-  if use_keys then for k, v in pairs(t2) do t1[k] = t1[k] or v end
-  else for _, v in ipairs(t2) do table.insert(t1, v) end end
-end
-
 function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly that's useful
   if not args then args = {} end
   G.E_MANAGER:add_event(Event({
