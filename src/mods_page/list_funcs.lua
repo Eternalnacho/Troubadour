@@ -3,32 +3,6 @@ local T = Troubadour.UI
 --
 
 local modpage_helper = {
-  concatAuthors = function(authors)
-    if type(authors) == "table" then
-        return table.concat(authors, ", ")
-    end
-    return authors or localize('b_unknown')
-  end,
-
-  TextColumn = function(text, scale, colour, node)
-    return {
-      n = node or G.UIT.R,
-      config = {
-        padding = 0,
-        align = "lc",
-        maxw = 2.8,
-        maxh = 1.5
-      },
-      nodes = {
-        T.Text ({
-          text = text,
-          colour = colour or G.C.UI.TEXT_LIGHT,
-          scale = scale * 0.7
-        }),
-      }
-    }
-  end,
-
   ---@param list table
   ---@param page integer
   ---@param width integer
@@ -121,13 +95,10 @@ modpage_helper.recalculateModsList = function(page)
 end
 
 modpage_helper.recalculateModFoldersList = function(page)
-  local w = 2
-  local h = 4
-
+  local width, height = 2, 4
   page = page or Troubadour.LAST_VIEWED_FOLDER_PAGE or 1
   Troubadour.LAST_VIEWED_FOLDER_PAGE = page
-
-  return modpage_helper.recalculateList(Troubadour.FolderIndex, page, w, h)
+  return modpage_helper.recalculateList(Troubadour.FolderIndex, page, width, height)
 end
 
-return modpage_helper
+Troubadour.FUNCS = SMODS.merge_defaults(Troubadour.FUNCS, modpage_helper)

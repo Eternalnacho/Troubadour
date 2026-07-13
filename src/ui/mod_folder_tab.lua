@@ -1,11 +1,11 @@
-local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
+local F = Troubadour.FUNCS
 local T = Troubadour.UI
 
 --
 
 function Troubadour.UIDEF.statModFolderPage()
   local scale = 0.75
-  local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModFoldersList()
+  local currentPage, pageOptions, showingList, _, _, dminh, dminw = F.recalculateModFoldersList()
   return T.Row { minh = dminh + 1, minw = 5.75 * dminw + 1, r = 0.1, padding = 0.05, colour = G.C.BLACK, nodes = {
     -- row container
     T.Col { nodes = {
@@ -93,7 +93,7 @@ end
 
 function Troubadour.UIDEF.modFolderList(page)
   local scale = 0.75
-  local _, __, showingList, startIndex, endIndex, foldersRowPerPage, foldersColPerRow = m.recalculateModFoldersList(page)
+  local _, __, showingList, startIndex, endIndex, foldersRowPerPage, foldersColPerRow = F.recalculateModFoldersList(page)
   local modNodes = {}
 
   -- If no mod folders exist, show a default message

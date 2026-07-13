@@ -1,5 +1,5 @@
+local F = Troubadour.FUNCS
 local T = Troubadour.UI
-local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
 
 -- Folder Inner UI Elements
 
@@ -118,7 +118,7 @@ local elements = {
   end,
 
   modList = function(Folder, page)
-    local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
+    local render = F.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
       return Troubadour.UIDEF.modListIcon(SMODS.Mods[item.id])
     end)
     return T.UIBox ({ minw = 0, minh = 0, bg_colour = G.C.CLEAR }, {render})
@@ -126,7 +126,7 @@ local elements = {
 
   addList = function(list, page)
     local Folder = { items = list, UI = Troubadour.Folder.UI }
-    local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
+    local render = F.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
       return Troubadour.ModTile({
         mod = SMODS.Mods[item.id],
         ref_table = Troubadour.ACTIVE_FOLDER.to_add,
@@ -145,7 +145,7 @@ local elements = {
   end,
 
   deleteList = function(Folder, page)
-    local render = m.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
+    local render = F.renderModList( Folder.items, page, Folder.UI.recalculateList, function(item)
       return Troubadour.ModTile({
         mod = SMODS.Mods[item.id],
         ref_table = Folder.to_remove,

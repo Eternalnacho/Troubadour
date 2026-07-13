@@ -1,4 +1,4 @@
-local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
+local F = Troubadour.FUNCS
 
 -- Folder UI helper functions
 
@@ -7,7 +7,7 @@ local helper_funcs = {
     page = page or 1
     local w = 6
     local h = 3
-    return m.recalculateList(list, page, w, h)
+    return F.recalculateList(list, page, w, h)
   end,
 
   search_funcs = {

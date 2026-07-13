@@ -1,10 +1,10 @@
-local m = assert(SMODS.load_file("src/mods_page/helper.lua"))()
+local F = Troubadour.FUNCS
 local T = Troubadour.UI
 
 -- SMALLER MODLIST
 
 function Troubadour.UIDEF.statModList()
-  local currentPage, pageOptions, showingList, _, _, dminh, dminw = m.recalculateModsList()
+  local currentPage, pageOptions, showingList, _, _, dminh, dminw = F.recalculateModsList()
   local Searcher = Troubadour.Searcher({
     width = 4.5,
     id = 'modsList',
@@ -88,8 +88,8 @@ end
 
 function Troubadour.UIDEF.dynaModList(list, page)
   if not list then list = SMODS.mod_list end
-  local _, _, _, _, _, dminh, dminw = m.recalculateModsList()
-  local render = m.renderModList(list, page, m.recalculateModsList, Troubadour.UIDEF.modListIcon)
+  local _, _, _, _, _, dminh, dminw = F.recalculateModsList()
+  local render = F.renderModList(list, page, F.recalculateModsList, Troubadour.UIDEF.modListIcon)
   return T.UIBox ({ minw = dminw * 1.5 + 0.5, minh = dminh * 1.5 + 0.5, bg_colour = G.C.CLEAR }, {render})
 end
 
@@ -181,32 +181,45 @@ end
 
 -- NODES FOR MOD TILE POPUP
 
+local concatTable = function(tbl_or_str)
+  if type(tbl_or_str) == "table" then return table.concat(tbl_or_str, ", ") end
+  return tbl_or_str or localize('b_unknown')
+end
+
+local textCol = function(text, scale, colour, node)
+  return {
+    n = node or G.UIT.R,
+    config = { align = "lc", maxw = 2.8, maxh = 1.5 },
+    nodes = { T.Text ({ text = text, colour = colour or G.C.UI.TEXT_LIGHT, scale = scale * 0.7 }) }
+  }
+end
+
 Troubadour.UIDEF.modNodes = {
   name = function(mod, nodes, args)
     if not mod.name then return end
     local modname_split = SMODS.smart_line_splitter(mod.name, 18, true)
     for _,v in ipairs(modname_split) do
-      table.insert(nodes, m.TextColumn(v, args.scale, args.colour))
+      table.insert(nodes, textCol(v, args.scale, args.colour))
     end
   end,
 
   lovely = function(mod, nodes, args)
     if mod.lovely_only then
-      table.insert(nodes, m.TextColumn(localize('b_lovely_mod'), args.scale, args.colour))
+      table.insert(nodes, textCol(localize('b_lovely_mod'), args.scale, args.colour))
     end
   end,
 
   version = function(mod, nodes, args)
     local sub_node = {}
     if mod.version and mod.version ~= '0.0.0' then
-      table.insert(sub_node, m.TextColumn(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
+      table.insert(sub_node, textCol(('%s'):format(mod.version), args.scale, args.colour, G.UIT.C))
     end
     if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
   end,
 
   authors = function(mod, nodes, args)
     if not mod.lovely_only then
-      local tx = m.concatAuthors(mod.author)
+      local tx = concatTable(mod.author)
       local authorBox = SMODS.UIScrollBox({
         content = DynaText({
           string = tx,
@@ -244,7 +257,7 @@ Troubadour.UIDEF.modNodes = {
   priority = function(mod, nodes, args)
     local sub_node = {}
     if not _RELEASE_MODE and mod.priority then
-      table.insert(nodes, m.TextColumn(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
+      table.insert(nodes, textCol(('%s%s'):format(localize('b_priority'), number_format(mod.priority)), args.scale, args.colour))
     end
     if #sub_node > 0 then table.insert(nodes, { n = G.UIT.R, config = {}, nodes = sub_node }) end
   end,
@@ -258,11 +271,11 @@ Troubadour.UIDEF.modNodes = {
       tag_state = 'load_failure'
       if next(mod.load_issues.dependencies) then
         tag_state = tag_state .. '_d'
-        table.insert(specific_vars, m.concatAuthors(mod.load_issues.dependencies))
+        table.insert(specific_vars, concatTable(mod.load_issues.dependencies))
       end
       if next(mod.load_issues.conflicts) then
         tag_state = tag_state .. '_c'
-        table.insert(specific_vars, m.concatAuthors(mod.load_issues.conflicts))
+        table.insert(specific_vars, concatTable(mod.load_issues.conflicts))
       end
       if mod.load_issues.outdated then
         tag_state = 'load_failure_o'
