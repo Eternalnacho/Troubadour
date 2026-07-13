@@ -6,6 +6,10 @@ Troubadour.Hook('before', SMODS.GUI, 'dynamicModListContent', function(page)
   end
 end)
 
+Troubadour.Hook('before', G.FUNCS, 'exit_mods', function()
+  Troubadour.mod_folder_view = nil
+end)
+
 G.FUNCS.Troubadour_update_mod_list = function(e)
   if not e or not e.cycle_config then return end
   local list = Troubadour.ACTIVE_SEARCH and Troubadour.ACTIVE_SEARCH:get_list() or SMODS.mod_list
