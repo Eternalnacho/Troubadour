@@ -27,10 +27,6 @@ function Troubadour.utils.for_each(list, func)
   end
 end
 
-function Troubadour.utils.copy_list(list)
-  return Troubadour.utils.map_list(list, Troubadour.utils.id)
-end
-
 function Troubadour.utils.map_list(list, func)
   local new_list = {}
   for _, v in pairs(list) do
@@ -39,14 +35,9 @@ function Troubadour.utils.map_list(list, func)
   return new_list
 end
 
-function Troubadour.utils.id(a)
-  return a
-end
-
-function Troubadour.utils.append(t1, t2)
-  for _, v in ipairs(t2) do
-    table.insert(t1, v)
-  end
+function Troubadour.utils.append(t1, t2, use_keys)
+  if use_keys then for k, v in pairs(t2) do t1[k] = t1[k] or v end
+  else for _, v in ipairs(t2) do table.insert(t1, v) end end
 end
 
 function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly that's useful
@@ -64,41 +55,13 @@ function Troubadour.defer(func, args) -- Stealing this one from Emma holy moly t
 end
 
 -- math functions
-to_number = to_number or function(x) return x end
-
-function math.summ(n)
-  return n * (n + 1) / 2
-end
 
 function math.round(n)
   return n * 10 % 10 < 5 and math.floor(n) or math.ceil(n)
 end
 
-function math.clamp(num, min, max)
-  max = max or math.huge
-  min = min or -math.huge
-  assert(min <= max)
-  return math.min(math.max(num, min), max)
-end
-
-
--- string functions
-function starts_with(str, start)
-	return string.sub(str, 1, #start) == start
-end
-
-function ends_with(str, ending)
-	return string.sub(str, -#ending) == ending
-end
-
-function containsString(str, substring)
-	local lowerStr = string.lower(str)
-	local lowerSubstring = string.lower(substring)
-	return string.find(lowerStr, lowerSubstring, 1, true) ~= nil
-end
-
-
 -- mod functions
+
 function Troubadour.toggleMod(mod)
   if not mod.should_enable then
     NFS.write(mod.path .. '.lovelyignore', '')
@@ -112,20 +75,12 @@ function Troubadour.toggleMod(mod)
   SMODS.full_restart = SMODS.full_restart + toChange
 end
 
-
 -- table functions
+
 table.unpack = table.unpack or unpack
 
-function Troubadour.utils.tableToString(tbl, sep)
-  local result = {}
-  for _, line in ipairs(tbl) do
-      local cleanedLine = line:gsub("{.-}", "")
-      table.insert(result, cleanedLine)
-  end
-  return table.concat(result, (sep or " "))
-end
+-- hooking functions helper
 
--- meta functions
 local hooks = {
   before = function (table, funcname, hook)
     local orig = table[funcname] or function(...) end

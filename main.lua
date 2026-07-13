@@ -3,7 +3,6 @@ Troubadour = {
   FUNCS = {},
   UIDEF = {},
   UI = {},
-  ICONS = {},
 
   path_to_folders = function() return love.filesystem.getSaveDirectory().."/Troubadour - Mod Folders/" end,
   config = SMODS.current_mod.config
