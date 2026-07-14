@@ -1,1 +1,1 @@
-An Add-On Mod for Balatro that enlarges various collection pages and contains a condensed mod page and mod folder features for easier navigation
+A Quality of Life mod Balatro that enlarges various collection pages and contains a condensed mod page with mod folder features for easier navigation
