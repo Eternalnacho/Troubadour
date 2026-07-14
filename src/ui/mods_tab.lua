@@ -146,7 +146,7 @@ function Troubadour.UIDEF.getModTagInfo(mod)
   local tag_atlas = mod.prefix and mod.prefix .. '_modicon' or 'modicon'
 
   if not mod.can_load then
-    if next(mod.load_issues.dependencies)
+    if not mod.disabled and next(mod.load_issues.dependencies)
         or next(mod.load_issues.conflicts)
         or mod.load_issues.outdated
         or mod.load_issues.version_mismatch
