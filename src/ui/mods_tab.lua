@@ -164,7 +164,7 @@ end
 
 function Troubadour.UIDEF.modTagSprite(mod)
   local tag_atlas, tag_pos = Troubadour.UIDEF.getModTagInfo(mod)
-  local tag_sprite = SMODS.create_sprite(0, 0, 1, 1, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
+  local tag_sprite = SMODS.create_sprite(0, 0, 1.1, 1.1, SMODS.get_atlas(tag_atlas) or SMODS.get_atlas('tags'), tag_pos)
 
   tag_sprite:define_draw_steps({
     { shader = 'dissolve', shadow_height = 0.05 },
