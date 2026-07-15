@@ -103,7 +103,10 @@ local elements = {
       end
     })
     if not Folder.should_enable_all then
-      Troubadour.defer(function() G.FUNCS.toggle(t) end)
+      local toggle = t.nodes[1].nodes[1].nodes[1]
+      if toggle then
+        Troubadour.defer(function() G.FUNCS.toggle(toggle) end)
+      end
     end
     return t
   end,
