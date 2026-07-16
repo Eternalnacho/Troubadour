@@ -5,6 +5,20 @@ SMODS.Atlas({
   py = 46
 })
 
+SMODS.Atlas({
+  key = "folder",
+  path = "folder.png",
+  px = 32,
+  py = 32
+})
+
+SMODS.Atlas({
+  key = "list",
+  path = "list.png",
+  px = 32,
+  py = 32
+})
+
 for _, mod in pairs(SMODS.Mods) do
   local icon_names = {"icon", "modicon", "mod_icon"}
   if mod.prefix then
@@ -16,12 +30,11 @@ for _, mod in pairs(SMODS.Mods) do
     icon_names[#icon_names+1] = mod.prefix..'mod_icon'
   end
 
-  if mod.disabled then
+  if mod.disabled and not mod.icon_path then
     for _, file_path in pairs(icon_names) do
       local full_path = mod.path .. 'assets/' .. G.SETTINGS.GRAPHICS.texture_scaling .. 'x/' .. file_path .. '.png'
       local file_data, error = NFS.newFileData(full_path)
       if not error then
-        print("File location found: "..full_path)
         local image_data = assert(love.image.newImageData(file_data),
                 ('Failed to initialize image data for Atlas %s'):format(file_path))
         local px, py = image_data:getDimensions()

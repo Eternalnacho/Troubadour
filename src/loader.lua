@@ -1,29 +1,70 @@
-local function load_file(file, load_item)
-  if file.init then
-    file.init()
+local dir_index = {
+  ['utils'] = {
+    "utils.lua",
+    "ui.lua",
+    "inputmanager.lua"
+  },
+
+  ['api'] = {
+    "folder.lua",
+    "tile.lua",
+    "modtile.lua",
+    "searcher.lua",
+  },
+
+  ['ui'] = {
+    "dark_tooltip.lua",
+    "mods_tab.lua",
+    "mod_folder_tab.lua",
+  }
+}
+
+local function load_directory_from_index(path, prefix)
+  for _, file in ipairs(dir_index[path]) do
+    assert(SMODS.load_file(prefix .. path .. '/' .. file))()
   end
-  -- can add load funcs here later if need be
 end
 
-local function load_directory(path, load_item, options)
-  options = options or {}
-  local files = NFS.getDirectoryItems(SMODS.current_mod.path .. path)
+local function load_directory(path, prefix)
+  if dir_index[path] then
+    load_directory_from_index(path, prefix)
+  else
+    local files = NFS.getDirectoryItems(SMODS.current_mod.path .. prefix .. path)
+    for _, file_path in ipairs(files) do
+      local file_type = NFS.getInfo(SMODS.current_mod.path .. prefix .. path .. '/' .. file_path).type
 
-  for _, file_path in ipairs(files) do
-    local file_type = NFS.getInfo(SMODS.current_mod.path .. path .. '/' .. file_path).type
-
-    if file_type == "directory" then
-      load_directory(path .. '/' .. file_path, load_item, options)
-    elseif file_type ~= "symlink" then
-      local file = assert(SMODS.load_file(path .. '/' .. file_path))()
-
-      if type(file) == 'table' and file.can_load ~= false then
-        if options.pre_load then options.pre_load(file) end
-        load_file(file, load_item)
-        if options.post_load then options.post_load(file) end
+      if file_type == "directory" then
+        load_directory(path .. '/' .. file_path, prefix)
+      elseif file_type ~= "symlink" then
+        assert(SMODS.load_file(prefix .. path .. '/' .. file_path))()
       end
     end
   end
 end
 
-return load_directory
+local function load_folders()
+  -- load whatever file we store folder data in
+  SMODS.NFS.createDirectory(Troubadour.path_to_folders())
+  local folder_dir = SMODS.NFS.getDirectoryItems(Troubadour.path_to_folders())
+
+  -- iterate over whatever list we load and do the init thing
+  if folder_dir and next(folder_dir) then
+    for _, path in pairs(folder_dir) do
+      if SMODS.NFS.newFileData(Troubadour.path_to_folders()..'/'..path):getExtension() == 'json' then
+        local folder_table = assert(JSON.decode(SMODS.NFS.read(Troubadour.path_to_folders()..'/'..path)))
+        Troubadour.Folder({
+          name = folder_table.name,
+          id = folder_table.id,
+          items = folder_table.items,
+          enabled = folder_table.enabled
+        })
+        print("Registered Folder: '"..folder_table.name.."'")
+      end
+    end
+  end
+
+  table.sort(Troubadour.FolderIndex, function(a, b) return a.id < b.id end)
+  Troubadour.reindexFolders()
+end
+
+return load_directory, load_folders

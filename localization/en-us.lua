@@ -1,6 +1,21 @@
 return {
   descriptions = {
     Other = {
+      TRO_mod_list = {
+        text = {
+          '{C:green}Mods List',
+        }
+      },
+      TRO_mod_folder_page = {
+        text = {
+          '{C:green}Mod Folders',
+        }
+      },
+      TRO_mod_page_config = {
+        text = {
+          '{C:green}Mod Page Config',
+        }
+      },
       TRO_icons_only = {
         text = {
           '{C:green}Mods{} page will use',
@@ -40,6 +55,16 @@ return {
     },
   },
   misc = {
-    dictionary = {},
+    dictionary = {
+      b_tro_no_mod_folders = "No Mod Folders",
+      b_tro_create_folder = "Create Folder",
+      b_tro_create_mod_folder = "Create Mod Folder",
+      b_tro_delete_mod_folder = "Delete Mod Folders",
+      b_tro_enter_mod_folder_name = "Enter Name...",
+      b_tro_search_placeholder = "Search...",
+      b_tro_remove_placeholder = "Remove Items from ",
+      b_tro_add_item = "Add Mods",
+      b_tro_remove_item = "Remove Mods",
+    },
   },
 }

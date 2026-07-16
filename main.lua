@@ -1,22 +1,32 @@
-tro_config = SMODS.current_mod.config
-TRO = {
+
+Troubadour = {
   FUNCS = {},
   UIDEF = {},
   UI = {},
-  ICONS = {},
+
+  path_to_folders = function() return love.filesystem.getSaveDirectory().."/Troubadour - Mod Folders/" end,
+  config = SMODS.current_mod.config
 }
 
 -- Get directory loader
-local load_dir = assert(SMODS.load_file("src/loader.lua"))()
+local load_dir, load_folders = assert(SMODS.load_file("src/loader.lua"))()
 
--- Load backend functions
-load_dir("src/functions")
+-- Load directories
+for _, path in ipairs {
+  "utils",
+  "ui",
+  "api",
+  "collection",
+  "mods_page",
+} do
+  load_dir(path, "src/")
+end
+
+-- Load mod folders
+load_folders()
 
 -- Load config page
 assert(SMODS.load_file("src/config_page.lua"))()
-
--- Load auto-reroll and wider collection screen
-load_dir("src/items")
 
 -- Load atlases
 assert(SMODS.load_file("atlases.lua"))()
