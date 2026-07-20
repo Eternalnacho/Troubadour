@@ -54,6 +54,7 @@ Searcher.get_text_input = function(self)
   local args = {
     ref_table = self,
     ref_value = 'query',
+    id = "troubadour_searcher_text_input",
     prompt_text = localize('b_tro_search_placeholder'),
     current_prompt_text = '',
     extended_corpus = true,
