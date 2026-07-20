@@ -97,10 +97,11 @@ local hooks = {
   end,
 }
 
----@param hook_type string
+---@alias hook_type
 ---| "before" # Pre-Call processing
 ---| "after"  # Post-Call processing
 ---| "around" # Pre-or-Post-Call processing (requires orig in hook)
+---@param hook_type hook_type
 ---@param table any
 ---@param funcname string
 ---@param hook function
